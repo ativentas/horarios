@@ -12,8 +12,19 @@
 
     <!-- Styles -->
     <link href="/css/app.css" rel="stylesheet">
-
+    <link href="/css/jquery-ui.css" rel="stylesheet">
+    <link href="{{asset('css/jquery-ui.structure.css')}}" media="all" rel="stylesheet" type="text/css" />
+    <link href="{{asset('css/jquery-ui.theme.css')}}" media="all" rel="stylesheet" type="text/css" />
+    
     <!-- Scripts -->
+
+    <script src="/js/app.js"></script>
+    <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="{{asset('js/jquery-ui.js')}}"></script>
+    <script src="{{asset('js/datepicker-es.js')}}"></script>  
+
+  
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
@@ -42,10 +53,17 @@
 
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
+                    @if (Auth::check())
                     <ul class="nav navbar-nav">
-                        &nbsp;
+                        <li><a href="{{ url('/cuadrante') }}">Horario</a></li>
+                        <li><a href="{{ url('/ausencias') }}">Ausencias</a></li>
+                        @if (Auth::user()->isAdmin())
+                        <li><a href="{{ url('/cuadrante') }}">otras cosas</a></li>
+                        @endif                    
                     </ul>
 
+                 
+                    @endif
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
@@ -81,7 +99,7 @@
         @yield('content')
     </div>
 
-    <!-- Scripts -->
-    <script src="/js/app.js"></script>
+
 </body>
+
 </html>
