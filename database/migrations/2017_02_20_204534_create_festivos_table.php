@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCentrosTable extends Migration
+class CreateFestivosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateCentrosTable extends Migration
      */
     public function up()
     {
-        Schema::create('centros', function (Blueprint $table) {
+        Schema::create('festivos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nombre');
-            $table->integer('dia_cierre')->nullable();
-            $table->boolean('abrefestivos')->default(1);
+            $table->date('fecha');
 
         });
     }
@@ -29,6 +27,6 @@ class CreateCentrosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('centros');
+        Schema::dropIfExists('festivos');
     }
 }

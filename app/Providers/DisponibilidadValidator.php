@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Validator, DB;
+use Datetime;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -77,6 +78,39 @@ class DisponibilidadValidator extends ServiceProvider
 			$end = $this->change_date_format($days[1]);
 			
 			if(abs(strtotime($end) - strtotime($start)) < 0 )
+			{
+				return false;	
+			}
+			return true;
+		});
+
+		// check que los horarios si los hay, estén abiertos
+		Validator::extend('horarios_cerrados', function($attribute, $value, $parameters, $validator) {
+			
+			$days = explode(" - ", $value);
+			$start = $this->change_date_format($days[0]);
+			$end = $this->change_date_format($days[1]);
+			$parts_start = explode("-",$start);
+			$parts_end = explode("-",$end);
+
+			$year_start = $parts_start[0];
+			$year_end = $parts_end[0];
+
+			$start = new DateTime($start);
+			$semana_start = $start->format('W');
+			$end = new DateTime($end);
+			$semana_end = $end->format('W');
+
+
+			$intervalo_yearsemanas = [$year_start.$semana_start,$year_end.$semana_end];
+			// dd($intervalo_yearsemanas);
+			$horarios_afectados = DB::table('cuadrantes')
+				->where('centro_id',$parameters[0])
+				->where('archivado',1)
+				->whereBetween('yearsemana',$intervalo_yearsemanas)
+				// ->whereIn('yearsemana',$intervalo_yearsemanas)
+				->count();
+			if($horarios_afectados > 0)
 			{
 				return false;	
 			}

@@ -61,10 +61,12 @@ class AusenciaController extends Controller
      */
     public function store(Request $request)
     {
+		$centro_id = Auth::user()->centro_id;
 		$this->validate($request, [
 			'empleado_id'	=> 'required',
 			'tipo' => 'required',
-			'time'	=> "required|duration|available:$request->empleado_id"
+			'time'	=> "required|duration|available:$request->empleado_id|horarios_cerrados:$centro_id"
+
 		]);
 		
 		$time = explode(" - ", $request->input('time'));
@@ -73,6 +75,7 @@ class AusenciaController extends Controller
 
 		$ausencia 					= new Ausencia;
 		$ausencia->empleado_id		= $empleado->id;
+		$ausencia->alias 			= $empleado->alias;
 		$ausencia->tipo 			= $request->input('tipo');
 		$ausencia->fecha_inicio		= $this->change_date_format($time[0]);
 		$ausencia->finalDay 		= $this->change_date_format($time[1]);
@@ -86,7 +89,8 @@ class AusenciaController extends Controller
 
 		// $diasformateados = $this->format_interval($first_date->diff($second_date));	 
 		$intervalo = $first_date->diff($second_date);	
-		$ausencia->dias = $intervalo->d;
+
+		$ausencia->dias = $intervalo->format("%a");
 		$ausencia->save();	
 
 		$request->session()->flash('success', 'Guardado!');
@@ -113,7 +117,7 @@ class AusenciaController extends Controller
 
         $data = [
 			'page_title' 	=> $ausencia->tipo,
-			'ausencia'			=> $ausencia,
+			'ausencia'		=> $ausencia,
 			'duration'		=> $this->format_interval($difference)
 		];
 		
@@ -164,6 +168,15 @@ class AusenciaController extends Controller
 		$format = 'd/m/Y';
 		$finalDay = Carbon::createFromFormat($format,$time[1])->startOfDay()->addDay()->format($format);
 		$ausencia->fecha_fin = $this->change_date_format($finalDay);
+		
+		$first_date = new DateTime($ausencia->fecha_inicio);
+		$second_date = new DateTime($ausencia->fecha_fin);
+
+		// $diasformateados = $this->format_interval($first_date->diff($second_date));	 
+		$intervalo = $first_date->diff($second_date);	
+
+		$ausencia->dias = $intervalo->format("%a");
+
 		$ausencia->save();
 
 		return redirect('ausencias');

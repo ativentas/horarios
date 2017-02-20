@@ -21,7 +21,6 @@ class CreatePredefinidosTable extends Migration
             $table->time('salida1')->nullable();
             $table->time('entrada2')->nullable();
             $table->time('salida2')->nullable();
-            $table->nullableTimestamps();
 
         });
     }

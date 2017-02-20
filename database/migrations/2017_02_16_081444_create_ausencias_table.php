@@ -16,7 +16,8 @@ class CreateAusenciasTable extends Migration
         Schema::create('ausencias', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('empleado_id')->unsigned();
-            $table->enum('tipo',['V','B','AJ','AS']);      
+            $table->string('alias');
+            $table->enum('tipo',['V','B','AJ','AN'])->nullable();      
             $table->timestamp('fecha_inicio');
             $table->timestamp('fecha_fin');
             $table->date('finalDay');

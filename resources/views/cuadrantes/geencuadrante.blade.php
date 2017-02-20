@@ -26,4 +26,4 @@
 </div>
 
 @endsection
-<script>alert('hola');</script>
+<script>alert('no hay ningún horario preparado todavía');</script>
