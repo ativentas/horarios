@@ -1,6 +1,10 @@
 /*! jQuery UI - v1.12.1 - 2017-01-10
 * http://jqueryui.com
-* Includes: widget.js, position.js, data.js, disable-selection.js, focusable.js, form-reset-mixin.js, keycode.js, labels.js, scroll-parent.js, tabbable.js, unique-id.js, widgets/draggable.js, widgets/resizable.js, widgets/autocomplete.js, widgets/button.js, widgets/checkboxradio.js, widgets/controlgroup.js, widgets/datepicker.js, widgets/dialog.js, widgets/menu.js, widgets/mouse.js
+* Includes: widget.js, position.js, data.js, disable-selection.js, focusable.js, 
+form-reset-mixin.js, keycode.js, labels.js, scroll-parent.js, tabbable.js, unique-id.js, 
+widgets/draggable.js, widgets/resizable.js, widgets/autocomplete.js, widgets/button.js, 
+widgets/checkboxradio.js, widgets/controlgroup.js, widgets/datepicker.js, 
+widgets/dialog.js, widgets/menu.js, widgets/mouse.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 (function( factory ) {

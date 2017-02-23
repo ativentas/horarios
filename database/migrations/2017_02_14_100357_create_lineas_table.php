@@ -18,14 +18,19 @@ class CreateLineasTable extends Migration
             $table->integer('cuadrante_id')->unsigned();
             $table->integer('empleado_id')->unsigned();
             $table->integer('ausencia_id')->unsigned()->nullable();
-            $table->enum('situacion',['V','FT','B','AJ','AN'])->nullable();
+            $table->date('fecha');
+            $table->tinyInteger('dia')->unsigned();
+            $table->enum('situacion',['V','FT','B','AJ','AN','L','VT'])->nullable();
             $table->time('entrada1')->nullable();
             $table->time('salida1')->nullable();
             $table->time('entrada2')->nullable();
             $table->time('salida2')->nullable();
-            $table->date('fecha_inicio')->nullable();
-            $table->date('fecha_fin')->nullable();
+            //ahora no se para que sirven las siguientes fechas, de momento las borro de la tabla
+            // $table->date('fecha_inicio')->nullable();
+            // $table->date('fecha_fin')->nullable();
             $table->timestamps();
+
+            $table->unique(['fecha', 'empleado_id']);
 
             $table->foreign('cuadrante_id')
                     ->references('id')->on('cuadrantes')

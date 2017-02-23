@@ -71,25 +71,27 @@ public function mostrarCuadrante($yearsemana=NULL)
                     $fin = new Carbon($ausencia->finalDay);
                     $intervaloausencia = $this->generateDateRange($inicio,$fin);
                     // actualizar la linea
-                    $linea->update([
+                    if ($ausencia->tipo == 'V' && $linea->situacion == 'VT') {
+                        # como es VT, se deja como está.
+                    }else{
+                        $linea->update([
                         'situacion' => $ausencia->tipo,
-                    ]);
-                }
-                //como no hay ausencia, modifico la linea borrando la ausencia
-
-                $linea->update([
+                        ]);
+                    }
+                }else{
+                    $linea->update([
                     'ausencia_id' => NULL,
                     'situacion' => NULL,
                     ]);
+                }
+
             }
         }
-
 
         //actualizar las lineas con los datos de la tabla de ausencias
         $ausencias = Ausencia::where('fecha_fin','>=',$inicio_semana->toDateTimeString())->where('fecha_inicio','<=',$final_semana->toDateTimeString())->whereIn('empleado_id',$empleados)->get();
         // dd($ausencias,$empleados);
-        if($ausencias){
-            
+        if($ausencias){   
             $inicio_semana_clon = clone $inicio_semana;
             $final_semana_clon = clone $final_semana;
             $diassemana = $this->generateDateRange($inicio_semana_clon, $final_semana_clon->addDay());
@@ -105,9 +107,9 @@ public function mostrarCuadrante($yearsemana=NULL)
                     if (in_array($fecha_ausencia, $diassemana)) {
                         $arrayprueba[] = $fecha_ausencia;
                         $linea = Linea::where('empleado_id',$ausencia->empleado_id)->where('fecha',$fecha_ausencia)->first();
+                        
                         if($linea){
-                            if($linea->situacion == 'VT' && $ausencia->tipo == 'V')
-                            {
+                            if($linea->situacion == 'VT' && $ausencia->tipo == 'V'){
                                 $linea->update([
                                     'ausencia_id' => $ausencia->id,
                                 ]);
@@ -131,40 +133,56 @@ public function mostrarCuadrante($yearsemana=NULL)
 
         }
     }
-
+//TO DO: en teoría no debe ocurrir, pero cuando no hay lineas en el cuadrante, sale un error de sql
     $lineas = DB::table('lineas')
         ->join('empleados', 'lineas.empleado_id', '=', 'empleados.id')
         ->where('lineas.cuadrante_id','=',$cuadrante->id)
         ->select(
-            'empleados.alias AS nombre', 
+            'empleados.alias AS nombre','empleados.id AS empleado_id', 
             DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.situacion ELSE NULL END) AS 'situacion1'"),
             DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.entrada1 ELSE NULL END) AS 'ELU'"),
             DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.salida1 ELSE NULL END) AS 'SLU'"),
+            DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.entrada2 ELSE NULL END) AS 'E2LU'"),
+            DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.salida2 ELSE NULL END) AS 'S2LU'"),
             DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.situacion ELSE NULL END) AS 'situacion2'"),
             DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.entrada1 ELSE NULL END) AS 'EMA'"),
             DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.salida1 ELSE NULL END) AS 'SMA'"),
+            DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.entrada2 ELSE NULL END) AS 'E2MA'"),
+            DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.salida2 ELSE NULL END) AS 'S2MA'"),
             DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.situacion ELSE NULL END) AS 'situacion3'"),
             DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.entrada1 ELSE NULL END) AS 'EMI'"),
             DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.salida1 ELSE NULL END) AS 'SMI'"),
+            DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.entrada2 ELSE NULL END) AS 'E2MI'"),
+            DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.salida2 ELSE NULL END) AS 'S2MI'"),
             DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.situacion ELSE NULL END) AS 'situacion4'"),
             DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.entrada1 ELSE NULL END) AS 'EJU'"),
             DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.salida1 ELSE NULL END) AS 'SJU'"),
+            DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.entrada2 ELSE NULL END) AS 'E2JU'"),
+            DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.salida2 ELSE NULL END) AS 'S2JU'"),
             DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.situacion ELSE NULL END) AS 'situacion5'"),
             DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.entrada1 ELSE NULL END) AS 'EVI'"),
             DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.salida1 ELSE NULL END) AS 'SVI'"),
+            DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.entrada2 ELSE NULL END) AS 'E2VI'"),
+            DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.salida2 ELSE NULL END) AS 'S2VI'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.situacion ELSE NULL END) AS 'situacion6'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.entrada1 ELSE NULL END) AS 'ESA'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.salida1 ELSE NULL END) AS 'SSA'"),
+            DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.entrada2 ELSE NULL END) AS 'E2SA'"),
+            DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.salida2 ELSE NULL END) AS 'S2SA'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.situacion ELSE NULL END) AS 'situacion7'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.entrada1 ELSE NULL END) AS 'EDO'"),
-            DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.salida1 ELSE NULL END) AS 'SDO'")
+            DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.salida1 ELSE NULL END) AS 'SDO'"),
+            DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.entrada2 ELSE NULL END) AS 'E2DO'"),
+            DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.salida2 ELSE NULL END) AS 'S2DO'")
             )
-        ->groupBy ('empleados.alias')
+        ->groupBy ('empleados.alias','empleados.id')
         ->get();
-    
 // dd($lineas);
 
-    return view('cuadrantes.detalle',compact('lineas','year','semana','inicio_semana','final_semana'));
+    $predefinidos = DB::table('predefinidos')->select('id AS value','nombre AS label','entrada1','salida1','entrada2','salida2')->get();
+
+
+    return view('cuadrantes.detalle',compact('lineas','year','semana','inicio_semana','final_semana','cuadrante','predefinidos'));
 
 }
 
@@ -209,6 +227,16 @@ public function crearNieuwCuadrante(Request $request)
     $fecha_fin = new Carbon($date->endOfWeek());
 
     $this->addLineas($cuadrante->id,Auth::user()->centro_id,$fecha_ini,$fecha_fin);
+    /*incluir dia de cierre como libres y dias festivos*/
+    if (!is_null($diacierre)){
+        
+        $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('dia',$diacierre)->get();
+        foreach ($lineas as $linea) {
+            $linea->situacion ='L';
+            $linea->save();
+        }
+    }
+
     return redirect('cuadrante/'.$cuadrante->id);
 
 }
