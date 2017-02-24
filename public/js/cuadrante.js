@@ -14,6 +14,7 @@ $( "#dialogEmpleado-form" ).dialog({
 
 $('.ausencia').on( "click", function(  ) {
   var elemento = $(this);
+
   var situacion = $(this).html();
   $('#container_horarioVT').hide();  
 /*si no es V o L o B, no mostrar checkbox*/
@@ -40,7 +41,7 @@ $('.ausencia').on( "click", function(  ) {
   });
     form = dialog_ausencia.find( "form" ).on( "submit", function( event ) {
       event.preventDefault();
-      modificar_ausencia();
+      modificar_ausencia(elemento);
     });
     
   var empleado_id = $(this).parent().data('empleado_id');
@@ -140,12 +141,25 @@ $('.btn_modify').on('click', function() {
     form[0].reset();
 });
 
-function modificar_ausencia(){
+function modificar_ausencia(elemento){
   var empleado_id = $(this).data('empleado_id');
   var dia = $(this).data('dia');
   var situacion = $(this).data('situacion');
   /*si ha marcado Trabaja*/
-  if($("#check_trabaja").checked) {
+  console.log(elemento);
+  if($("#check_trabaja").is(":checked")) {
+    switch (situacion) { 
+      case 'V': 
+        alert('tenia V');
+        break;
+      case 'L': 
+        alert('tenia L');
+        break;
+      default:
+        alert('Error codigo');
+    }
+
+
   /*TO DO: grabar horarios, y poner VT o nada dependiendo si estaba en V o L respectivamente.
   La idea para L, es que si se trabaja, ya luego se ponga que se le debe, en su caso*/
   

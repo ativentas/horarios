@@ -1,6 +1,6 @@
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
-.tg td{font-family:Arial, sans-serif;font-size:14px;padding:2px 2px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
 .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
 .tg .tg-s6z2{text-align:center}
 @media screen and (max-width: 767px) {.tg {width: auto !important;}.tg col {width: auto !important;}.tg-wrap {overflow-x: auto;-webkit-overflow-scrolling: touch;margin: auto 0px;}}
@@ -9,29 +9,6 @@
 .FA {background-color: powderblue}
 .FC {background-color: violet}
 .ausencia {}
-.editarhorario{
-/*    position:relative;
-*/}
-.wrapper {
-    height: 61px;
-    width: 99px;
-    padding: 0px;
-    position:absolute;
-    margin-top: -15px;
-    margin-left: -5px;
-}
-
-.wrapper button {
-    height: 100%;
-    width: 100%;
-}
-
-input {
-    width: 100%;
-    padding: 0px;
-    margin: 0px;
-}
-
 </style>
 
 @extends('layouts.app')
@@ -92,93 +69,92 @@ input {
                 <th data-dia="0" class="tg-s6z2 {{$cuadrante->dia_0}}" colspan="2">Domingo</th>
             </tr>
             @foreach($lineas as $linea)
-            <tr data-empleado_id={{$linea->empleado_id}} style="">
-            <!-- <tr data-empleado_id={{$linea->empleado_id}} style="line-height:50px;"> -->
-                <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2"style="height:60px;">{{$linea->nombre}} 
-                    <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="submit"><span class="glyphicon glyphicon-edit"></span></button>
+            <tr data-empleado_id={{$linea->empleado_id}} style="line-height:20px">
+                <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2">{{$linea->nombre}} 
+                    <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="submit"><span class="glyphicon glyphicon-edit"></span></button><button style="display:none" class="btn btn-success btn-xs btn_save" id="button_save_{{$linea->empleado_id}}" type="submit"><span class="glyphicon glyphicon-saved"></span></button>
                 </td>
+                @if(in_array($linea->situacion1,['V','B','AJ','AN','L']))
+                <td data-dia="1" class="{{in_array($linea->situacion1,['V','B','AJ','AN','L']) ? 'ausencia' : ''}}" colspan="2" rowspan="2" align="center">{{$linea->situacion1}}</td>
+                @else
+                <td style="background-color:orange" data-dia="1" class="tg-031e editarhorario" id="entrada1_1_{{$linea->empleado_id}}">{{is_null($linea->ELU)?'':date('H:i',strtotime($linea->ELU))}}</td>
 <!-- Imagen que ocupa las 4 celdas si se pone en la entrada1, puede servir para cuando sea VT, pero prefiero probar a poner un fondo en los td que sean VT o SD.
-TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita imagen que sea solo la letra V y que vaya en medio de los 4 horarios y así no tapa y no hay que poner opacidad -->
-
-<!-- TO DO: CAMBIO: QUE SIEMPRE ESTEN PREPARADAS LAS COLUMNAS DE LOS HORARIOS, LAS AUSENCIAS SE MARCAN CON UNA IMAGEN ENCIMA Y SE CAMBIA UN INPUT HIDDEN --> 
-
-                <td data-dia="1" class="tg-031e editarhorario" id="entrada1_1_{{$linea->empleado_id}}">{{is_null($linea->ELU)?'':date('H:i',strtotime($linea->ELU))}}                    
-                    <input type="text" name="" id="">
-                    <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
-                    </div>
-                </td>             
+TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita imagen que sea solo la letra V y que vaya en medio de los 4 horarios y así no tapa y no hay que poner opacidad<img style="margin-top:-9px;margin-left:-4px;position: absolute;opacity: 0.5;" src="{{asset('img/v.png')}}" />  --> 
+<!-- TO DO: CAMBIO: QUE SIEMPRE ESTEN PREPARADAS LAS COLUMNAS DE LOS HORARIOS, LAS AUSENCIAS SE MARCAN CON UNA IMAGEN ENCIMA Y SE CAMBIA UN INPUT HIDDEN -->              
                 <td class="tg-031e" id="salida1_1_{{$linea->empleado_id}}">{{is_null($linea->SLU)?'':date('H:i',strtotime($linea->SLU))}}</td>
-
-                <td data-dia="2" class="tg-031e editarhorario" id="entrada1_2_{{$linea->empleado_id}}">{{is_null($linea->EMA)?'':date('H:i',strtotime($linea->EMA))}}
-                    <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion2,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion2}}</button>
-                    </div>
-                </td>
+                @endif
+                @if(in_array($linea->situacion2,['V','B','AJ','AN','L']))
+                <td data-dia="2" class="{{in_array($linea->situacion2,['V','B','AJ','AN','L']) ? 'ausencia' : ''}}" colspan="2" rowspan="2" align="center">{{$linea->situacion2}}</td>
+                @else
+                <td data-dia="2" class="tg-031e editarhorario" id="entrada1_2_{{$linea->empleado_id}}">{{is_null($linea->EMA)?'':date('H:i',strtotime($linea->EMA))}}</td>
                 <td class="tg-031e" id="salida1_2_{{$linea->empleado_id}}">{{is_null($linea->SMA)?'':date('H:i',strtotime($linea->SMA))}}</td>
-
-                <td data-dia="3" class="tg-031e editarhorario" id="entrada1_3_{{$linea->empleado_id}}">{{is_null($linea->EMI)?'':date('H:i',strtotime($linea->EMI))}}
-                    <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion3,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion3}}</button>
-                    </div>
-                </td>
+                @endif
+                @if(in_array($linea->situacion3,['V','B','AJ','AN','L']))
+                <td data-dia="3" class="{{in_array($linea->situacion3,['V','B','AJ','AN','L']) ? 'ausencia' : ''}}" colspan="2" rowspan="2" align="center">{{$linea->situacion3}}</td>
+                @else
+                <td data-dia="3" class="tg-031e editarhorario" id="entrada1_3_{{$linea->empleado_id}}">{{is_null($linea->EMI)?'':date('H:i',strtotime($linea->EMI))}}</td>
                 <td class="tg-031e" id="salida1_3_{{$linea->empleado_id}}">{{is_null($linea->SMI)?'':date('H:i',strtotime($linea->SMI))}}</td>
-
-                <td data-dia="4" class="tg-031e editarhorario" id="entrada1_4_{{$linea->empleado_id}}">{{is_null($linea->EJU)?'':date('H:i',strtotime($linea->EJU))}}
-                    <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion4,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion4}}</button>
-                    </div>
-                </td>
+                @endif
+                @if(in_array($linea->situacion4,['V','B','AJ','AN','L']))
+                <td data-dia="4" class="{{in_array($linea->situacion4,['V','B','AJ','AN','L']) ? 'ausencia' : ''}}" colspan="2" rowspan="2" align="center">{{$linea->situacion4}}</td>
+                @else
+                <td data-dia="4" class="tg-031e editarhorario" id="entrada1_4_{{$linea->empleado_id}}">{{is_null($linea->EJU)?'':date('H:i',strtotime($linea->EJU))}}</td>
                 <td class="tg-031e" id="salida1_4_{{$linea->empleado_id}}">{{is_null($linea->SJU)?'':date('H:i',strtotime($linea->SJU))}}</td>
-
-                <td data-dia="5" class="tg-031e editarhorario" id="entrada1_5_{{$linea->empleado_id}}">{{is_null($linea->EVI)?'':date('H:i',strtotime($linea->EVI))}}
-                    <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion5,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion5}}</button>
-                    </div>
-                </td>
+                @endif
+                @if(in_array($linea->situacion5,['V','B','AJ','AN','L']))
+                <td data-dia="5" class="{{in_array($linea->situacion5,['V','B','AJ','AN','L']) ? 'ausencia' : ''}}" colspan="2" rowspan="2" align="center">{{$linea->situacion5}}</td>
+                @else
+                <td data-dia="5" class="tg-031e editarhorario" id="entrada1_5_{{$linea->empleado_id}}">{{is_null($linea->EVI)?'':date('H:i',strtotime($linea->EVI))}}</td>
                 <td class="tg-031e" id="salida1_5_{{$linea->empleado_id}}">{{is_null($linea->SVI)?'':date('H:i',strtotime($linea->SVI))}}</td>
-
-                <td data-dia="6" class="tg-031e editarhorario" id="entrada1_6_{{$linea->empleado_id}}">{{is_null($linea->ESA)?'':date('H:i',strtotime($linea->ESA))}}
-                    <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion6,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion6}}</button>
-                    </div>
-                </td>
+                @endif
+                @if(in_array($linea->situacion6,['V','B','AJ','AN','L']))
+                <td data-dia="6" class="{{in_array($linea->situacion6,['V','B','AJ','AN','L']) ? 'ausencia' : ''}}" colspan="2" rowspan="2" align="center">{{$linea->situacion6}}</td>
+                @else
+                <td data-dia="6" class="tg-031e editarhorario" id="entrada1_6_{{$linea->empleado_id}}">{{is_null($linea->ESA)?'':date('H:i',strtotime($linea->ESA))}}</td>
                 <td class="tg-031e" id="salida1_6_{{$linea->empleado_id}}">{{is_null($linea->ESA)?'':date('H:i',strtotime($linea->SSA))}}</td>
-
-                <td data-dia="0" class="tg-031e editarhorario" id="entrada1_0_{{$linea->empleado_id}}">{{is_null($linea->EDO)?'':date('H:i',strtotime($linea->EDO))}}
-                    <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion7,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion7}}</button>
-                    </div>
-                </td>
+                @endif
+                @if(in_array($linea->situacion7,['V','B','AJ','AN','L']))
+                <td data-dia="0" class="{{in_array($linea->situacion7,['V','B','AJ','AN','L']) ? 'ausencia' : ''}}" colspan="2" rowspan="2" align="center">{{$linea->situacion7}}</td>
+                @else
+                <td data-dia="0" class="tg-031e editarhorario" id="entrada1_0_{{$linea->empleado_id}}">{{is_null($linea->EDO)?'':date('H:i',strtotime($linea->EDO))}}</td>
                 <td class="tg-031e" id="salida1_0_{{$linea->empleado_id}}">{{is_null($linea->SDO)?'':date('H:i',strtotime($linea->SDO))}}</td>
-
+                @endif
             </tr>
-            <tr style="">
-<!-- <tr style="line-height:30px">
- -->
-                <td class="tg-031e" id="entrada2_1_{{$linea->empleado_id}}">{{is_null($linea->E2LU)?'':date('H:i',strtotime($linea->E2LU))}}
-                    <input type="text" name="" id="">
-                </td>
+            <tr style="line-height:20px">
+                @if(in_array($linea->situacion1,['V','B','AJ','AN','L']))
+                @else
+                <td class="tg-031e" id="entrada2_1_{{$linea->empleado_id}}">{{is_null($linea->E2LU)?'':date('H:i',strtotime($linea->E2LU))}}</td>
                 <td class="tg-031e" id="salida2_1_{{$linea->empleado_id}}">{{is_null($linea->S2LU)?'':date('H:i',strtotime($linea->S2LU))}}</td>
-
+                @endif
+                @if(in_array($linea->situacion2,['V','B','AJ','AN','L']))
+                @else
                 <td class="tg-031e" id="entrada2_2_{{$linea->empleado_id}}">{{is_null($linea->E2MA)?'':date('H:i',strtotime($linea->E2MA))}}</td>
                 <td class="tg-031e" id="salida2_2_{{$linea->empleado_id}}">{{is_null($linea->S2MA)?'':date('H:i',strtotime($linea->S2MA))}}</td>
-
+                @endif
+                @if(in_array($linea->situacion3,['V','B','AJ','AN','L']))
+                @else
                 <td class="tg-031e" id="entrada2_3_{{$linea->empleado_id}}">{{is_null($linea->E2MI)?'':date('H:i',strtotime($linea->E2MI))}}</td>
                 <td class="tg-031e" id="salida2_3_{{$linea->empleado_id}}">{{is_null($linea->S2MI)?'':date('H:i',strtotime($linea->S2MI))}}</td>
-
+                @endif
+                @if(in_array($linea->situacion4,['V','B','AJ','AN','L']))
+                @else
                 <td class="tg-031e" id="entrada2_4_{{$linea->empleado_id}}">{{is_null($linea->E2JU)?'':date('H:i',strtotime($linea->E2JU))}}</td>
                 <td class="tg-031e" id="salida2_4_{{$linea->empleado_id}}">{{is_null($linea->S2JU)?'':date('H:i',strtotime($linea->S2JU))}}</td>
-
+                @endif
+                @if(in_array($linea->situacion5,['V','B','AJ','AN','L']))
+                @else
                 <td class="tg-031e" id="entrada2_5_{{$linea->empleado_id}}">{{is_null($linea->E2VI)?'':date('H:i',strtotime($linea->ESVI))}}</td>
                 <td class="tg-031e" id="salida2_5_{{$linea->empleado_id}}">{{is_null($linea->S2VI)?'':date('H:i',strtotime($linea->S2VI))}}</td>
-
+                @endif
+                @if(in_array($linea->situacion6,['V','B','AJ','AN','L']))
+                @else
                 <td class="tg-031e" id="entrada2_6_{{$linea->empleado_id}}">{{is_null($linea->E2SA)?'':date('H:i',strtotime($linea->E2SA))}}</td>
                 <td class="tg-031e" id="salida2_6_{{$linea->empleado_id}}">{{is_null($linea->S2SA)?'':date('H:i',strtotime($linea->S2SA))}}</td>
-
+                @endif
+                @if(in_array($linea->situacion7,['V','B','AJ','AN','L']))
+                @else
                 <td class="tg-031e" id="entrada2_0_{{$linea->empleado_id}}">{{is_null($linea->E2DO)?'':date('H:i',strtotime($linea->E2DO))}}</td>
                 <td class="tg-031e" id="salida2_0_{{$linea->empleado_id}}">{{is_null($linea->S2DO)?'':date('H:i',strtotime($linea->S2DO))}}</td>
-
+                @endif
             </tr>
             @endforeach
         </table></div>
