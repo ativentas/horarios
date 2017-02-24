@@ -12,9 +12,9 @@ $( "#dialogAusencia-form" ).dialog({
 $( "#dialogEmpleado-form" ).dialog({
     autoOpen: false});
 
-$('.ausencia').on( "click", function(event) {
-  event.stopPropagation();
+$('.ausencia').on( "click", function(  ) {
   var elemento = $(this);
+
   var situacion = $(this).html();
   $('#container_horarioVT').hide();  
 /*si no es V o L o B, no mostrar checkbox*/
@@ -41,24 +41,22 @@ $('.ausencia').on( "click", function(event) {
   });
     form = dialog_ausencia.find( "form" ).on( "submit", function( event ) {
       event.preventDefault();
-      modificar_ausencia($(this));
+      modificar_ausencia(elemento);
     });
     
-  var empleado_id = $(this).parent().parent().parent().data('empleado_id');
-  var dia = $(this).parent().parent().data('dia');
+  var empleado_id = $(this).parent().data('empleado_id');
+  var dia = $(this).data('dia');
 
   $( "#dialogAusencia-form" ).dialog({ title: 'Dia: '+dia+' - Empleado:'+empleado_id });  
   dialog_ausencia
     .data( 'empleado_id', empleado_id ) 
     .data( 'dia', dia ) 
     .data( 'situacion', situacion ) 
-    .data( 'elemento', elemento ) 
     .dialog('open');
 /*TO DO:mostrar dialogo 
   - si es V, dar la opcion de VT y también mostrar el período de vacaciones
   - si es B, AJ, o AN, ver si se permite hacer algo*/
 });
-
 /*para que cuando en una ausencia (V o L) se marque que trabaja en el diálogo*/
 $("#check_trabaja").change(function() {
     if(this.checked) {
@@ -67,16 +65,8 @@ $("#check_trabaja").change(function() {
     }
       $('#container_horarioVT').hide();
 });
-$("#check_libre").change(function() {
-    if(this.checked) {
-      $('#container_horarioL').hide();
-      return;
-    }
-      $('#container_horarioL').show();
-});
 
-
-$('.wrapper').on("click", function() {
+$('.editarhorario').on("click", function() {
   var elemento = $(this);
   dialog_horariodia = $( "#dialogHorarioDia-form" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
@@ -99,20 +89,19 @@ $('.wrapper').on("click", function() {
     modificar_horariodia();
   });
 
-  var empleado_id = $(this).parent().parent().data('empleado_id');
-  var dia = $(this).parent().data('dia');
+  var empleado_id = $(this).parent().data('empleado_id');
+  var dia = $(this).data('dia');
 
 /*TO DO: coger el horario y ponerlo en el diálogo para poder modificarlo*/
-  $('#dialogHorarioDia-form input.predefinidos-entrada1').val($("#entrada1_"+dia+"_"+empleado_id).val());
-  $('#dialogHorarioDia-form input.predefinidos-salida1').val($("#salida1_"+dia+"_"+empleado_id).val());
-  $('#dialogHorarioDia-form input.predefinidos-entrada2').val($("#entrada2_"+dia+"_"+empleado_id).val());
-  $('#dialogHorarioDia-form input.predefinidos-salida2').val($("#salida2_"+dia+"_"+empleado_id).val());         
+  $('#dialogHorarioDia-form input.predefinidos-entrada1').val($("#entrada1_"+dia+"_"+empleado_id).html());
+  $('#dialogHorarioDia-form input.predefinidos-salida1').val($("#salida1_"+dia+"_"+empleado_id).html());
+  $('#dialogHorarioDia-form input.predefinidos-entrada2').val($("#entrada2_"+dia+"_"+empleado_id).html());
+  $('#dialogHorarioDia-form input.predefinidos-salida2').val($("#salida2_"+dia+"_"+empleado_id).html());         
 
   $( "#dialogHorarioDia-form" ).dialog({ title: 'Dia: '+dia+' - Empleado:'+empleado_id });  
   dialog_horariodia
     .data( 'empleado_id', empleado_id ) 
     .data( 'dia', dia ) 
-    .data( 'elemento', elemento ) 
     .dialog('open');
 /*TO DO: dar la opción de dia Libre o se le debe (porque no tiene dia libre esa semana por ejemplo y se
 quiere que conste en el saldo de horas a devolver*/
@@ -152,77 +141,46 @@ $('.btn_modify').on('click', function() {
     form[0].reset();
 });
 
-function modificar_ausencia(){
+function modificar_ausencia(elemento){
   var empleado_id = $(this).data('empleado_id');
   var dia = $(this).data('dia');
   var situacion = $(this).data('situacion');
-  var elemento = $(this).data('elemento');
   /*si ha marcado Trabaja*/
-
-  /*TO DO: si no hay horas trabajadas unchecked*/
+  console.log(elemento);
   if($("#check_trabaja").is(":checked")) {
     switch (situacion) { 
       case 'V': 
-        var entrada1 = $('#dialogAusencia-form input.predefinidos-entrada1').val();
-        var salida1 = $('#dialogAusencia-form input.predefinidos-salida1').val();
-        var entrada2 = $('#dialogAusencia-form input.predefinidos-entrada2').val();
-        var salida2 = $('#dialogAusencia-form input.predefinidos-salida2').val();    
-        $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
-        $("#salida1_"+dia+"_"+empleado_id).val(salida1);
-        $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
-        $("#salida2_"+dia+"_"+empleado_id).val(salida2);
-        $("#situacion_"+dia+"_"+empleado_id).val('VT');
-        elemento.hide();
+        alert('tenia V');
         break;
       case 'L': 
-        var entrada1 = $('#dialogAusencia-form input.predefinidos-entrada1').val();
-        var salida1 = $('#dialogAusencia-form input.predefinidos-salida1').val();
-        var entrada2 = $('#dialogAusencia-form input.predefinidos-entrada2').val();
-        var salida2 = $('#dialogAusencia-form input.predefinidos-salida2').val();    
-        $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
-        $("#salida1_"+dia+"_"+empleado_id).val(salida1);
-        $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
-        $("#salida2_"+dia+"_"+empleado_id).val(salida2);
-        $("#situacion_"+dia+"_"+empleado_id).val('');
-        elemento.hide();
+        alert('tenia L');
         break;
       default:
         alert('Error codigo');
     }
 
+
   /*TO DO: grabar horarios, y poner VT o nada dependiendo si estaba en V o L respectivamente.
   La idea para L, es que si se trabaja, ya luego se ponga que se le debe, en su caso*/
   
   }
-    dialog_ausencia.dialog( "close" );
-}
 
+
+
+}
 function modificar_horariodia(){
   var empleado_id = $(this).data('empleado_id');
   var dia = $(this).data('dia');
-  var elemento = $(this).data('elemento');
-
-  if($("#check_libre").is(":checked")) {
-    $("#entrada1_"+dia+"_"+empleado_id).val('');
-    $("#salida1_"+dia+"_"+empleado_id).val('');
-    $("#entrada2_"+dia+"_"+empleado_id).val('');
-    $("#salida2_"+dia+"_"+empleado_id).val('');
-    /*mostrar el button, y ponerle L como texto*/
-    elemento.children().text('L');
-    $('#situacion_'+dia+'_'+empleado_id).val('L');
-    elemento.children().show();
-
-  }
   /*Cojo el horario introducido y lo paso a la tabla*/
   var entrada1 = $('#dialogHorarioDia-form input.predefinidos-entrada1').val();
   var salida1 = $('#dialogHorarioDia-form input.predefinidos-salida1').val();
   var entrada2 = $('#dialogHorarioDia-form input.predefinidos-entrada2').val();
   var salida2 = $('#dialogHorarioDia-form input.predefinidos-salida2').val();    
 
-  $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
-  $("#salida1_"+dia+"_"+empleado_id).val(salida1);
-  $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
-  $("#salida2_"+dia+"_"+empleado_id).val(salida2);    
+  $("#entrada1_"+dia+"_"+empleado_id).html(entrada1);
+  $("#salida1_"+dia+"_"+empleado_id).html(salida1);
+  $("#entrada2_"+dia+"_"+empleado_id).html(entrada2);
+  $("#salida2_"+dia+"_"+empleado_id).html(salida2);    
 
   dialog_horariodia.dialog( "close" );
 }
@@ -255,17 +213,20 @@ function aplicar_horarios(){
     /*recorrer el array y asignar el horario a cada uno de los días*/
     $.each(arrayrellenar, function( index, value ) {
       if (value==1) {
-        $("#entrada1_"+index+"_"+empleado_id).val(entrada1);
-        $("#salida1_"+index+"_"+empleado_id).val(salida1);
-        $("#entrada2_"+index+"_"+empleado_id).val(entrada2);
-        $("#salida2_"+index+"_"+empleado_id).val(salida2);
+        $("#entrada1_"+index+"_"+empleado_id).html(entrada1);
+        $("#salida1_"+index+"_"+empleado_id).html(salida1);
+        $("#entrada2_"+index+"_"+empleado_id).html(entrada2);
+        $("#salida2_"+index+"_"+empleado_id).html(salida2);
       }
     });
     /*pongo a 00:00 los inputs del dialogo (no hace falta porque creo que el reset borra
     todos los inputs) y cierro el dialogo*/
 
     dialog_horarios.dialog( "close" );
+
+
 }
 
-}); 
 
+
+});    

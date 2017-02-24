@@ -10,26 +10,25 @@
 .FC {background-color: violet}
 .ausencia {}
 .editarhorario{
-/*    position:relative;
-*/}
+    /*TO DO: CREO QUE SE PUEDE BORRAR TODO LO RELACIONADO CON ESTA CLASE*/
+}
 .wrapper {
-    height: 61px;
-    width: 99px;
+    height: 60px;
+    width: 100px;
     padding: 0px;
     position:absolute;
-    margin-top: -15px;
-    margin-left: -5px;
+    margin-top: -25px;
+    margin-left: -3px;
 }
 
 .wrapper button {
     height: 100%;
     width: 100%;
 }
-
-input {
+td input {
     width: 100%;
     padding: 0px;
-    margin: 0px;
+
 }
 
 </style>
@@ -43,7 +42,7 @@ input {
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-        <div class="col-md-4 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$semana}} ({{$year}}) - {{date_format($inicio_semana,'d M')}} al {{date_format($final_semana,'d M')}}</span>
+        <div class="col-md-5 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$semana}} ({{$year}}) - {{date_format($inicio_semana,'d M')}} al {{date_format($final_semana,'d M')}}</span>
         </div>
         </div>
     <!-- <h2>Detalle Horario Semana</h2> -->
@@ -102,83 +101,129 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 
 <!-- TO DO: CAMBIO: QUE SIEMPRE ESTEN PREPARADAS LAS COLUMNAS DE LOS HORARIOS, LAS AUSENCIAS SE MARCAN CON UNA IMAGEN ENCIMA Y SE CAMBIA UN INPUT HIDDEN --> 
 
-                <td data-dia="1" class="tg-031e editarhorario" id="entrada1_1_{{$linea->empleado_id}}">{{is_null($linea->ELU)?'':date('H:i',strtotime($linea->ELU))}}                    
-                    <input type="text" name="" id="">
+                <td data-dia="1" class="tg-031e" id="">
+                    <input class="editarhorario" type="text" name="" id="entrada1_1_{{$linea->empleado_id}}" value="{{is_null($linea->ELU) ? '' : date('H:i',strtotime($linea->ELU))}}">
                     <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
+                        <button class="ausencia" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
                     </div>
+                    <input type="hidden" name="" id="situacion_1_{{$linea->empleado_id}}">
                 </td>             
-                <td class="tg-031e" id="salida1_1_{{$linea->empleado_id}}">{{is_null($linea->SLU)?'':date('H:i',strtotime($linea->SLU))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida1_1_{{$linea->empleado_id}}" value="{{is_null($linea->SLU) ? '' : date('H:i',strtotime($linea->SLU))}}">
+                </td>
 
-                <td data-dia="2" class="tg-031e editarhorario" id="entrada1_2_{{$linea->empleado_id}}">{{is_null($linea->EMA)?'':date('H:i',strtotime($linea->EMA))}}
+                <td data-dia="2" class="tg-031e" id="">
+                    <input class="editarhorario" type="text" name="" id="entrada1_2_{{$linea->empleado_id}}" value="{{is_null($linea->EMA) ? '' : date('H:i',strtotime($linea->EMA))}}">
                     <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion2,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion2}}</button>
+                        <button class="ausencia" style="{{!in_array($linea->situacion2,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion2}}</button>
                     </div>
                 </td>
-                <td class="tg-031e" id="salida1_2_{{$linea->empleado_id}}">{{is_null($linea->SMA)?'':date('H:i',strtotime($linea->SMA))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida1_2_{{$linea->empleado_id}}" value="{{is_null($linea->SMA) ? '' : date('H:i',strtotime($linea->SMA))}}">                    
+                </td>
 
-                <td data-dia="3" class="tg-031e editarhorario" id="entrada1_3_{{$linea->empleado_id}}">{{is_null($linea->EMI)?'':date('H:i',strtotime($linea->EMI))}}
+                <td data-dia="3" class="tg-031e" id="">
+                    <input class="editarhorario" type="text" name="" id="entrada1_3_{{$linea->empleado_id}}" value="{{is_null($linea->EMI) ? '' : date('H:i',strtotime($linea->EMI))}}">
                     <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion3,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion3}}</button>
+                        <button class="ausencia" style="{{!in_array($linea->situacion3,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion3}}</button>
                     </div>
                 </td>
-                <td class="tg-031e" id="salida1_3_{{$linea->empleado_id}}">{{is_null($linea->SMI)?'':date('H:i',strtotime($linea->SMI))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida1_3_{{$linea->empleado_id}}" value="{{is_null($linea->SMI) ? '' : date('H:i',strtotime($linea->SMI))}}">                
+                </td>
 
-                <td data-dia="4" class="tg-031e editarhorario" id="entrada1_4_{{$linea->empleado_id}}">{{is_null($linea->EJU)?'':date('H:i',strtotime($linea->EJU))}}
+                <td data-dia="4" class="tg-031e" id="">
+                    <input class="editarhorario" type="text" name="" id="entrada1_4_{{$linea->empleado_id}}" value="{{is_null($linea->EJU) ? '' : date('H:i',strtotime($linea->EJU))}}">
                     <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion4,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion4}}</button>
+                        <button class="ausencia" style="{{!in_array($linea->situacion4,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion4}}</button>
                     </div>
                 </td>
-                <td class="tg-031e" id="salida1_4_{{$linea->empleado_id}}">{{is_null($linea->SJU)?'':date('H:i',strtotime($linea->SJU))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida1_4_{{$linea->empleado_id}}" value="{{is_null($linea->SJU) ? '' : date('H:i',strtotime($linea->SJU))}}">                    
+                </td>
 
-                <td data-dia="5" class="tg-031e editarhorario" id="entrada1_5_{{$linea->empleado_id}}">{{is_null($linea->EVI)?'':date('H:i',strtotime($linea->EVI))}}
+                <td data-dia="5" class="tg-031e" id="">
+                    <input class="editarhorario" type="text" name="" id="entrada1_5_{{$linea->empleado_id}}" value="{{is_null($linea->EVI) ? '' : date('H:i',strtotime($linea->EVI))}}">
                     <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion5,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion5}}</button>
+                        <button class="ausencia" style="{{!in_array($linea->situacion5,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion5}}</button>
                     </div>
                 </td>
-                <td class="tg-031e" id="salida1_5_{{$linea->empleado_id}}">{{is_null($linea->SVI)?'':date('H:i',strtotime($linea->SVI))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida1_5_{{$linea->empleado_id}}" value="{{is_null($linea->SVI) ? '' : date('H:i',strtotime($linea->SVI))}}">                    
+                </td>
 
-                <td data-dia="6" class="tg-031e editarhorario" id="entrada1_6_{{$linea->empleado_id}}">{{is_null($linea->ESA)?'':date('H:i',strtotime($linea->ESA))}}
+                <td data-dia="6" class="tg-031e" id="">
+                    <input class="editarhorario" type="text" name="" id="entrada1_6_{{$linea->empleado_id}}" value="{{is_null($linea->ESA) ? '' : date('H:i',strtotime($linea->ESA))}}">
                     <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion6,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion6}}</button>
+                        <button class="ausencia" style="{{!in_array($linea->situacion6,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion6}}</button>
                     </div>
                 </td>
-                <td class="tg-031e" id="salida1_6_{{$linea->empleado_id}}">{{is_null($linea->ESA)?'':date('H:i',strtotime($linea->SSA))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida1_6_{{$linea->empleado_id}}" value="{{is_null($linea->SSA) ? '' : date('H:i',strtotime($linea->SSA))}}">                    
+                </td>
 
-                <td data-dia="0" class="tg-031e editarhorario" id="entrada1_0_{{$linea->empleado_id}}">{{is_null($linea->EDO)?'':date('H:i',strtotime($linea->EDO))}}
+                <td data-dia="0" class="tg-031e" id="">
+                    <input class="editarhorario" type="text" name="" id="entrada1_0_{{$linea->empleado_id}}" value="{{is_null($linea->EDO) ? '' : date('H:i',strtotime($linea->EDO))}}">
                     <div class="wrapper">                        
-                        <button style="{{!in_array($linea->situacion7,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion7}}</button>
+                        <button class="ausencia" style="{{!in_array($linea->situacion7,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion7}}</button>
                     </div>
                 </td>
-                <td class="tg-031e" id="salida1_0_{{$linea->empleado_id}}">{{is_null($linea->SDO)?'':date('H:i',strtotime($linea->SDO))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida1_0_{{$linea->empleado_id}}" value="{{is_null($linea->SDO) ? '' : date('H:i',strtotime($linea->SDO))}}">                    
+                </td>
 
             </tr>
             <tr style="">
 <!-- <tr style="line-height:30px">
  -->
-                <td class="tg-031e" id="entrada2_1_{{$linea->empleado_id}}">{{is_null($linea->E2LU)?'':date('H:i',strtotime($linea->E2LU))}}
-                    <input type="text" name="" id="">
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="entrada2_1_{{$linea->empleado_id}}">{{is_null($linea->E2LU)?'':date('H:i',strtotime($linea->E2LU))}}
                 </td>
-                <td class="tg-031e" id="salida2_1_{{$linea->empleado_id}}">{{is_null($linea->S2LU)?'':date('H:i',strtotime($linea->S2LU))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida2_1_{{$linea->empleado_id}}">{{is_null($linea->S2LU)?'':date('H:i',strtotime($linea->S2LU))}}
+                </td>
 
-                <td class="tg-031e" id="entrada2_2_{{$linea->empleado_id}}">{{is_null($linea->E2MA)?'':date('H:i',strtotime($linea->E2MA))}}</td>
-                <td class="tg-031e" id="salida2_2_{{$linea->empleado_id}}">{{is_null($linea->S2MA)?'':date('H:i',strtotime($linea->S2MA))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="entrada2_2_{{$linea->empleado_id}}">{{is_null($linea->E2MA)?'':date('H:i',strtotime($linea->E2MA))}}
+                </td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida2_2_{{$linea->empleado_id}}">{{is_null($linea->S2MA)?'':date('H:i',strtotime($linea->S2MA))}}
+                </td>
 
-                <td class="tg-031e" id="entrada2_3_{{$linea->empleado_id}}">{{is_null($linea->E2MI)?'':date('H:i',strtotime($linea->E2MI))}}</td>
-                <td class="tg-031e" id="salida2_3_{{$linea->empleado_id}}">{{is_null($linea->S2MI)?'':date('H:i',strtotime($linea->S2MI))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="entrada2_3_{{$linea->empleado_id}}">{{is_null($linea->E2MI)?'':date('H:i',strtotime($linea->E2MI))}}
+                </td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida2_3_{{$linea->empleado_id}}">{{is_null($linea->S2MI)?'':date('H:i',strtotime($linea->S2MI))}}
+                </td>
 
-                <td class="tg-031e" id="entrada2_4_{{$linea->empleado_id}}">{{is_null($linea->E2JU)?'':date('H:i',strtotime($linea->E2JU))}}</td>
-                <td class="tg-031e" id="salida2_4_{{$linea->empleado_id}}">{{is_null($linea->S2JU)?'':date('H:i',strtotime($linea->S2JU))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="entrada2_4_{{$linea->empleado_id}}">{{is_null($linea->E2JU)?'':date('H:i',strtotime($linea->E2JU))}}
+                </td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida2_4_{{$linea->empleado_id}}">{{is_null($linea->S2JU)?'':date('H:i',strtotime($linea->S2JU))}}
+                </td>
 
-                <td class="tg-031e" id="entrada2_5_{{$linea->empleado_id}}">{{is_null($linea->E2VI)?'':date('H:i',strtotime($linea->ESVI))}}</td>
-                <td class="tg-031e" id="salida2_5_{{$linea->empleado_id}}">{{is_null($linea->S2VI)?'':date('H:i',strtotime($linea->S2VI))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="entrada2_5_{{$linea->empleado_id}}">{{is_null($linea->E2VI)?'':date('H:i',strtotime($linea->ESVI))}}
+                </td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida2_5_{{$linea->empleado_id}}">{{is_null($linea->S2VI)?'':date('H:i',strtotime($linea->S2VI))}}
+                </td>
 
-                <td class="tg-031e" id="entrada2_6_{{$linea->empleado_id}}">{{is_null($linea->E2SA)?'':date('H:i',strtotime($linea->E2SA))}}</td>
-                <td class="tg-031e" id="salida2_6_{{$linea->empleado_id}}">{{is_null($linea->S2SA)?'':date('H:i',strtotime($linea->S2SA))}}</td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="entrada2_6_{{$linea->empleado_id}}">{{is_null($linea->E2SA)?'':date('H:i',strtotime($linea->E2SA))}}
+                </td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida2_6_{{$linea->empleado_id}}">{{is_null($linea->S2SA)?'':date('H:i',strtotime($linea->S2SA))}}
+                </td>
 
-                <td class="tg-031e" id="entrada2_0_{{$linea->empleado_id}}">{{is_null($linea->E2DO)?'':date('H:i',strtotime($linea->E2DO))}}</td>
-                <td class="tg-031e" id="salida2_0_{{$linea->empleado_id}}">{{is_null($linea->S2DO)?'':date('H:i',strtotime($linea->S2DO))}}</td>
-
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="entrada2_0_{{$linea->empleado_id}}">{{is_null($linea->E2DO)?'':date('H:i',strtotime($linea->E2DO))}}
+                </td>
+                <td class="tg-031e" id="">
+                    <input type="text" name="" id="salida2_0_{{$linea->empleado_id}}">{{is_null($linea->S2DO)?'':date('H:i',strtotime($linea->S2DO))}}
+                </td>
             </tr>
             @endforeach
         </table></div>
@@ -207,7 +252,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
   <form autofocus>
     <fieldset>
         <div class="checkbox">
-            <label><input type="checkbox" id="check_trabaja" value="VT">VT</label>
+            <label><input type="checkbox" id="check_trabaja" value="VT">Este dia trabaja</label>
         </div>
         <div id="container_horarioVT">
         <div class="form-group">
@@ -224,7 +269,6 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         <input class="predefinidos-salida2" type="text" tabindex="" name="salida2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]|[2][4]:[0][0]" id="" size="5" placeholder="00:00" value="">
         </div>
         </div>
-
     </fieldset>
   </form>
 </div> 
@@ -232,10 +276,12 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <div id="dialogHorarioDia-form" title="">
   <form autofocus>
     <fieldset>
-        <div class="form-group">Checkbox para L o SD</div>
+        <div class="checkbox">
+            <label><input type="checkbox" id="check_libre" value="VT">Cambiar a Dia Libre</label>
+        </div>
+        <div id="container_horarioL">
         <div class="form-group">
-        <label for="predefinidos">Elegir horario base</label>
-        <input class="predefinidos" type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all">
+        <input class="predefinidos" type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all" placeholder="Elige horario">
         </div>
         <div class="form-group">
         <input class="predefinidos-entrada1" type="text" tabindex="" name="entrada1" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
@@ -245,10 +291,10 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         <input class="predefinidos-entrada2" type="text" tabindex="" name="entrada2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
         <input class="predefinidos-salida2" type="text" tabindex="" name="salida2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]|[2][4]:[0][0]" id="" size="5" placeholder="00:00" value="">
         </div>
+        </div>
     </fieldset>
   </form>
 </div> 
-
 
 </div>
 </div>
