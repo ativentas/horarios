@@ -14,6 +14,14 @@ $( "#dialogEmpleado-form" ).dialog({
 
 $('.ausencia').on( "click", function(  ) {
   var elemento = $(this);
+  var situacion = $(this).html();
+  $('#container_horarioVT').hide();  
+/*si no es V o L o B, no mostrar checkbox*/
+  $('#check_trabaja').hide();
+  myarray=['V','L','B'];
+  if(jQuery.inArray(situacion, myarray) !== -1){
+    $('#check_trabaja').show();    
+  }
   dialog_ausencia = $( "#dialogAusencia-form" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
       autoOpen: false,
@@ -42,10 +50,19 @@ $('.ausencia').on( "click", function(  ) {
   dialog_ausencia
     .data( 'empleado_id', empleado_id ) 
     .data( 'dia', dia ) 
+    .data( 'situacion', situacion ) 
     .dialog('open');
 /*TO DO:mostrar dialogo 
   - si es V, dar la opcion de VT y también mostrar el período de vacaciones
   - si es B, AJ, o AN, ver si se permite hacer algo*/
+});
+/*para que cuando en una ausencia (V o L) se marque que trabaja en el diálogo*/
+$("#check_trabaja").change(function() {
+    if(this.checked) {
+      $('#container_horarioVT').show();
+      return;
+    }
+      $('#container_horarioVT').hide();
 });
 
 $('.editarhorario').on("click", function() {
@@ -124,23 +141,34 @@ $('.btn_modify').on('click', function() {
 });
 
 function modificar_ausencia(){
-  /*si ha marcado VT, */alert('funcion');
+  var empleado_id = $(this).data('empleado_id');
+  var dia = $(this).data('dia');
+  var situacion = $(this).data('situacion');
+  /*si ha marcado Trabaja*/
+  if($("#check_trabaja").checked) {
+  /*TO DO: grabar horarios, y poner VT o nada dependiendo si estaba en V o L respectivamente.
+  La idea para L, es que si se trabaja, ya luego se ponga que se le debe, en su caso*/
+  
+  }
+
+
+
 }
 function modificar_horariodia(){
-    var empleado_id = $(this).data('empleado_id');
-    var dia = $(this).data('dia');
-    /*Cojo el horario introducido y lo paso a la tabla*/
-    var entrada1 = $('#dialogHorarioDia-form input.predefinidos-entrada1').val();
-    var salida1 = $('#dialogHorarioDia-form input.predefinidos-salida1').val();
-    var entrada2 = $('#dialogHorarioDia-form input.predefinidos-entrada2').val();
-    var salida2 = $('#dialogHorarioDia-form input.predefinidos-salida2').val();    
+  var empleado_id = $(this).data('empleado_id');
+  var dia = $(this).data('dia');
+  /*Cojo el horario introducido y lo paso a la tabla*/
+  var entrada1 = $('#dialogHorarioDia-form input.predefinidos-entrada1').val();
+  var salida1 = $('#dialogHorarioDia-form input.predefinidos-salida1').val();
+  var entrada2 = $('#dialogHorarioDia-form input.predefinidos-entrada2').val();
+  var salida2 = $('#dialogHorarioDia-form input.predefinidos-salida2').val();    
 
-    $("#entrada1_"+dia+"_"+empleado_id).html(entrada1);
-    $("#salida1_"+dia+"_"+empleado_id).html(salida1);
-    $("#entrada2_"+dia+"_"+empleado_id).html(entrada2);
-    $("#salida2_"+dia+"_"+empleado_id).html(salida2);    
+  $("#entrada1_"+dia+"_"+empleado_id).html(entrada1);
+  $("#salida1_"+dia+"_"+empleado_id).html(salida1);
+  $("#entrada2_"+dia+"_"+empleado_id).html(entrada2);
+  $("#salida2_"+dia+"_"+empleado_id).html(salida2);    
 
-    dialog_horariodia.dialog( "close" );
+  dialog_horariodia.dialog( "close" );
 }
 
 function aplicar_horarios(){

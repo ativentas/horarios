@@ -18,7 +18,12 @@
 <div class="row">
 <div class="col-md-12">
 <div class="panel panel-default">
-    <div class="panel-heading"><h2>Detalle Horario Semana</h2>
+    <div class="panel-heading">
+        <div class="row">
+        <div class="col-md-4 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$semana}} ({{$year}}) - {{date_format($inicio_semana,'d M')}} al {{date_format($final_semana,'d M')}}</span>
+        </div>
+        </div>
+    <!-- <h2>Detalle Horario Semana</h2> -->
         @include('layouts.alerts')
         <div class="row">
                 <ol class="breadcrumb">
@@ -26,11 +31,11 @@
                     <li><a href="{{ url('nieuwcuadrante') }}">Nuevo Horario</a></li>
                 </ol>
         </div>
-        <div class="row">
+<!--         <div class="row">
         <div class="col-md-4 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$semana}} ({{$year}}) - {{date_format($inicio_semana,'d M')}} al {{date_format($final_semana,'d M')}}</span>
         </div>
         </div>
-    </div>
+ -->    </div>
 
     <div class="panel-body">        
         <!-- TABLA -->
@@ -72,7 +77,8 @@
                 <td data-dia="1" class="{{in_array($linea->situacion1,['V','B','AJ','AN','L']) ? 'ausencia' : ''}}" colspan="2" rowspan="2" align="center">{{$linea->situacion1}}</td>
                 @else
                 <td style="background-color:orange" data-dia="1" class="tg-031e editarhorario" id="entrada1_1_{{$linea->empleado_id}}">{{is_null($linea->ELU)?'':date('H:i',strtotime($linea->ELU))}}</td>
-<!-- Imagen que ocupa las 4 celdas si se pone en la entrada1, puede servir para cuando sea VT, pero prefiero probar a poner un fondo en los td que sean VT o SD<img style="margin-top:-9px;margin-left:-4px;position: absolute;opacity: 0.5;" src="{{asset('img/v.png')}}" />  -->               
+<!-- Imagen que ocupa las 4 celdas si se pone en la entrada1, puede servir para cuando sea VT, pero prefiero probar a poner un fondo en los td que sean VT o SD.
+TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita imagen que sea solo la letra V y que vaya en medio de los 4 horarios y así no tapa y no hay que poner opacidad<img style="margin-top:-9px;margin-left:-4px;position: absolute;opacity: 0.5;" src="{{asset('img/v.png')}}" />  -->               
                 <td class="tg-031e" id="salida1_1_{{$linea->empleado_id}}">{{is_null($linea->SLU)?'':date('H:i',strtotime($linea->SLU))}}</td>
                 @endif
                 @if(in_array($linea->situacion2,['V','B','AJ','AN','L']))
@@ -175,10 +181,14 @@
 <div id="dialogAusencia-form" title="">
   <form autofocus>
     <fieldset>
-        <div class="form-group">Checkbox para VT</div>
+        <div class="checkbox">
+            <label><input type="checkbox" id="check_trabaja" value="VT">VT</label>
+        </div>
+        <div id="container_horarioVT">
         <div class="form-group">
-        <label for="predefinidos">Elegir horario base</label>
-        <input type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all">
+        <!-- <label for="predefinidos">Elegir horario base</label> -->
+
+        <input type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all" placeholder="Elige horario">
         </div>
         <div class="form-group">
         <input class="predefinidos-entrada1" type="text" tabindex="" name="entrada1" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
@@ -188,6 +198,8 @@
         <input class="predefinidos-entrada2" type="text" tabindex="" name="entrada2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
         <input class="predefinidos-salida2" type="text" tabindex="" name="salida2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]|[2][4]:[0][0]" id="" size="5" placeholder="00:00" value="">
         </div>
+        </div>
+
     </fieldset>
   </form>
 </div> 
