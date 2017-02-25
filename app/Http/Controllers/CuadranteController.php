@@ -32,6 +32,27 @@ public function yearsemana($fecha)
     return $year.$semana;
 }
 
+public function validarHorarios(Request $request, $cuadrante_id){
+    $input = $request->all();
+    $lineas = Linea::where('cuadrante_id',$cuadrante_id)->where('empleado_id',2)->where('dia',1)->get();
+    foreach ($lineas as $linea) {
+        $dia = $linea->dia;
+        $empleado_id = $linea->empleado_id;
+        $situacion = $request->{'situacion_'.$dia.'_'.$empleado_id};
+        $entrada1 = $request->{'entrada1_'.$dia.'_'.$empleado_id};
+        $entrada2 = $request->{'entrada2_'.$dia.'_'.$empleado_id};
+        $salida1 = $request->{'salida1_'.$dia.'_'.$empleado_id};
+        $salida2 = $request->{'salida2_'.$dia.'_'.$empleado_id};
+        $linea->update([
+            'situacion'=> $situacion,
+            'entrada1'=> $entrada1,
+            'salida1'=> $salida1,
+            'entrada2'=> $entrada2,
+            'salida2'=> $salida2,
+            ]);
+    }
+}
+
 public function mostrarCuadrante($yearsemana=NULL)
 {
     if(!$yearsemana){

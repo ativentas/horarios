@@ -56,3 +56,9 @@ Route::post('/nieuwcuadrante/', 'CuadranteController@crearNieuwCuadrante')->midd
 	});
 
 
+Route::post('/validar/{id}', [
+	'uses' => 'CuadranteController@validarHorarios',
+	'as' => 'guardarCuadrante',
+	'middleware' => ['auth']
+	]);
+

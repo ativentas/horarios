@@ -5,6 +5,7 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
+
 $( "#dialogHorarioDia-form" ).dialog({
     autoOpen: false});
 $( "#dialogAusencia-form" ).dialog({
@@ -13,6 +14,24 @@ $( "#dialogEmpleado-form" ).dialog({
     autoOpen: false});
 $( "#dialogAbierto-form" ).dialog({
     autoOpen: false});
+
+$('#btn_guardar').on("click", function(e){
+    e.preventDefault();
+
+    var form = $('#form_guardar');
+    var url = form.attr('action');   
+    var data = form.serialize();
+    $.post(url, data).done(function(data){
+            alert(data);
+            location.reload();
+    }).fail(function(data){
+        alert(data);
+    });    
+
+});
+
+
+
 
 $('.ausencia').on( "click", function(event) {
   event.stopPropagation();
@@ -80,6 +99,8 @@ $("#check_libre").change(function() {
 
 $('.wrapper').on("click", function() {
   var elemento = $(this);
+  var situacion = $(this).children().first().html();
+  alert(situacion);
   dialog_horariodia = $( "#dialogHorarioDia-form" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
       autoOpen: false,
@@ -148,6 +169,7 @@ $('.btn_modify').on('click', function() {
     var empleado_id = $(this).parent().data('empleado_id');
 
     $( "#dialogEmpleado-form" ).dialog({ title: empleado_id });  
+    /*si la situacion es VT, el checkbox tiene que ser otro*/
     dialog_horarios
     .data( 'empleado_id', empleado_id ) 
     .dialog('open');
@@ -264,9 +286,7 @@ function cambiar_abierto(){
   // }
 
   dialog_abierto.dialog( "close" );
-
 }
-
 
 function modificar_ausencia(){
   var empleado_id = $(this).data('empleado_id');

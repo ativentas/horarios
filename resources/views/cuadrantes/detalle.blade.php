@@ -51,15 +51,26 @@ td input {
                 <ol class="breadcrumb">
                     <li><a href="{{ url('home') }}">Salir</a></li>
                     <li><a href="{{ url('nieuwcuadrante') }}">Nuevo Horario</a></li>
+                    @if ($cuadrante->archivado == '0')
+                    <li><button class="btn-success btn-xs btn-guardar" id="btn_guardar" name="guardar">Guardar Cambios</button></li>
+                    @endif
                 </ol>
         </div>
 <!--         <div class="row">
         <div class="col-md-4 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$semana}} ({{$year}}) - {{date_format($inicio_semana,'d M')}} al {{date_format($final_semana,'d M')}}</span>
         </div>
         </div>
- -->    </div>
+ -->    
+
+<!-- Imagen que ocupa las 4 celdas si se pone en la entrada1, puede servir para cuando sea VT, pero prefiero probar a poner un fondo en los td que sean VT o SD.
+TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita imagen que sea solo la letra V y que vaya en medio de los 4 horarios y así no tapa y no hay que poner opacidad -->
+
+
+    </div> <!-- fin panel heading -->
 
     <div class="panel-body">        
+        <form id="form_guardar" action="{{route('guardarCuadrante',array('cuadrante_id'=>$cuadrante->id))}}" method="POST"> 
+        {{csrf_field()}}
         <!-- TABLA -->
         <div class="tg-wrap">
         <table class="tg" style="undefined;table-layout: fixed; width: 767px">
@@ -99,141 +110,141 @@ td input {
             </tr>
             @foreach($lineas as $linea)
             <tr data-empleado_id={{$linea->empleado_id}} style="">
-            <!-- <tr data-empleado_id={{$linea->empleado_id}} style="line-height:50px;"> -->
                 <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2"style="height:60px;">{{$linea->nombre}} 
-                    <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="submit"><span class="glyphicon glyphicon-edit"></span></button>
+                    <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="button"><span class="glyphicon glyphicon-edit"></span></button>
                 </td>
-<!-- Imagen que ocupa las 4 celdas si se pone en la entrada1, puede servir para cuando sea VT, pero prefiero probar a poner un fondo en los td que sean VT o SD.
-TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita imagen que sea solo la letra V y que vaya en medio de los 4 horarios y así no tapa y no hay que poner opacidad -->
-
-<!-- TO DO: CAMBIO: QUE SIEMPRE ESTEN PREPARADAS LAS COLUMNAS DE LOS HORARIOS, LAS AUSENCIAS SE MARCAN CON UNA IMAGEN ENCIMA Y SE CAMBIA UN INPUT HIDDEN --> 
-
                 <td data-dia="1" class="tg-031e" id="">
-                    <input class="horariosdia_1" type="text" name="" id="entrada1_1_{{$linea->empleado_id}}" value="{{is_null($linea->ELU) ? '' : date('H:i',strtotime($linea->ELU))}}">
+                    <input class="horariosdia_1" type="text" name="entrada1_1_{{$linea->empleado_id}}" id="entrada1_1_{{$linea->empleado_id}}" value="{{is_null($linea->ELU) ? '' : date('H:i',strtotime($linea->ELU))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
                     </div>
-                    <input type="hidden" name="" id="situacion_1_{{$linea->empleado_id}}">
+                    <input type="hidden" name="situacion_1_{{$linea->empleado_id}}" id="situacion_1_{{$linea->empleado_id}}" value="{{$linea->situacion1}}">
                 </td>             
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_1" type="text" name="" id="salida1_1_{{$linea->empleado_id}}" value="{{is_null($linea->SLU) ? '' : date('H:i',strtotime($linea->SLU))}}">
+                    <input class="horariosdia_1" type="text" name="salida1_1_{{$linea->empleado_id}}" id="salida1_1_{{$linea->empleado_id}}" value="{{is_null($linea->SLU) ? '' : date('H:i',strtotime($linea->SLU))}}">
                 </td>
 
                 <td data-dia="2" class="tg-031e" id="">
-                    <input class="horariosdia_2"  type="text" name="" id="entrada1_2_{{$linea->empleado_id}}" value="{{is_null($linea->EMA) ? '' : date('H:i',strtotime($linea->EMA))}}">
+                    <input class="horariosdia_2"  type="text" name="entrada1_2_{{$linea->empleado_id}}" id="entrada1_2_{{$linea->empleado_id}}" value="{{is_null($linea->EMA) ? '' : date('H:i',strtotime($linea->EMA))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" style="{{!in_array($linea->situacion2,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion2}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion2,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion2}}</button>
                     </div>
+                    <input type="hidden" name="situacion_2_{{$linea->empleado_id}}" id="situacion_2_{{$linea->empleado_id}}" value="{{$linea->situacion2}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_2" type="text" name="" id="salida1_2_{{$linea->empleado_id}}" value="{{is_null($linea->SMA) ? '' : date('H:i',strtotime($linea->SMA))}}">                    
+                    <input class="horariosdia_2" type="text" name="salida1_2_{{$linea->empleado_id}}" id="salida1_2_{{$linea->empleado_id}}" value="{{is_null($linea->SMA) ? '' : date('H:i',strtotime($linea->SMA))}}">                    
                 </td>
 
                 <td data-dia="3" class="tg-031e" id="">
-                    <input class="horariosdia_3" class="" type="text" name="" id="entrada1_3_{{$linea->empleado_id}}" value="{{is_null($linea->EMI) ? '' : date('H:i',strtotime($linea->EMI))}}">
+                    <input class="horariosdia_3" class="" type="text" name="entrada1_3_{{$linea->empleado_id}}" id="entrada1_3_{{$linea->empleado_id}}" value="{{is_null($linea->EMI) ? '' : date('H:i',strtotime($linea->EMI))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" style="{{!in_array($linea->situacion3,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion3}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion3,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion3}}</button>
                     </div>
+                    <input type="hidden" name="situacion_3_{{$linea->empleado_id}}" id="situacion_3_{{$linea->empleado_id}}"  value="{{$linea->situacion3}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_3" type="text" name="" id="salida1_3_{{$linea->empleado_id}}" value="{{is_null($linea->SMI) ? '' : date('H:i',strtotime($linea->SMI))}}">                
+                    <input class="horariosdia_3" type="text" name="salida1_3_{{$linea->empleado_id}}" id="salida1_3_{{$linea->empleado_id}}" value="{{is_null($linea->SMI) ? '' : date('H:i',strtotime($linea->SMI))}}">                
                 </td>
 
                 <td data-dia="4" class="tg-031e" id="">
-                    <input class="horariosdia_4"  type="text" name="" id="entrada1_4_{{$linea->empleado_id}}" value="{{is_null($linea->EJU) ? '' : date('H:i',strtotime($linea->EJU))}}">
+                    <input class="horariosdia_4"  type="text" name="entrada1_4_{{$linea->empleado_id}}" id="entrada1_4_{{$linea->empleado_id}}" value="{{is_null($linea->EJU) ? '' : date('H:i',strtotime($linea->EJU))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" style="{{!in_array($linea->situacion4,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion4}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion4,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion4}}</button>
                     </div>
+                    <input type="hidden" name="situacion_4_{{$linea->empleado_id}}" id="situacion_4_{{$linea->empleado_id}}"  value="{{$linea->situacion4}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_4" type="text" name="" id="salida1_4_{{$linea->empleado_id}}" value="{{is_null($linea->SJU) ? '' : date('H:i',strtotime($linea->SJU))}}">                    
+                    <input class="horariosdia_4" type="text" name="salida1_4_{{$linea->empleado_id}}" id="salida1_4_{{$linea->empleado_id}}" value="{{is_null($linea->SJU) ? '' : date('H:i',strtotime($linea->SJU))}}">                    
                 </td>
 
                 <td data-dia="5" class="tg-031e" id="">
-                    <input class="horariosdia_5"  type="text" name="" id="entrada1_5_{{$linea->empleado_id}}" value="{{is_null($linea->EVI) ? '' : date('H:i',strtotime($linea->EVI))}}">
+                    <input class="horariosdia_5"  type="text" name="entrada1_5_{{$linea->empleado_id}}" id="entrada1_5_{{$linea->empleado_id}}" value="{{is_null($linea->EVI) ? '' : date('H:i',strtotime($linea->EVI))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" style="{{!in_array($linea->situacion5,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion5}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion5,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion5}}</button>
                     </div>
+                    <input type="hidden" name="situacion_5_{{$linea->empleado_id}}" id="situacion_5_{{$linea->empleado_id}}" value="{{$linea->situacion5}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_5" type="text" name="" id="salida1_5_{{$linea->empleado_id}}" value="{{is_null($linea->SVI) ? '' : date('H:i',strtotime($linea->SVI))}}">                    
+                    <input class="horariosdia_5" type="text" name="salida1_5_{{$linea->empleado_id}}" id="salida1_5_{{$linea->empleado_id}}" value="{{is_null($linea->SVI) ? '' : date('H:i',strtotime($linea->SVI))}}">                    
                 </td>
 
                 <td data-dia="6" class="tg-031e" id="">
-                    <input class="horariosdia_6"  type="text" name="" id="entrada1_6_{{$linea->empleado_id}}" value="{{is_null($linea->ESA) ? '' : date('H:i',strtotime($linea->ESA))}}">
+                    <input class="horariosdia_6"  type="text" name="entrada1_6_{{$linea->empleado_id}}" id="entrada1_6_{{$linea->empleado_id}}" value="{{is_null($linea->ESA) ? '' : date('H:i',strtotime($linea->ESA))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" style="{{!in_array($linea->situacion6,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion6}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion6,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion6}}</button>
                     </div>
+                    <input type="hidden" name="situacion_6_{{$linea->empleado_id}}" id="situacion_6_{{$linea->empleado_id}}" value="{{$linea->situacion6}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_6" type="text" name="" id="salida1_6_{{$linea->empleado_id}}" value="{{is_null($linea->SSA) ? '' : date('H:i',strtotime($linea->SSA))}}">                    
+                    <input class="horariosdia_6" type="text" name="salida1_6_{{$linea->empleado_id}}" id="salida1_6_{{$linea->empleado_id}}" value="{{is_null($linea->SSA) ? '' : date('H:i',strtotime($linea->SSA))}}">                    
                 </td>
 
                 <td data-dia="0" class="tg-031e" id="">
-                    <input class="horariosdia_0"  type="text" name="" id="entrada1_0_{{$linea->empleado_id}}" value="{{is_null($linea->EDO) ? '' : date('H:i',strtotime($linea->EDO))}}">
+                    <input class="horariosdia_0"  type="text" name="entrada1_0_{{$linea->empleado_id}}" id="entrada1_0_{{$linea->empleado_id}}" value="{{is_null($linea->EDO) ? '' : date('H:i',strtotime($linea->EDO))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" style="{{!in_array($linea->situacion7,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion7}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion7,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion7}}</button>
                     </div>
+                    <input type="hidden" name="situacion_0_{{$linea->empleado_id}}" id="situacion_0_{{$linea->empleado_id}}" value="{{$linea->situacion7}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_0" type="text" name="" id="salida1_0_{{$linea->empleado_id}}" value="{{is_null($linea->SDO) ? '' : date('H:i',strtotime($linea->SDO))}}">                    
+                    <input class="horariosdia_0" type="text" name="salida1_0_{{$linea->empleado_id}}" id="salida1_0_{{$linea->empleado_id}}" value="{{is_null($linea->SDO) ? '' : date('H:i',strtotime($linea->SDO))}}">                    
                 </td>
 
             </tr>
             <tr style="">
-<!-- <tr style="line-height:30px">
- -->
+
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_1" type="text" name="" id="entrada2_1_{{$linea->empleado_id}}">{{is_null($linea->E2LU)?'':date('H:i',strtotime($linea->E2LU))}}
+                    <input class="horariosdia_1" type="text" name="entrada2_1_{{$linea->empleado_id}}" id="entrada2_1_{{$linea->empleado_id}}" value="{{is_null($linea->E2LU)?'':date('H:i',strtotime($linea->E2LU))}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_1" type="text" name="" id="salida2_1_{{$linea->empleado_id}}">{{is_null($linea->S2LU)?'':date('H:i',strtotime($linea->S2LU))}}
+                    <input class="horariosdia_1" type="text" name="salida2_1_{{$linea->empleado_id}}" id="salida2_1_{{$linea->empleado_id}}" value="{{is_null($linea->S2LU)?'':date('H:i',strtotime($linea->S2LU))}}">
                 </td>
 
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_2" type="text" name="" id="entrada2_2_{{$linea->empleado_id}}">{{is_null($linea->E2MA)?'':date('H:i',strtotime($linea->E2MA))}}
+                    <input class="horariosdia_2" type="text" name="entrada2_2_{{$linea->empleado_id}}" id="entrada2_2_{{$linea->empleado_id}}" value="{{is_null($linea->E2MA)?'':date('H:i',strtotime($linea->E2MA))}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_2" type="text" name="" id="salida2_2_{{$linea->empleado_id}}">{{is_null($linea->S2MA)?'':date('H:i',strtotime($linea->S2MA))}}
-                </td>
-
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_3" type="text" name="" id="entrada2_3_{{$linea->empleado_id}}">{{is_null($linea->E2MI)?'':date('H:i',strtotime($linea->E2MI))}}
-                </td>
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_3" type="text" name="" id="salida2_3_{{$linea->empleado_id}}">{{is_null($linea->S2MI)?'':date('H:i',strtotime($linea->S2MI))}}
+                    <input class="horariosdia_2" type="text" name="salida2_2_{{$linea->empleado_id}}" id="salida2_2_{{$linea->empleado_id}}" value=>{{is_null($linea->S2MA)?'':date('H:i',strtotime($linea->S2MA))}}
                 </td>
 
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_4" type="text" name="" id="entrada2_4_{{$linea->empleado_id}}">{{is_null($linea->E2JU)?'':date('H:i',strtotime($linea->E2JU))}}
+                    <input class="horariosdia_3" type="text" name="entrada2_3_{{$linea->empleado_id}}" id="entrada2_3_{{$linea->empleado_id}}" value="{{is_null($linea->E2MI)?'':date('H:i',strtotime($linea->E2MI))}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_4" type="text" name="" id="salida2_4_{{$linea->empleado_id}}">{{is_null($linea->S2JU)?'':date('H:i',strtotime($linea->S2JU))}}
-                </td>
-
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_5" type="text" name="" id="entrada2_5_{{$linea->empleado_id}}">{{is_null($linea->E2VI)?'':date('H:i',strtotime($linea->ESVI))}}
-                </td>
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_5" type="text" name="" id="salida2_5_{{$linea->empleado_id}}">{{is_null($linea->S2VI)?'':date('H:i',strtotime($linea->S2VI))}}
+                    <input class="horariosdia_3" type="text" name="salida2_3_{{$linea->empleado_id}}" id="salida2_3_{{$linea->empleado_id}}" value="{{is_null($linea->S2MI)?'':date('H:i',strtotime($linea->S2MI))}}">
                 </td>
 
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_6" type="text" name="" id="entrada2_6_{{$linea->empleado_id}}">{{is_null($linea->E2SA)?'':date('H:i',strtotime($linea->E2SA))}}
+                    <input class="horariosdia_4" type="text" name="entrada2_4_{{$linea->empleado_id}}" id="entrada2_4_{{$linea->empleado_id}}" value=>{{is_null($linea->E2JU)?'':date('H:i',strtotime($linea->E2JU))}}
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_6" type="text" name="" id="salida2_6_{{$linea->empleado_id}}">{{is_null($linea->S2SA)?'':date('H:i',strtotime($linea->S2SA))}}
+                    <input class="horariosdia_4" type="text" name="salida2_4_{{$linea->empleado_id}}" id="salida2_4_{{$linea->empleado_id}}" value="{{is_null($linea->S2JU)?'':date('H:i',strtotime($linea->S2JU))}}">
                 </td>
 
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_0" type="text" name="" id="entrada2_0_{{$linea->empleado_id}}">{{is_null($linea->E2DO)?'':date('H:i',strtotime($linea->E2DO))}}
+                    <input class="horariosdia_5" type="text" name="entrada2_5_{{$linea->empleado_id}}" id="entrada2_5_{{$linea->empleado_id}}" value="{{is_null($linea->E2VI)?'':date('H:i',strtotime($linea->ESVI))}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_0" type="text" name="" id="salida2_0_{{$linea->empleado_id}}">{{is_null($linea->S2DO)?'':date('H:i',strtotime($linea->S2DO))}}
+                    <input class="horariosdia_5" type="text" name="salida2_5_{{$linea->empleado_id}}" id="salida2_5_{{$linea->empleado_id}}" value="{{is_null($linea->S2VI)?'':date('H:i',strtotime($linea->S2VI))}}">
+                </td>
+
+                <td class="tg-031e" id="">
+                    <input class="horariosdia_6" type="text" name="entrada2_6_{{$linea->empleado_id}}" id="entrada2_6_{{$linea->empleado_id}}" value="{{is_null($linea->E2SA)?'':date('H:i',strtotime($linea->E2SA))}}">
+                </td>
+                <td class="tg-031e" id="">
+                    <input class="horariosdia_6" type="text" name="salida2_6_{{$linea->empleado_id}}" id="salida2_6_{{$linea->empleado_id}}" value="{{is_null($linea->S2SA)?'':date('H:i',strtotime($linea->S2SA))}}">
+                </td>
+
+                <td class="tg-031e" id="">
+                    <input class="horariosdia_0" type="text" name="entrada2_0_{{$linea->empleado_id}}" id="entrada2_0_{{$linea->empleado_id}}" value="{{is_null($linea->E2DO)?'':date('H:i',strtotime($linea->E2DO))}}">
+                </td>
+                <td class="tg-031e" id="">
+                    <input class="horariosdia_0" type="text" name="salida2_0_{{$linea->empleado_id}}" id="salida2_0_{{$linea->empleado_id}}" value="{{is_null($linea->S2DO)?'':date('H:i',strtotime($linea->S2DO))}}">
                 </td>
             </tr>
             @endforeach
         </table></div>
+        </form>
     </div>
 
 <div id="dialogEmpleado-form" title="">
@@ -284,7 +295,8 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
   <form autofocus>
     <fieldset>
         <div class="checkbox">
-            <label><input type="checkbox" id="check_libre" value="VT">Cambiar a Dia Libre</label>
+            <label><input type="checkbox" id="check_libre" value="">Cambiar a Dia Libre</label>
+            <label><input type="checkbox" id="check_vacaciones" style="display:none;" value="">Cambiar a Vacaciones</label>
         </div>
         <div id="container_horarioL">
         <div class="form-group">
