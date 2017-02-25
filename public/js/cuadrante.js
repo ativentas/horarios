@@ -11,6 +11,8 @@ $( "#dialogAusencia-form" ).dialog({
     autoOpen: false});
 $( "#dialogEmpleado-form" ).dialog({
     autoOpen: false});
+$( "#dialogAbierto-form" ).dialog({
+    autoOpen: false});
 
 $('.ausencia').on( "click", function(event) {
   event.stopPropagation();
@@ -151,6 +153,120 @@ $('.btn_modify').on('click', function() {
     .dialog('open');
     form[0].reset();
 });
+
+$('.diasemana').on('click', function() {
+    var elemento = $(this);
+    var dia = elemento.data('dia');
+    dialog_abierto = $( "#dialogAbierto-form" ).dialog({
+      position: { my: "left center", at: "right top", of: elemento }, 
+      autoOpen: false,
+      height: 200,
+      width: 300,
+      modal: true,
+      buttons: {
+        "Modificar": cambiar_abierto,
+        Cancelar: function() {
+          dialog_abierto.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+      }
+    });
+
+    form = dialog_abierto.find( "form" ).on( "submit", function( event ) {
+    event.preventDefault();
+    cambiar_abierto();
+    });
+    /*premarcar la opción actual*/
+    var estado = $("#estadodia_"+dia).data('estadodia');
+    var festivo = false;
+    if (estado=='FA'|estado=='FC') {
+      festivo = true;
+    }
+    $('#optAbierto').prop('checked',true);
+    if(estado=='C'||estado=='FC'){
+      $('#optCerrado').prop('checked',true);
+    }
+    $( "#dialogAbierto-form" ).dialog({ title: 'Modificar Abierto/Cerrado' });  
+    dialog_abierto
+    .data('festivo',festivo)
+    .data('dia',dia)
+    .data('estado',estado)
+    .data('elemento',elemento)
+    .dialog('open');
+});
+
+function cambiar_abierto(){
+  var dia = $(this).data('dia');
+  var estado = $(this).data('estado');
+  var festivo = $(this).data('festivo');
+  var elemento = $(this).data('elemento');
+  if($('#optCerrado').is(':checked')){
+    switch (estado){
+      case 'C':
+      case 'FC':
+        alert('ya lo ponia como cerrado');
+        break;
+      case 'A':
+        elemento.removeClass('A').addClass( "C" );
+        $("#estadodia_"+dia).data('estadodia','C');
+        $("#nuevoestadodia_"+dia).val("C");
+        /*borrar todos los horarios de ese día*/       
+        $('.horariosdia_'+dia).each(function(){
+          $('.horariosdia_'+dia).val('');
+        });
+        alert('cambiado a '+$("#nuevoestadodia_"+dia).val());
+        break;
+      case 'FA':
+        elemento.removeClass('FA').addClass( "FC" );
+        $("#estadodia_"+dia).data('estadodia','FC');
+        $("#nuevoestadodia_"+dia).val("FC");
+        /*borrar todos los horarios de ese día*/
+        $('.horariosdia_'+dia).each(function(){
+          $('.horariosdia_'+dia).val('');
+        });
+        alert('cambiado a '+$("#nuevoestadodia_"+dia).val());
+        break;
+    }
+
+  }
+  if($('#optAbierto').is(':checked')){
+    switch (estado){
+      case 'A':
+      case 'FA':
+        alert('ya lo ponia como abierto');
+        break;
+      case 'C':
+        elemento.removeClass('C').addClass( "A" );
+        $("#estadodia_"+dia).data('estadodia','A');
+        $("#nuevoestadodia_"+dia).val("A");
+        alert('cambiado a '+$("#nuevoestadodia_"+dia).val());
+        break;
+      case 'FC':
+        elemento.removeClass('FC').addClass( "FA" );
+        $("#estadodia_"+dia).data('estadodia','FA');
+        $("#nuevoestadodia_"+dia).val("FA");
+        alert('cambiado a '+$("#nuevoestadodia_"+dia).val());
+        break;
+    }
+  }
+// si con switch case me apaño, borrar el if siguiente
+  // if($('#optCerrado').is(':checked')){
+    // if(estado=='C'|estado=='FC'){
+    //   alert('ya lo ponia como Cerrado, no hacer nada');      
+    // }else{
+    //   if(festivo==true){
+    //     alert('cambiar a FA');
+    //   }
+    //   alert('cambiar a A')
+    // }
+  // }
+
+  dialog_abierto.dialog( "close" );
+
+}
+
 
 function modificar_ausencia(){
   var empleado_id = $(this).data('empleado_id');
