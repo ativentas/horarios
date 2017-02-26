@@ -109,8 +109,8 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <input type="hidden" name="nuevoestadodia_0" id="nuevoestadodia_0">
             </tr>
             @foreach($lineas as $linea)
-            <tr data-empleado_id={{$linea->empleado_id}} style="">
-                <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2"style="height:60px;">{{$linea->nombre}} 
+            <tr class="datos_empleado" data-empleado_id={{$linea->empleado_id}} data-empleado_nombre={{$linea->nombre}} style="">
+                <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2"style="height:60px;"><span>{{$linea->nombre}}</span> 
                     <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="button"><span class="glyphicon glyphicon-edit"></span></button>
                 </td>
                 <td data-dia="1" class="tg-031e" id="">
@@ -182,9 +182,9 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="0" class="tg-031e" id="">
                     <input class="horariosdia_0"  type="text" name="entrada1_0_{{$linea->empleado_id}}" id="entrada1_0_{{$linea->empleado_id}}" value="{{is_null($linea->EDO) ? '' : date('H:i',strtotime($linea->EDO))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion7,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion7}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion0,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion0}}</button>
                     </div>
-                    <input type="hidden" name="situacion_0_{{$linea->empleado_id}}" id="situacion_0_{{$linea->empleado_id}}" value="{{$linea->situacion7}}">
+                    <input type="hidden" name="situacion_0_{{$linea->empleado_id}}" id="situacion_0_{{$linea->empleado_id}}" value="{{$linea->situacion0}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_0" type="text" name="salida1_0_{{$linea->empleado_id}}" id="salida1_0_{{$linea->empleado_id}}" value="{{is_null($linea->SDO) ? '' : date('H:i',strtotime($linea->SDO))}}">                    
@@ -204,7 +204,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                     <input class="horariosdia_2" type="text" name="entrada2_2_{{$linea->empleado_id}}" id="entrada2_2_{{$linea->empleado_id}}" value="{{is_null($linea->E2MA)?'':date('H:i',strtotime($linea->E2MA))}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_2" type="text" name="salida2_2_{{$linea->empleado_id}}" id="salida2_2_{{$linea->empleado_id}}" value=>{{is_null($linea->S2MA)?'':date('H:i',strtotime($linea->S2MA))}}
+                    <input class="horariosdia_2" type="text" name="salida2_2_{{$linea->empleado_id}}" id="salida2_2_{{$linea->empleado_id}}" value="{{is_null($linea->S2MA)?'':date('H:i',strtotime($linea->S2MA))}}">
                 </td>
 
                 <td class="tg-031e" id="">
@@ -215,14 +215,14 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 </td>
 
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_4" type="text" name="entrada2_4_{{$linea->empleado_id}}" id="entrada2_4_{{$linea->empleado_id}}" value=>{{is_null($linea->E2JU)?'':date('H:i',strtotime($linea->E2JU))}}
+                    <input class="horariosdia_4" type="text" name="entrada2_4_{{$linea->empleado_id}}" id="entrada2_4_{{$linea->empleado_id}}" value="{{is_null($linea->E2JU)?'':date('H:i',strtotime($linea->E2JU))}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_4" type="text" name="salida2_4_{{$linea->empleado_id}}" id="salida2_4_{{$linea->empleado_id}}" value="{{is_null($linea->S2JU)?'':date('H:i',strtotime($linea->S2JU))}}">
                 </td>
 
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_5" type="text" name="entrada2_5_{{$linea->empleado_id}}" id="entrada2_5_{{$linea->empleado_id}}" value="{{is_null($linea->E2VI)?'':date('H:i',strtotime($linea->ESVI))}}">
+                    <input class="horariosdia_5" type="text" name="entrada2_5_{{$linea->empleado_id}}" id="entrada2_5_{{$linea->empleado_id}}" value="{{is_null($linea->E2VI)?'':date('H:i',strtotime($linea->E2VI))}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_5" type="text" name="salida2_5_{{$linea->empleado_id}}" id="salida2_5_{{$linea->empleado_id}}" value="{{is_null($linea->S2VI)?'':date('H:i',strtotime($linea->S2VI))}}">
@@ -294,9 +294,11 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <div id="dialogHorarioDia-form" title="">
   <form autofocus>
     <fieldset>
-        <div class="checkbox">
+        <div id="div_check_libre" class="checkbox">
             <label><input type="checkbox" id="check_libre" value="">Cambiar a Dia Libre</label>
-            <label><input type="checkbox" id="check_vacaciones" style="display:none;" value="">Cambiar a Vacaciones</label>
+        </div>
+        <div id="div_check_vacaciones" class="checkbox" style="display:none;">
+            <label><input type="checkbox" id="check_vacaciones" value="">Cambiar a Vacaciones</label>
         </div>
         <div id="container_horarioL">
         <div class="form-group">
@@ -337,7 +339,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 $(document).ready(function(){
 
   var predefinidos = <?php echo $predefinidos; ?>;
-  console.log(predefinidos);
+  // console.log(predefinidos);
   $( function() {
     $( ".predefinidos" ).autocomplete({
       minLength: 0,

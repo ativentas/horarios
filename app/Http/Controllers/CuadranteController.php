@@ -34,7 +34,8 @@ public function yearsemana($fecha)
 
 public function validarHorarios(Request $request, $cuadrante_id){
     $input = $request->all();
-    $lineas = Linea::where('cuadrante_id',$cuadrante_id)->where('empleado_id',2)->where('dia',1)->get();
+    // dd($input);
+    $lineas = Linea::where('cuadrante_id',$cuadrante_id)->get();
     foreach ($lineas as $linea) {
         $dia = $linea->dia;
         $empleado_id = $linea->empleado_id;
@@ -190,7 +191,7 @@ public function mostrarCuadrante($yearsemana=NULL)
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.salida1 ELSE NULL END) AS 'SSA'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.entrada2 ELSE NULL END) AS 'E2SA'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.salida2 ELSE NULL END) AS 'S2SA'"),
-            DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.situacion ELSE NULL END) AS 'situacion7'"),
+            DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.situacion ELSE NULL END) AS 'situacion0'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.entrada1 ELSE NULL END) AS 'EDO'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.salida1 ELSE NULL END) AS 'SDO'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.entrada2 ELSE NULL END) AS 'E2DO'"),
@@ -198,12 +199,12 @@ public function mostrarCuadrante($yearsemana=NULL)
             )
         ->groupBy ('empleados.alias','empleados.id')
         ->get();
-// dd($lineas);
+    // dd($lineas);
 
     $predefinidos = DB::table('predefinidos')->select('id AS value','nombre AS label','entrada1','salida1','entrada2','salida2')->get();
-
-
-    return view('cuadrantes.detalle',compact('lineas','year','semana','inicio_semana','final_semana','cuadrante','predefinidos'));
+    //crear collection con los alias y con key id (no lo convierto a array porque sino da error en el script de abajo)
+    $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
+    return view('cuadrantes.detalle',compact('lineas','year','semana','inicio_semana','final_semana','cuadrante','predefinidos','empleados'));
 
 }
 

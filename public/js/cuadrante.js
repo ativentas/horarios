@@ -1,11 +1,26 @@
 $(document).ready(function () {
-
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
+var empleados = [];
+$('.datos_empleado').each(function(){
+  var id = $(this).data('empleado_id');
+  var nombre = $(this).data('empleado_nombre');
+  empleados[id] = nombre;
+});
+var diassemana = [];
+diassemana[0] = 'Domingo';
+diassemana[1] = 'Lunes';
+diassemana[2] = 'Martes';
+diassemana[3] = 'Miercoles';
+diassemana[4] = 'Jueves';
+diassemana[5] = 'Viernes';
+diassemana[6] = 'Sabado';
 
+/*TO DO: crear un array con los dias de la semana, para mostrarlos en los diálogo*/
+/*TO DO: recibri un array con los empleados, para mostrarlos en los diálogo*/
 $( "#dialogHorarioDia-form" ).dialog({
     autoOpen: false});
 $( "#dialogAusencia-form" ).dialog({
@@ -27,18 +42,14 @@ $('#btn_guardar').on("click", function(e){
     }).fail(function(data){
         alert(data);
     });    
-
 });
-
-
-
 
 $('.ausencia').on( "click", function(event) {
   event.stopPropagation();
   var elemento = $(this);
   var situacion = $(this).html();
   $('#container_horarioVT').hide();  
-/*si no es V o L o B, no mostrar checkbox*/
+  /*si no es V o L o B, no mostrar checkbox*/
   $('#check_trabaja').hide();
   myarray=['V','L','B'];
   if(jQuery.inArray(situacion, myarray) !== -1){
@@ -68,7 +79,7 @@ $('.ausencia').on( "click", function(event) {
   var empleado_id = $(this).parent().parent().parent().data('empleado_id');
   var dia = $(this).parent().parent().data('dia');
 
-  $( "#dialogAusencia-form" ).dialog({ title: 'Dia: '+dia+' - Empleado:'+empleado_id });  
+  $( "#dialogAusencia-form" ).dialog({ title: 'Horario: '+diassemana[dia]+' - '+empleados[empleado_id] });  
   dialog_ausencia
     .data( 'empleado_id', empleado_id ) 
     .data( 'dia', dia ) 
@@ -96,11 +107,10 @@ $("#check_libre").change(function() {
       $('#container_horarioL').show();
 });
 
-
 $('.wrapper').on("click", function() {
   var elemento = $(this);
   var situacion = $(this).children().first().html();
-  alert(situacion);
+  // alert('situacion wrapper html: '+situacion);
   dialog_horariodia = $( "#dialogHorarioDia-form" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
       autoOpen: false,
@@ -123,15 +133,17 @@ $('.wrapper').on("click", function() {
   });
 
   var empleado_id = $(this).parent().parent().data('empleado_id');
+  // var empleado_nombre = empleados[empleado_id];
+  // alert(empleado_nombre);
   var dia = $(this).parent().data('dia');
 
-/*TO DO: coger el horario y ponerlo en el diálogo para poder modificarlo*/
+  /*coger el horario y ponerlo en el diálogo para poder modificarlo*/
   $('#dialogHorarioDia-form input.predefinidos-entrada1').val($("#entrada1_"+dia+"_"+empleado_id).val());
   $('#dialogHorarioDia-form input.predefinidos-salida1').val($("#salida1_"+dia+"_"+empleado_id).val());
   $('#dialogHorarioDia-form input.predefinidos-entrada2').val($("#entrada2_"+dia+"_"+empleado_id).val());
   $('#dialogHorarioDia-form input.predefinidos-salida2').val($("#salida2_"+dia+"_"+empleado_id).val());         
 
-  $( "#dialogHorarioDia-form" ).dialog({ title: 'Dia: '+dia+' - Empleado:'+empleado_id });  
+  $( "#dialogHorarioDia-form" ).dialog({ title: 'Horario: '+diassemana[dia]+' - '+empleados[empleado_id] });  
   dialog_horariodia
     .data( 'empleado_id', empleado_id ) 
     .data( 'dia', dia ) 
@@ -273,17 +285,6 @@ function cambiar_abierto(){
         break;
     }
   }
-// si con switch case me apaño, borrar el if siguiente
-  // if($('#optCerrado').is(':checked')){
-    // if(estado=='C'|estado=='FC'){
-    //   alert('ya lo ponia como Cerrado, no hacer nada');      
-    // }else{
-    //   if(festivo==true){
-    //     alert('cambiar a FA');
-    //   }
-    //   alert('cambiar a A')
-    // }
-  // }
 
   dialog_abierto.dialog( "close" );
 }
@@ -320,6 +321,8 @@ function modificar_ausencia(){
         $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
         $("#situacion_"+dia+"_"+empleado_id).val('');
+        /*TO DO: hay que cambiar tambien el data('situacion') a ''*/
+        elemento.html('');
         elemento.hide();
         break;
       default:
@@ -337,7 +340,6 @@ function modificar_horariodia(){
   var empleado_id = $(this).data('empleado_id');
   var dia = $(this).data('dia');
   var elemento = $(this).data('elemento');
-
   if($("#check_libre").is(":checked")) {
     $("#entrada1_"+dia+"_"+empleado_id).val('');
     $("#salida1_"+dia+"_"+empleado_id).val('');
@@ -347,19 +349,17 @@ function modificar_horariodia(){
     elemento.children().text('L');
     $('#situacion_'+dia+'_'+empleado_id).val('L');
     elemento.children().show();
-
+  }else{
+    /*Cojo el horario introducido y lo paso a la tabla*/
+    var entrada1 = $('#dialogHorarioDia-form input.predefinidos-entrada1').val();
+    var salida1 = $('#dialogHorarioDia-form input.predefinidos-salida1').val();
+    var entrada2 = $('#dialogHorarioDia-form input.predefinidos-entrada2').val();
+    var salida2 = $('#dialogHorarioDia-form input.predefinidos-salida2').val();    
+    $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
+    $("#salida1_"+dia+"_"+empleado_id).val(salida1);
+    $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
+    $("#salida2_"+dia+"_"+empleado_id).val(salida2);    
   }
-  /*Cojo el horario introducido y lo paso a la tabla*/
-  var entrada1 = $('#dialogHorarioDia-form input.predefinidos-entrada1').val();
-  var salida1 = $('#dialogHorarioDia-form input.predefinidos-salida1').val();
-  var entrada2 = $('#dialogHorarioDia-form input.predefinidos-entrada2').val();
-  var salida2 = $('#dialogHorarioDia-form input.predefinidos-salida2').val();    
-
-  $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
-  $("#salida1_"+dia+"_"+empleado_id).val(salida1);
-  $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
-  $("#salida2_"+dia+"_"+empleado_id).val(salida2);    
-
   dialog_horariodia.dialog( "close" );
 }
 
