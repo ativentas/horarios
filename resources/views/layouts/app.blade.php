@@ -58,7 +58,7 @@
                         <li><a href="{{ url('/cuadrante') }}">Horario</a></li>
                         <li><a href="{{ url('/ausencias') }}">Ausencias</a></li>
                         @if (Auth::user()->isAdmin())
-                        <li><a href="{{ url('/cuadrante') }}">otras cosas</a></li>
+                        <li><a href="{{ url('/empleados') }}">Empleados</a></li>
                         @endif                    
                     </ul>
 

@@ -5,7 +5,7 @@
 <div class="row">
 <div class="col-md-10 col-md-offset-1">
 <div class="panel panel-default">
-    <div class="panel-heading"><h2>Nueva Ausencia/Vacaciones</h2>
+    <div class="panel-heading"><h2>Listado Ausencias</h2>
         @include('layouts.alerts')
         <div class="row">
                 <ol class="breadcrumb">

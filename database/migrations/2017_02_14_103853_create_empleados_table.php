@@ -17,6 +17,7 @@ class CreateEmpleadosTable extends Migration
             $table->increments('id');
             $table->integer('centro_id')->unsigned();
             $table->string('alias');
+            $table->string('nombre_completo')->nullable();
             $table->boolean('activo')->default(1);
             $table->nullableTimestamps();
 

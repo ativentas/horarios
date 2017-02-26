@@ -23,6 +23,9 @@ Route::get('/nieuwcuadrante/', 'CuadranteController@mostrarNieuwCuadrante')->mid
 Route::post('/nieuwcuadrante/', 'CuadranteController@crearNieuwCuadrante')->middleware('auth');
 
 
+Route::resource('empleados', 'EmpleadoController');
+
+
 /**
  * AUSENCIAS CALENDARIO
  */
