@@ -276,12 +276,17 @@ function cambiar_abierto(){
         $("#estadodia_"+dia).data('estadodia','A');
         $("#nuevoestadodia_"+dia).val("A");
         alert('cambiado a '+$("#nuevoestadodia_"+dia).val());
+        //TO DO: cambiar la situación de ese día de todos los trabajadores a '' 
+        // y quitar el botón de L
         break;
       case 'FC':
         elemento.removeClass('FC').addClass( "FA" );
         $("#estadodia_"+dia).data('estadodia','FA');
         $("#nuevoestadodia_"+dia).val("FA");
         alert('cambiado a '+$("#nuevoestadodia_"+dia).val());
+        //TO DO: cambiar la situación de ese día de todos los trabajadores a '' 
+        // y quitar el botón de F (TO DO: poner situacion F cuando el día es 
+        // festivo cuando se crea el cuadrante)
         break;
     }
   }

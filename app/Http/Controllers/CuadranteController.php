@@ -18,10 +18,12 @@ class CuadranteController extends Controller
 {
 private $semanaactual;
 private $hoy;
+private $situacionesconAusenciaId;
 
 public function __construct() { 
     $this->semanaactual = date('W');
     $this->hoy = Carbon::today();
+    $this->situacionesconAusenciaId = ['V','B','AJ','AN'];
 }
     
 public function yearsemana($fecha)
@@ -52,6 +54,7 @@ public function validarHorarios(Request $request, $cuadrante_id){
             'salida2'=> $salida2,
             ]);
     }
+    //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
 }
 
 public function mostrarCuadrante($yearsemana=NULL)
@@ -92,19 +95,29 @@ public function mostrarCuadrante($yearsemana=NULL)
                     $inicio = new Carbon($ausencia->fecha_inicio);
                     $fin = new Carbon($ausencia->finalDay);
                     $intervaloausencia = $this->generateDateRange($inicio,$fin);
-                    // actualizar la linea
-                    if ($ausencia->tipo == 'V' && $linea->situacion == 'VT') {
-                        # como es VT, se deja como está.
+                    $fecha_linea = new DateTime($linea->fecha);
+                    $fecha_linea = $fecha_linea->format('Y-m-d');
+                    if( !in_array($fecha_linea,$intervaloausencia)){
+                        $linea->ausencia_id = NULL;
+                        $linea->save();
                     }else{
-                        $linea->update([
-                        'situacion' => $ausencia->tipo,
-                        ]);
+                        if ($ausencia->tipo == 'V' && $linea->situacion == 'VT') {
+                            # como es VT, se deja como está.
+                        }else{
+                            $linea->update([
+                            'situacion' => $ausencia->tipo,
+                            ]);
+                        }
                     }
                 }else{
                     $linea->update([
                     'ausencia_id' => NULL,
-                    'situacion' => NULL,
                     ]);
+                    if (in_array($linea->sitaucion,$this->situacionesMustAusencia)){
+                        $linea->update([
+                        'situacion' => NULL,
+                    ]);
+                    }    
                 }
 
             }
@@ -114,6 +127,7 @@ public function mostrarCuadrante($yearsemana=NULL)
         $ausencias = Ausencia::where('fecha_fin','>=',$inicio_semana->toDateTimeString())->where('fecha_inicio','<=',$final_semana->toDateTimeString())->whereIn('empleado_id',$empleados)->get();
         // dd($ausencias,$empleados);
         if($ausencias){   
+            //TO DO: como $diassemana lo utilizo en mas de 1 sitio, crear la función generateDateRangeWeek ($yearsemana) y simplificar lo siguiente
             $inicio_semana_clon = clone $inicio_semana;
             $final_semana_clon = clone $final_semana;
             $diassemana = $this->generateDateRange($inicio_semana_clon, $final_semana_clon->addDay());
@@ -215,6 +229,7 @@ public function mostrarNieuwCuadrante()
 }
 public function crearNieuwCuadrante(Request $request)
 {
+
     //comprobar primero si ya existe el cuadrante
     $semanayear = $request->fecha;
     $year = substr($semanayear,-4,4);
@@ -223,8 +238,6 @@ public function crearNieuwCuadrante(Request $request)
     $cuadrante = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana',$year.$semana)->first();
     if ($cuadrante){
         //TO DO: como ya existe, mostrarlo pero con un mensaje diciendo que ya existía
-        // $lineas = $cuadrante->lineas();
-        // return view('cuadrantes.detalle',compact('lineas')); 
         return redirect('cuadrante/'.$cuadrante->yearsemana); 
     }
     if (Auth::user()->isAdmin()){
@@ -236,21 +249,31 @@ public function crearNieuwCuadrante(Request $request)
     $cuadrante->yearsemana = $year.$semana;
     $cuadrante->centro_id = $centro_id;
 
-    //TO DO: grabar dia de cierre, en su caso
+    //grabar dia de cierre, en su caso
     $diacierre = Centro::where('id',$centro_id)->firstOrFail()->dia_cierre;
     
     if ( !is_null ( $diacierre ) ){
         $columna = 'dia_'.$diacierre;
         $cuadrante->$columna = 'C';
     }
-    //TO DO: ver si hay algún festivo para esta semana
+    //ver si hay algún festivo para esta semana
+    $festivos = DB::table('festivos')->pluck('fecha')->toArray();
+    $diassemana = $this->generateDateRangeWeek($cuadrante->yearsemana);
+    $festivos_thisweek = [];
+    foreach ($festivos as $festivo) {
+        if(in_array($festivo,$diassemana))
+            $festivos_thisweek [] = $festivo;
+    }
 
-    $cuadrante->save();
+    //TO DO: cuando modifique la función addLineas para que en vez de fecha_ini y fecha_fin se le pase $diassemana, entonces puedo borrar las siguientes lineas.
     $date = new Carbon();
-    $date->setISODate($year,$semana); 
+    $date->setISODate($year,$semana);
     $fecha_ini = new Carbon($date->startOfWeek()); 
     $fecha_fin = new Carbon($date->endOfWeek());
 
+    $cuadrante->save();
+ 
+    //TO DO: creo que sería mejor que addLineas, en vez de fecha_ini y fecha_fin, se le pasara un array con las fechas. La idea es pasarle el array $diassemana
     $this->addLineas($cuadrante->id,Auth::user()->centro_id,$fecha_ini,$fecha_fin);
     /*incluir dia de cierre como libres y dias festivos*/
     if (!is_null($diacierre)){
@@ -258,6 +281,14 @@ public function crearNieuwCuadrante(Request $request)
         $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('dia',$diacierre)->get();
         foreach ($lineas as $linea) {
             $linea->situacion ='L';
+            $linea->save();
+        }
+    }
+    if (!is_null($festivos_thisweek)){
+        
+        $lineas = Linea::where('cuadrante_id',$cuadrante->id)->whereIn('dia',$festivos_thisweek)->get();
+        foreach ($lineas as $linea) {
+            $linea->situacion ='F';
             $linea->save();
         }
     }
@@ -309,6 +340,18 @@ public function generateDateRange(Carbon $start_date, Carbon $end_date)
     }
 
     return $dates;
+}
+public function generateDateRangeWeek($yearsemana)
+{
+    $year = substr($yearsemana,0,4);
+    $semana = substr($yearsemana,-2,2);
+    $date = new Carbon;
+    $date = new Carbon($date->setISODate($year,$semana));
+    $inicio_semana = new Carbon($date->startOfWeek());
+    $final_semana = new Carbon($date->endOfWeek());
+    $dates = $this->generateDateRange($inicio_semana, $final_semana);
+    return $dates;
+
 }
 
 }

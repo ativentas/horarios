@@ -20,7 +20,7 @@ class CreateLineasTable extends Migration
             $table->integer('ausencia_id')->unsigned()->nullable();
             $table->date('fecha');
             $table->tinyInteger('dia')->unsigned();
-            $table->enum('situacion',['V','FT','B','AJ','AN','L','VT'])->nullable();
+            $table->enum('situacion',['V','FT','B','AJ','AN','L','VT','F'])->nullable();
             $table->time('entrada1')->nullable();
             $table->time('salida1')->nullable();
             $table->time('entrada2')->nullable();
