@@ -197,7 +197,7 @@ class AusenciaController extends Controller
      */
     public function destroy(Request $request, $id)
     {        
-        $ausencia = Ausencia::find($id);
+      $ausencia = Ausencia::find($id);
 		$ausencia->delete();
 		if (isset($_POST['solicitudEmpleado'])){
 			return redirect('ausencias/listadoVacaciones');}

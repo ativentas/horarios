@@ -45,14 +45,7 @@
 	$(document).ready(function() {
 		
 		var base_url = '{{ url('/') }}';
-		// $('#calendar2').fullCalendar({
-		// 	weekends:true,
-		// 	header: {
-		// 		left:'today prev,next',
-		// 		center:'title',
-		// 		right: 'basicDay,month,basicWeek'
-		// 	}
-		// });
+
 		$('#calendar').fullCalendar({
 			weekends: true,
 			lang: 'es',

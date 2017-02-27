@@ -34,11 +34,11 @@ Route::resource('empleados', 'EmpleadoController');
 	    return view('ausencias/index', $data);
 		});
 	Route::get('ausencias/listadoVacaciones', [
-		'uses' => '\Pedidos\Http\Controllers\AusenciaController@listadoVacaciones',
+		'uses' => '\Horarios\Http\Controllers\AusenciaController@listadoVacaciones',
 		'as' => 'listadoVacaciones',
 		]);
 	Route::any('vacaciones/{id}', [
-		'uses' => '\Pedidos\Http\Controllers\AusenciaController@confirmarVacaciones',
+		'uses' => '\Horarios\Http\Controllers\AusenciaController@confirmarVacaciones',
 		'as' => 'confirmarVacaciones',
 		]);
 	
@@ -46,10 +46,13 @@ Route::resource('empleados', 'EmpleadoController');
 
 	Route::get('/api', function () {
 		$ausencias = DB::table('ausencias')->select('id', 'empleado_id', 'tipo', 'fecha_inicio as start', 'fecha_fin as end','finalDay','allDay')->get();
+			$tiposAusencia = ['V' => 'vacaciones', 'B' => 'baja', 'AJ' => 'ausencia justif.','AN' => 'ausencia no justif.'];
+    	$empleados = DB::table('empleados')->pluck('alias','id');
+
 		foreach($ausencias as $ausencia){
 			$start = date('d/m',strtotime($ausencia->start));
 			$end = date('d/m',strtotime($ausencia->finalDay));
-			$ausencia->title = $ausencia->tipo . ' - ' .$ausencia->empleado_id. ' (' .$start. ' A '.$end.')';
+			$ausencia->title = $tiposAusencia[$ausencia->tipo] . ' - ' .$empleados[$ausencia->empleado_id]. ' (' .$start. ' A '.$end.')';
 			$ausencia->url = url('ausencias/' . $ausencia->id);
 			if($ausencia->allDay==0){
 					$ausencia->allDay = false;
