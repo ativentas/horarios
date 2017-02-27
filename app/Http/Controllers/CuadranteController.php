@@ -227,6 +227,9 @@ public function crearNieuwCuadrante(Request $request)
         // return view('cuadrantes.detalle',compact('lineas')); 
         return redirect('cuadrante/'.$cuadrante->yearsemana); 
     }
+    if (Auth::user()->isAdmin()){
+        return redirect('home')->with('info','Los encargados son los que tienen que crear los horarios');
+    }
     $centro_id = Auth::user()->centro_id;
     //TO DO: hacer try catch para que lo haga todo o nada    
     $cuadrante = new Cuadrante;

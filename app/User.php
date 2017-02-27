@@ -29,9 +29,15 @@ class User extends Authenticatable
 
     protected $casts = [
         'is_admin' => 'boolean',
+        'activo' => 'boolean',
     ];
 
+
     public function isAdmin()
+    {
+        return $this->is_admin;
+    }
+    public function isActivo()
     {
         return $this->is_admin;
     }
