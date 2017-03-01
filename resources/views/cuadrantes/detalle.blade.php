@@ -71,7 +71,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         {{csrf_field()}}
         <!-- TABLA -->
         <div class="tg-wrap">
-        <table class="tg" style="undefined;table-layout: fixed; width: 767px">
+        <table data-isadmin="{{Auth::user()->is_admin}}" data-estadocuadrante="{{$cuadrante->estado}}" class="tg" id="tabla_plantilla" style="undefined;table-layout: fixed; width: 767px">
         <colgroup>
             <col style="width: 121px">
             <col style="width: 50px">

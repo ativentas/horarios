@@ -4,6 +4,10 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
+
+var estadocuadrante = $('#tabla_plantilla').data('estadocuadrante');
+var isadmin = $('#tabla_plantilla').data('isadmin');
+alert(estadocuadrante,isamin);
 var empleados = [];
 $('.datos_empleado').each(function(){
   var id = $(this).data('empleado_id');

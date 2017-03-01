@@ -107,7 +107,9 @@ public function aceptarHorarios ($cuadrante_id){
 
     switch ($cuadrante->estado) {
         case 'AceptadoCambios':
-            # code...
+            # borro las lineacambios y cambio el estado a Aceptado
+            $cuadrante->lineacambios()->delete();//no se si esto funcionará
+            $cuadrante->estado = 'Aceptado'; 
             break;
         case 'Aceptado':
             //TO DO: creo que en este caso mejor mandarlo a home con un aviso
@@ -124,6 +126,27 @@ public function aceptarHorarios ($cuadrante_id){
             break;
     }
 }
+
+public function rechazarHorarios ($cuadrante_id){
+
+    $cuadrante = Cuadrante::findOrFail($cuadrante_id);
+
+    switch ($cuadrante->estado) {
+        case 'AceptadoCambios':
+            # de alguna manera habrá que hacerle saber al manager del restaurante que sus cambios han sido rechazados. De momento no hago nada y que se le llame para que lo rectifique
+            dd('Hay que comunicarle al encargado que cambie lo que no sea conforme');
+            break;
+        case 'Pendiente':
+            # cambiar estado a NULL
+            break;
+        
+        default:
+            dd('Debe haber un error porque este horario no es todavía rechazable');
+            # error porque no puede ser que no sea ...
+            break;
+    }
+}
+
 
 public function mostrarCuadrante($yearsemana=NULL)
 {
