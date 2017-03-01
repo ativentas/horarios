@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLineasTable extends Migration
+class CreateLineacambiosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateLineasTable extends Migration
      */
     public function up()
     {
-        Schema::create('lineas', function (Blueprint $table) {
+        Schema::create('lineacambios', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('linea_id')->unsigned();
             $table->integer('cuadrante_id')->unsigned();
             $table->integer('empleado_id')->unsigned();
             $table->integer('ausencia_id')->unsigned()->nullable();
@@ -25,9 +26,6 @@ class CreateLineasTable extends Migration
             $table->time('salida1')->nullable();
             $table->time('entrada2')->nullable();
             $table->time('salida2')->nullable();
-            //TO DO: VER SI VALE LA PENA: creo que las siguientes fechas son para luego mostrar el periodo de la ausencia, ver si conviene hacerlo así, aunque seguramente será mejor de otra manera para no duplicar información en las tablas
-            // $table->date('fecha_inicio')->nullable();
-            // $table->date('fecha_fin')->nullable();
             $table->timestamps();
 
             $table->unique(['fecha', 'empleado_id']);

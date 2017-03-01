@@ -63,7 +63,7 @@ Route::resource('empleados', 'EmpleadoController');
 
 
 Route::post('/validar/{id}', [
-	'uses' => 'CuadranteController@validarHorarios',
+	'uses' => 'CuadranteController@guardarHorarios',
 	'as' => 'guardarCuadrante',
 	'middleware' => ['auth']
 	]);

@@ -180,7 +180,7 @@ $('.btn_modify').on('click', function() {
 
     var empleado_id = $(this).parent().data('empleado_id');
 
-    $( "#dialogEmpleado-form" ).dialog({ title: empleado_id });  
+    $( "#dialogEmpleado-form" ).dialog({ title: 'Horario habitual '+empleados[empleado_id] });  
     /*si la situacion es VT, el checkbox tiene que ser otro*/
     dialog_horarios
     .data( 'empleado_id', empleado_id ) 

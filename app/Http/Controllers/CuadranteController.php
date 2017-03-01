@@ -11,6 +11,7 @@ use DB;
 use App\Cuadrante;
 use App\Empleado;
 use App\Linea;
+use App\Lineacambio;
 use App\Centro;
 use App\Ausencia;
 
@@ -34,7 +35,10 @@ public function yearsemana($fecha)
     return $year.$semana;
 }
 
-public function validarHorarios(Request $request, $cuadrante_id){
+public function guardarHorarios(Request $request, $cuadrante_id){
+    //TO DO: cuando el cuadrante esté aceptado, comparar los datos a grabar con lo grabado y si hay cambios, grabar el antiguo dato en lineacambios y esas lineas de lineacambios se borrarán cuando se ponga el cuadrante como archivado
+
+    $cuadrante = Cuadrante::findOrFail($cuadrante_id);
     $input = $request->all();
     // dd($input);
     $lineas = Linea::where('cuadrante_id',$cuadrante_id)->get();
@@ -46,6 +50,25 @@ public function validarHorarios(Request $request, $cuadrante_id){
         $entrada2 = $request->{'entrada2_'.$dia.'_'.$empleado_id};
         $salida1 = $request->{'salida1_'.$dia.'_'.$empleado_id};
         $salida2 = $request->{'salida2_'.$dia.'_'.$empleado_id};
+        if ($cuadrante->estado == 'Aceptado'){
+            $cambios = false;
+            $lineascambiadas = $cuadrante->lineacambios();
+            $arraynuevo = [$situacion,$entrada1,$entrada2,$salida1,$salida2];
+            $arrayaprobado = [$linea->situacion,$linea->entrada1,$linea->entrada2,$linea->salida1,$linea->salida2];
+            if($arraynuevo != $arrayaprobado){
+                $lineaconcambios = new Lineacambio([
+                    'situacion' => $arrayaprobado[0],
+                    'entrada1' => $arrayaprobado[1],
+                    'entrada2' => $arrayaprobado[2],
+                    'entrada2' => $arrayaprobado[3],
+                    'salida2' => $arrayaprobado[4],
+                    ]);
+                //con esto guarda la linea_id en $lineaconcambios
+                $linea->lineacambio()->save($lineaconcambios);
+                //para luego poner el cuadrante con estado AceptadoCambios
+                $cambios = true;
+            }
+        }
         $linea->update([
             'situacion'=> $situacion,
             'entrada1'=> $entrada1,
@@ -55,6 +78,33 @@ public function validarHorarios(Request $request, $cuadrante_id){
             ]);
     }
     //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
+}
+
+public function aceptarHorarios ($cuadrante_id){
+    //TO DO: poner el cuadrante como aceptado, pero primero comprobar por si acaso que no hayan lineas con cambios, y si las hay borrarlas (no veo porque tienen que haberlas, pero por si acaso...). Ahora veo que si que pueden haber lineasconcambios porque despues de aceptar por primera vez el cuadrante, se pueden proponer nuevos cambios
+    //TO DO: ver si el cuadrante tiene como estado pendiente, sino no aceptar
+    $cuadrante = Cuadrante::findOrFail($cuadrante_id);
+
+    switch ($cuadrante->estado) {
+        case 'AceptadoCambios':
+            # code...
+            break;
+        case 'Aceptado':
+            //TO DO: creo que en este caso mejor mandarlo a home con un aviso
+            dd('Este cuadrante ya no está disponible para aceptar. Es posible que otro usuario lo haya aceptado o que esté de nuevo en preparación');
+            break;  
+        default:
+            $lineascambiadas = $cuadrante->lineacambios()->get();
+            if($lineascambiadas){
+                dd('hay lineas con cambios');
+            }
+            dd('no hay lineas con cambios');
+            $cuadrante->estado = 'Aceptado';
+            $cuadrante->save();
+            break;
+    }
+
+
 }
 
 public function mostrarCuadrante($yearsemana=NULL)

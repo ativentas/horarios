@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Linea extends Model
+class Lineacambio extends Model
 {
-    protected $table = 'lineas';
+    protected $table = 'lineacambios';
 
     protected $guarded = ['id','updated_at','created_at'];
     
@@ -29,8 +29,8 @@ class Linea extends Model
         return $array[$this->dia];
     }
 
-    public function lineacambio()
+    public function linea()
     {
-        return $this->hasOne('App\Lineacambio');
+        return $this->belongsTo('App\Linea');
     }
 }

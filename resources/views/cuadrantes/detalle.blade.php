@@ -9,9 +9,7 @@
 .FA {background-color: powderblue}
 .FC {background-color: violet}
 .ausencia {}
-.editarhorario{
-    /*TO DO: CREO QUE SE PUEDE BORRAR TODO LO RELACIONADO CON ESTA CLASE*/
-}
+
 .wrapper {
     height: 60px;
     width: 100px;

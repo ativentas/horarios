@@ -12,6 +12,10 @@ class Cuadrante extends Model
     {
     	return 	$this->hasMany('App\Linea','cuadrante_id');
     }
+    public function lineacambios()
+    {
+    	return 	$this->hasMany('App\Lineacambio','cuadrante_id');
+    }
 
     public function centro()
     {

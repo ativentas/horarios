@@ -49,8 +49,13 @@ class EmpleadoController extends Controller
      */
     public function show($id)
     {
-        $lineas = Linea::where('empleado_id',$id)->get();
+
+        $lineas = Linea::where('empleado_id',$id)->whereHas('cuadrante', function ($query) {
+            $query->where('estado', '!=', NULL);
+        })->get();
+
         $empleado = Empleado::findOrFail($id);
+
         return view('empleados.detalle', compact('lineas','empleado'));
     }
 
