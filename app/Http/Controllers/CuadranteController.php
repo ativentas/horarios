@@ -36,12 +36,28 @@ public function yearsemana($fecha)
 }
 
 public function guardarHorarios(Request $request, $cuadrante_id){
-    //TO DO: cuando el cuadrante esté aceptado, comparar los datos a grabar con lo grabado y si hay cambios, grabar el antiguo dato en lineacambios y esas lineas de lineacambios se borrarán cuando se ponga el cuadrante como archivado
+    #TO DO: cuando el cuadrante esté aceptado, comparar los datos a grabar con lo grabado y si hay cambios, grabar el antiguo dato en lineacambios y esas lineas de lineacambios se borrarán cuando se ponga el cuadrante como archivado
 
     $cuadrante = Cuadrante::findOrFail($cuadrante_id);
     $input = $request->all();
     // dd($input);
     $lineas = Linea::where('cuadrante_id',$cuadrante_id)->get();
+    switch ($cuadrante->estado) {
+        case NULL:
+            $cambios = false;
+            if($cuadrante->lineacambios()){
+            #TO DO:si hay lineasconcambios lanzar error o borrarlas
+                dd('hay lineas con cambio y no debería, tendré que borrar las lineacambios');
+            }
+            break;
+        
+        default:
+            # si hay lineas con cambios, poner $cambios true
+            if ($cuadrante->has('lineacambios')) {
+                $cambios = true;
+            }
+            break;
+    }
     foreach ($lineas as $linea) {
         $dia = $linea->dia;
         $empleado_id = $linea->empleado_id;
@@ -50,12 +66,12 @@ public function guardarHorarios(Request $request, $cuadrante_id){
         $entrada2 = $request->{'entrada2_'.$dia.'_'.$empleado_id};
         $salida1 = $request->{'salida1_'.$dia.'_'.$empleado_id};
         $salida2 = $request->{'salida2_'.$dia.'_'.$empleado_id};
-        if ($cuadrante->estado == 'Aceptado'){
-            $cambios = false;
+        if ($cuadrante->estado == 'Aceptado'||$cuadrante->estado == 'AceptadoCambios'){
             $lineascambiadas = $cuadrante->lineacambios();
             $arraynuevo = [$situacion,$entrada1,$entrada2,$salida1,$salida2];
             $arrayaprobado = [$linea->situacion,$linea->entrada1,$linea->entrada2,$linea->salida1,$linea->salida2];
-            if($arraynuevo != $arrayaprobado){
+            if($arraynuevo != $arrayaprobado && $linea->doesntHave('lineacambio')){
+                #si ya hay lineaconcambios, no hacer nada, TO DO: si acaso podría comprobar que el registro de linea cambio fuese igual al arrayaprobado
                 $lineaconcambios = new Lineacambio([
                     'situacion' => $arrayaprobado[0],
                     'entrada1' => $arrayaprobado[1],
@@ -63,9 +79,9 @@ public function guardarHorarios(Request $request, $cuadrante_id){
                     'entrada2' => $arrayaprobado[3],
                     'salida2' => $arrayaprobado[4],
                     ]);
-                //con esto guarda la linea_id en $lineaconcambios
+                #con esto guarda la linea_id en $lineaconcambios
                 $linea->lineacambio()->save($lineaconcambios);
-                //para luego poner el cuadrante con estado AceptadoCambios
+                #para luego poner el cuadrante con estado AceptadoCambios
                 $cambios = true;
             }
         }
@@ -76,6 +92,10 @@ public function guardarHorarios(Request $request, $cuadrante_id){
             'entrada2'=> $entrada2,
             'salida2'=> $salida2,
             ]);
+    }
+    if($cambios == true){
+        $cuadrante->estado = 'AceptadoCambios';
+        $cuadrante->save();
     }
     //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
 }
@@ -103,8 +123,6 @@ public function aceptarHorarios ($cuadrante_id){
             $cuadrante->save();
             break;
     }
-
-
 }
 
 public function mostrarCuadrante($yearsemana=NULL)
@@ -216,7 +234,6 @@ public function mostrarCuadrante($yearsemana=NULL)
                 }
             }
             //TO DO: si me decanto por el $arrayausencias, actualizar la tabla de lineas con los datos del array
-
         }
     }
 //TO DO: en teoría no debe ocurrir, pero cuando no hay lineas en el cuadrante, sale un error de sql
@@ -269,7 +286,6 @@ public function mostrarCuadrante($yearsemana=NULL)
     //crear collection con los alias y con key id (no lo convierto a array porque sino da error en el script de abajo)
     $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
     return view('cuadrantes.detalle',compact('lineas','year','semana','inicio_semana','final_semana','cuadrante','predefinidos','empleados'));
-
 }
 
 public function mostrarNieuwCuadrante()
