@@ -18,6 +18,9 @@
     margin-top: -25px;
     margin-left: -3px;
 }
+.diasemana{
+  pointer-events: none;
+}
 
 .wrapper button {
     height: 100%;
@@ -50,7 +53,7 @@ td input {
                     <li><a href="{{ url('home') }}">Salir</a></li>
                     <li><a href="{{ url('nieuwcuadrante') }}">Nuevo Horario</a></li>
                     @if ($cuadrante->archivado == '0')
-                    <li><button class="btn-success btn-xs btn-guardar" id="btn_guardar" name="guardar">Guardar Cambios</button></li>
+                    <li><button class="btn-success btn-xs btn-guardar" id="btn_guardar" name="guardar" style="display:none;">Guardar Cambios</button></li>
                     @endif
                 </ol>
         </div>
@@ -91,7 +94,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         </colgroup>
             <tr>
                 <th class="tg-s6z2"></th>
-                <th data-dia="1" data-estadodia="{{$cuadrante->dia_1}}" class="tg-s6z2 diasemana {{$cuadrante->dia_1}}" id="estadodia_1" colspan="2">Lunes</th>
+                <th data-dia="1" data-estadodia="{{$cuadrante->dia_1}}" class="tg-s6z2 diasemana {{$cuadrante->dia_1}}" id="estadodia_1" colspan="2" disabled>Lunes</th>
                 <input type="hidden" name="nuevoestadodia_1" id="nuevoestadodia_1">
                 <th data-dia="2" data-estadodia="{{$cuadrante->dia_2}}" class="tg-s6z2 diasemana {{$cuadrante->dia_2}}" id="estadodia_2" colspan="2">Martes</th>
                 <input type="hidden" name="nuevoestadodia_2" id="nuevoestadodia_2">
@@ -109,12 +112,12 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             @foreach($lineas as $linea)
             <tr class="datos_empleado" data-empleado_id={{$linea->empleado_id}} data-empleado_nombre={{$linea->nombre}} style="">
                 <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2"style="height:60px;"><span>{{$linea->nombre}}</span> 
-                    <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="button"><span class="glyphicon glyphicon-edit"></span></button>
+                    <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="button" style="display: none;"><span class="glyphicon glyphicon-edit"></span></button>
                 </td>
                 <td data-dia="1" class="tg-031e" id="">
                     <input class="horariosdia_1" type="text" name="entrada1_1_{{$linea->empleado_id}}" id="entrada1_1_{{$linea->empleado_id}}" value="{{is_null($linea->ELU) ? '' : date('H:i',strtotime($linea->ELU))}}">
                     <div class="wrapper">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}" disabled>{{$linea->situacion1}}</button>
                     </div>
                     <input type="hidden" name="situacion_1_{{$linea->empleado_id}}" id="situacion_1_{{$linea->empleado_id}}" value="{{$linea->situacion1}}">
                 </td>             

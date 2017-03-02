@@ -7,7 +7,29 @@ $.ajaxSetup({
 
 var estadocuadrante = $('#tabla_plantilla').data('estadocuadrante');
 var isadmin = $('#tabla_plantilla').data('isadmin');
-alert(estadocuadrante,isamin);
+
+// TO DO: según el caso, habilitar las funciones para modificar la plantilla
+switch(estadocuadrante) {
+  case '':
+  case 'Pendiente':
+    $('.btn_modify').show();
+    $('.diasemana').css({pointerEvents: "auto"});
+    $('#btn_guardar').show();
+    break;
+  case 'Aceptado':
+    $('#btn_guardar').show();
+    break;  
+  case '':
+    $('#btn_guardar').show();
+    break;
+  case 'Archivado':
+    alert('Archivado');
+    break;
+  default:
+    alert('Error, el estado de la plantilla no es correcto');
+    break;
+}
+
 var empleados = [];
 $('.datos_empleado').each(function(){
   var id = $(this).data('empleado_id');
@@ -52,6 +74,13 @@ $('.ausencia').on( "click", function(event) {
   event.stopPropagation();
   var elemento = $(this);
   var situacion = $(this).html();
+  if (estadocuadrante=='Archivado'||isadmin==true)
+  {
+    if (isadmin == true && estadocuadrante !='Archivado'){
+      alert('solo el encargado puede proponer modificaciones de datos');
+    }
+    return;
+  }
   $('#container_horarioVT').hide();  
   /*si no es V o L o B, no mostrar checkbox*/
   $('#check_trabaja').hide();
