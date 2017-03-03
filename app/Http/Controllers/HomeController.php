@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Cuadrante;
 use Auth;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -41,8 +42,7 @@ class HomeController extends Controller
                 break;
             
             default:
-                $yearsemana = yearsemana(date());
-                dd($yearsemana);
+                $yearsemana = $this->yearsemana(date('Y-m-d'));
                 $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana)->get();
                 break;
         }

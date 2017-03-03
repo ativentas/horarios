@@ -27,6 +27,7 @@ public function __construct() {
     $this->situacionesconAusenciaId = ['V','B','AJ','AN'];
 }
     
+
 public function yearsemana($fecha)
 {
     $year = Carbon::parse($fecha)->startOfWeek()->year;
@@ -46,7 +47,8 @@ public function guardarHorarios(Request $request, $cuadrante_id){
     switch ($cuadrante->estado) {
         case 'Pendiente':
         case NULL:
-            if(count($cuadrante->lineacambios())){
+            if(count($cuadrante->lineacambios()->get())) {
+            dd(count($cuadrante->lineacambios()));
             #TO DO:si hay lineasconcambios lanzar error o borrarlas
                 dd('La plantilla estaba todavía Pendiente y hay lineas con cambio y no debería,');
             }

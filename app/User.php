@@ -39,7 +39,7 @@ class User extends Authenticatable
     }
     public function isActivo()
     {
-        return $this->is_admin;
+        return $this->activo;
     }
 
     public function isOnline()

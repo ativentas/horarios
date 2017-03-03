@@ -16,7 +16,6 @@ class Cuadrante extends Model
     {
     	return 	$this->hasMany('App\Lineacambio','cuadrante_id');
     }
-
     public function centro()
     {
     	return $this->belongsTo('App\Centro','centro_id');
