@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Cuadrante;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -16,6 +18,15 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+    public function yearsemana($fecha)
+    {
+        $year = Carbon::parse($fecha)->startOfWeek()->year;
+        $semana = Carbon::parse($fecha)->weekOfYear;
+        $semana = sprintf("%02d", $semana);
+        return $year.$semana;
+    }
+
+
     /**
      * Show the application dashboard.
      *
@@ -23,6 +34,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $isadmin = Auth::user()->isAdmin();
+        switch ($isadmin) {
+            case true:
+                $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios'))->get();                
+                break;
+            
+            default:
+                $yearsemana = yearsemana(date());
+                dd($yearsemana);
+                $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana)->get();
+                break;
+        }
+        return view('home',compact('cuadrantes'));
     }
 }
