@@ -62,6 +62,7 @@ $('#btn_guardar').on("click", function(e){
     var form = $('#form_guardar');
     var url = form.attr('action');   
     var data = form.serialize();
+    // console.log(jQuery.type(data));
     $.post(url, data).done(function(data){
             alert(data);
             location.reload();
@@ -70,6 +71,22 @@ $('#btn_guardar').on("click", function(e){
     });    
 });
 
+$('#boton_solicitarverificacion').click(function(e){
+    e.preventDefault();
+    if ($('#check_preparado').prop('checked') == false) {
+        alert('Tienes que marcar primero para enviarlo');
+        //poner el checkbox en rojo
+        $('#check_preparado').css('outline','2px solid red');
+        return;
+    }
+    //TO DO: primero guardar los datos poniendo la plantilla como pendiente
+    // $('#cambio_estado').val('Pendiente');
+    $('#btn_guardar').trigger('click');
+    $('.btn-guardar').hide();
+
+
+
+});
 $('.ausencia').on( "click", function(event) {
   event.stopPropagation();
   var elemento = $(this);

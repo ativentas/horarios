@@ -18,7 +18,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
-Route::get('/cuadrante/{yearsemana?}', 'CuadranteController@mostrarCuadrante')->middleware('auth');
+Route::get('/cuadrante/{cuadrante_id?}', 'CuadranteController@mostrarCuadrante')->middleware('auth');
 Route::get('/nieuwcuadrante/', 'CuadranteController@mostrarNieuwCuadrante')->middleware('auth');
 Route::post('/nieuwcuadrante/', 'CuadranteController@crearNieuwCuadrante')->middleware('auth');
 

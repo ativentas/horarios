@@ -51,10 +51,16 @@ td input {
         <div class="row">
                 <ol class="breadcrumb">
                     <li><a href="{{ url('home') }}">Salir</a></li>
+                    @if (!Auth::user()->isAdmin())
                     <li><a href="{{ url('nieuwcuadrante') }}">Nuevo Horario</a></li>
+                    @endif
                     @if ($cuadrante->archivado == '0')
                     <li><button class="btn-success btn-xs btn-guardar" id="btn_guardar" name="guardar" style="display:none;">Guardar Cambios</button></li>
                     @endif
+                    <div style="float:right;margin-right: 50px">
+                    <input style="text-align:left;width:auto;margin:6px;margin-left: 60px;" type="checkbox" name="check_preparado" id="check_preparado" value="1"><span style="margin-left: 0px">Marcar para enviar</span>
+                    <button class="btn-primary btn-xs btn-danger" name="solicitarverificacion" id="boton_solicitarverificacion">Click para Enviar a Oficina</button>
+                    </div>
                 </ol>
         </div>
 <!--         <div class="row">
@@ -245,8 +251,16 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             </tr>
             @endforeach
         </table></div>
+        
+        <input type="hidden" name="cambio_estado" id="cambio_estado" val="">
+
         </form>
     </div>
+
+
+
+
+
 
 <div id="dialogEmpleado-form" title="">
   <form id = "Empleado-form" autofocus>

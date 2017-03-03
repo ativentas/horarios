@@ -39,21 +39,27 @@ public function guardarHorarios(Request $request, $cuadrante_id){
     #TO DO: cuando el cuadrante esté aceptado, comparar los datos a grabar con lo grabado y si hay cambios, grabar el antiguo dato en lineacambios y esas lineas de lineacambios se borrarán cuando se ponga el cuadrante como archivado
 
     $cuadrante = Cuadrante::findOrFail($cuadrante_id);
-    $input = $request->all();
+    // $input = $request->all();
     // dd($input);
     $lineas = Linea::where('cuadrante_id',$cuadrante_id)->get();
+    $cambios = false;
     switch ($cuadrante->estado) {
+        case 'Pendiente':
         case NULL:
-            $cambios = false;
-            if($cuadrante->lineacambios()){
+            if(count($cuadrante->lineacambios())){
             #TO DO:si hay lineasconcambios lanzar error o borrarlas
-                dd('hay lineas con cambio y no debería, tendré que borrar las lineacambios');
+                dd('La plantilla estaba todavía Pendiente y hay lineas con cambio y no debería,');
             }
             break;
-        
+        case 'Archivado':
+            if(count($cuadrante->lineacambios())){
+            #TO DO:si hay lineasconcambios lanzar error o borrarlas
+                dd('La plantilla ya estaba archivada y no debería haber lineacambios');
+            }
+            dd('Error, esta plantilla ya está archivada. No se debería haber podido hacer click en Guardar');
         default:
             # si hay lineas con cambios, poner $cambios true
-            if ($cuadrante->has('lineacambios')) {
+            if (count($cuadrante->lineacambios())) {
                 $cambios = true;
             }
             break;
@@ -93,16 +99,20 @@ public function guardarHorarios(Request $request, $cuadrante_id){
             'salida2'=> $salida2,
             ]);
     }
-    if($cambios == true){
+    if ($cambios == true) {
         $cuadrante->estado = 'AceptadoCambios';
+        $cuadrante->save();
+    }
+    if ($request->has('cambio_estado')) {
+        $nuevo_estado = $request->cambio_estado;
+        $cuadrante->estado = $nuevo_estado;
         $cuadrante->save();
     }
     //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
 }
 
 public function aceptarHorarios ($cuadrante_id){
-    //TO DO: poner el cuadrante como aceptado, pero primero comprobar por si acaso que no hayan lineas con cambios, y si las hay borrarlas (no veo porque tienen que haberlas, pero por si acaso...). Ahora veo que si que pueden haber lineasconcambios porque despues de aceptar por primera vez el cuadrante, se pueden proponer nuevos cambios
-    //TO DO: ver si el cuadrante tiene como estado pendiente, sino no aceptar
+  
     $cuadrante = Cuadrante::findOrFail($cuadrante_id);
 
     switch ($cuadrante->estado) {
@@ -115,15 +125,21 @@ public function aceptarHorarios ($cuadrante_id){
             //TO DO: creo que en este caso mejor mandarlo a home con un aviso
             dd('Este cuadrante ya no está disponible para aceptar. Es posible que otro usuario lo haya aceptado o que esté de nuevo en preparación');
             break;  
-        default:
+        case 'Archivado':
+            dd('No debería poderse aceptar un horario que ya está archivado. Revisar código');
+            break;
+        case 'Pendiente':
             $lineascambiadas = $cuadrante->lineacambios()->get();
             if($lineascambiadas){
-                dd('hay lineas con cambios');
+                dd('No tendría porque haber lineascambiadas en una plantilla Pendiente');
             }
-            dd('no hay lineas con cambios');
             $cuadrante->estado = 'Aceptado';
             $cuadrante->save();
             break;
+        default:
+            dd('En una plantilla con estado NULL, no se debería poder aceptar el horario');
+            break;
+
     }
 }
 
@@ -148,17 +164,25 @@ public function rechazarHorarios ($cuadrante_id){
 }
 
 
-public function mostrarCuadrante($yearsemana=NULL)
+public function mostrarCuadrante($cuadrante_id = NULL)
 {
-    if(!$yearsemana){
+    if(!$cuadrante_id){
+        if (Auth::user()->isAdmin()){
+            return redirect ('home');
+        }
         $ultimo = Cuadrante::where('centro_id', Auth::user()->centro_id)->orderBy('yearsemana','desc')->first();
         if(!$ultimo){
             return view('cuadrantes.geencuadrante');
         }
-        return redirect('cuadrante/'.$ultimo->yearsemana)->with('info', 'Ultimos horarios grabados');
+        return redirect('cuadrante/'.$ultimo->id)->with('info', 'Ultimos horarios grabados');
     }
 
-    $cuadrante = Cuadrante::where('yearsemana',$yearsemana)->where('centro_id', Auth::user()->centro_id)->first();
+    if (Auth::user()->isAdmin()) {
+        $cuadrante = Cuadrante::where('id',$cuadrante_id)->first();
+    }else{
+        $cuadrante = Cuadrante::where('id',$cuadrante_id)->where('centro_id', Auth::user()->centro_id)->first();
+    }
+    
     if(!$cuadrante){
         return redirect('cuadrante');
     }

@@ -11,8 +11,10 @@
        @include('layouts.alerts')            
 
             <ol class="breadcrumb">
-                <li><a href="{{ url('home') }}">Salir</a></li>
-                <li><a href="{{ url('nieuwcuadrante') }}">Nuevo Horario</a></li>
+               <li><a href="{{ url('home') }}">Salir</a></li>
+               @if (!Auth::user()->isAdmin())               
+               <li><a href="{{ url('nieuwcuadrante') }}">Nuevo Horario</a></li>
+            	@endif
             </ol>
 
     </div>
