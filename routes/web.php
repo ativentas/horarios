@@ -67,4 +67,9 @@ Route::post('/validar/{id}', [
 	'as' => 'guardarCuadrante',
 	'middleware' => ['auth']
 	]);
+Route::post('/aceptar/{id}', [
+	'uses' => 'CuadranteController@aceptarHorarios',
+	'as' => 'aceptarCuadrante',
+	'middleware' => ['auth']
+	]);
 

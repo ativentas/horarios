@@ -4,22 +4,45 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
-
 var estadocuadrante = $('#tabla_plantilla').data('estadocuadrante');
 var isadmin = $('#tabla_plantilla').data('isadmin');
+var cambios = $('#tabla_plantilla').data('cambios');
+//poner en rojo los bordes de donde haya cambios
+$.each(cambios, function(index,obj){
+  // $.each(obj,function(key,value){
+    var empl = obj['empleado_id'];
+    var dia = obj['dia'];
 
+    $('#wrapper-'+empl+'-'+dia).css({"border-style":"solid","border-color":"red"});
+  // });
+});
 // TO DO: según el caso, habilitar las funciones para modificar la plantilla
 switch(estadocuadrante) {
-  case '':
+  case '':    
+    if(!isadmin){
+      $('.btn_modify').show();
+      $('.diasemana').css({pointerEvents: "auto"});
+      $('#btn_guardar').show();
+      $('#div_verificar').show();
+    }
+    break;    
   case 'Pendiente':
+    if(isadmin){
+      $('#div_aceptar').show();
+    }
     $('.btn_modify').show();
     $('.diasemana').css({pointerEvents: "auto"});
     $('#btn_guardar').show();
     break;
   case 'Aceptado':
-    $('#btn_guardar').show();
+    if(!isadmin){
+        $('#btn_guardar').show();
+    }
     break;  
-  case '':
+  case 'AceptadoCambios':
+    if(isadmin){
+      $('#div_aceptar').show();
+    }
     $('#btn_guardar').show();
     break;
   case 'Archivado':
@@ -79,14 +102,34 @@ $('#boton_solicitarverificacion').click(function(e){
         $('#check_preparado').css('outline','2px solid red');
         return;
     }
-    //TO DO: primero guardar los datos poniendo la plantilla como pendiente
-    // $('#cambio_estado').val('Pendiente');
+    //guardar los datos poniendo la plantilla como pendiente
+    $('#cambio_estado').val('Pendiente');
     $('#btn_guardar').trigger('click');
     $('.btn-guardar').hide();
+});
+$('#boton_aceptar').click(function(e){
+    e.preventDefault();
+    if ($('#check_aceptar').prop('checked') == false) {
+        alert('Tienes que marcar primero para aceptarlo');
+        //poner el checkbox en rojo
+        $('#check_aceptar').css('outline','2px solid red');
+        return;
+    }
+    //lanzar post para modificar estado
 
+    var form = $('#form_aceptar');
+    var url = form.attr('action');   
+    var data = form.serialize();
+    $.post(url, data).done(function(data){
+            alert(data);
+            location.reload();
+    }).fail(function(data){
+        alert(data);
+    });   
 
 
 });
+
 $('.ausencia').on( "click", function(event) {
   event.stopPropagation();
   var elemento = $(this);
@@ -161,6 +204,9 @@ $('.wrapper').on("click", function() {
   var elemento = $(this);
   var situacion = $(this).children().first().html();
   // alert('situacion wrapper html: '+situacion);
+  if(isadmin||estadocuadrante=='Archivado'){
+    return;
+  }
   dialog_horariodia = $( "#dialogHorarioDia-form" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
       autoOpen: false,

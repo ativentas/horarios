@@ -27,7 +27,6 @@ class HomeController extends Controller
         return $year.$semana;
     }
 
-
     /**
      * Show the application dashboard.
      *
@@ -39,13 +38,16 @@ class HomeController extends Controller
         switch ($isadmin) {
             case true:
                 $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios'))->get();                
+                $completados = Cuadrante::whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','asc')->get();
                 break;
             
             default:
                 $yearsemana = $this->yearsemana(date('Y-m-d'));
                 $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana)->get();
+                $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','<',$yearsemana)->orderBy('yearsemana','desc')->get();
+                
                 break;
         }
-        return view('home',compact('cuadrantes'));
+        return view('home',compact('cuadrantes','completados'));
     }
 }

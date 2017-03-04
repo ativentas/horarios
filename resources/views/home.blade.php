@@ -47,6 +47,36 @@
         @endif
     </div>
 
+    <div class="col-md-12">
+        @if($completados->count() > 0)
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Semana</th>
+                    <th>Periodo</th>
+                    <th>Centro Trabajo</th>
+                    <th>Estado</th>
+                    <th>Ver</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach($completados as $completado)
+                <tr>
+                    <th>{{$completado->yearsemana}}</th>
+                    <td></td>
+                    <td>{{$completado->centro->nombre}}</td>
+                    <td>{{$completado->estado}}</td>
+                    <td><a href="{{ url('/cuadrante/' . $completado->id) }}">Ver</a></td>
+
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+        @else
+            <h2></h2>
+        @endif
+    </div>
+
                 
 
 

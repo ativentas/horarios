@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DateTime;
 use Carbon\Carbon;
+use Exception;
 
 use Auth;
 use DB;
@@ -66,62 +67,81 @@ public function guardarHorarios(Request $request, $cuadrante_id){
             }
             break;
     }
-    foreach ($lineas as $linea) {
-        $dia = $linea->dia;
-        $empleado_id = $linea->empleado_id;
-        $situacion = $request->{'situacion_'.$dia.'_'.$empleado_id};
-        $entrada1 = $request->{'entrada1_'.$dia.'_'.$empleado_id};
-        $entrada2 = $request->{'entrada2_'.$dia.'_'.$empleado_id};
-        $salida1 = $request->{'salida1_'.$dia.'_'.$empleado_id};
-        $salida2 = $request->{'salida2_'.$dia.'_'.$empleado_id};
-        if ($cuadrante->estado == 'Aceptado'||$cuadrante->estado == 'AceptadoCambios'){
-            $lineascambiadas = $cuadrante->lineacambios();
-            $arraynuevo = [$situacion,$entrada1,$entrada2,$salida1,$salida2];
-            $arrayaprobado = [$linea->situacion,$linea->entrada1,$linea->entrada2,$linea->salida1,$linea->salida2];
-            if($arraynuevo != $arrayaprobado && $linea->doesntHave('lineacambio')){
-                #si ya hay lineaconcambios, no hacer nada, TO DO: si acaso podría comprobar que el registro de linea cambio fuese igual al arrayaprobado
-                $lineaconcambios = new Lineacambio([
-                    'situacion' => $arrayaprobado[0],
-                    'entrada1' => $arrayaprobado[1],
-                    'entrada2' => $arrayaprobado[2],
-                    'entrada2' => $arrayaprobado[3],
-                    'salida2' => $arrayaprobado[4],
-                    ]);
-                #con esto guarda la linea_id en $lineaconcambios
-                $linea->lineacambio()->save($lineaconcambios);
-                #para luego poner el cuadrante con estado AceptadoCambios
-                $cambios = true;
+
+    try {
+        $exception = DB::transaction(function() use ($lineas,$cuadrante,$request,$cambios) {
+
+        foreach ($lineas as $linea) {
+            $dia = $linea->dia;
+            $empleado_id = $linea->empleado_id;
+            $situacion = $request->{'situacion_'.$dia.'_'.$empleado_id};
+            $entrada1 = $request->{'entrada1_'.$dia.'_'.$empleado_id};
+            $entrada2 = $request->{'entrada2_'.$dia.'_'.$empleado_id};
+            $salida1 = $request->{'salida1_'.$dia.'_'.$empleado_id};
+            $salida2 = $request->{'salida2_'.$dia.'_'.$empleado_id};
+            if ($cuadrante->estado == 'Aceptado'||$cuadrante->estado == 'AceptadoCambios'){
+                $arraynuevo = [$situacion,$entrada1,$entrada2,$salida1,$salida2];
+                $arrayaprobado = [$linea->situacion,substr($linea->entrada1,0,5),substr($linea->entrada2,0,5),substr($linea->salida1,0,5),substr($linea->salida2,0,5)];
+                if($arraynuevo != $arrayaprobado && $linea->doesntHave('lineacambio')){
+                    #si ya hay lineaconcambios, no hacer nada, TO DO: si acaso podría comprobar que el registro de linea cambio fuese igual al arrayaprobado
+                    $lineaconcambios = Lineacambio::where('linea_id',$linea->id)->first();
+                    if(!$lineaconcambios){                 
+                        $lineaconcambios = new Lineacambio([
+                            'situacion' => $arrayaprobado[0],
+                            'entrada1' => $arrayaprobado[1],
+                            'entrada2' => $arrayaprobado[2],
+                            'salida1' => $arrayaprobado[3],
+                            'salida2' => $arrayaprobado[4],
+                            'cuadrante_id' => $linea->cuadrante_id,
+                            'empleado_id' => $linea->empleado_id,
+                            'ausencia_id' => $linea->ausencia_id,
+                            'fecha' => $linea->fecha,
+                            'dia' => $linea->dia,
+                            ]);
+                        #con esto guarda la linea_id en $lineaconcambios
+                        $linea->lineacambio()->save($lineaconcambios);
+                        #para luego poner el cuadrante con estado AceptadoCambios
+                        $cambios = true;
+                    } 
+                }
             }
+            $linea->update([
+                'situacion'=> $situacion,
+                'entrada1'=> $entrada1,
+                'salida1'=> $salida1,
+                'entrada2'=> $entrada2,
+                'salida2'=> $salida2,
+                ]);
         }
-        $linea->update([
-            'situacion'=> $situacion,
-            'entrada1'=> $entrada1,
-            'salida1'=> $salida1,
-            'entrada2'=> $entrada2,
-            'salida2'=> $salida2,
-            ]);
+        if ($cambios == true) {
+            $cuadrante->estado = 'AceptadoCambios';
+            $cuadrante->save();
+        }
+        if ($request->has('cambio_estado')) {
+            $nuevo_estado = $request->cambio_estado;
+            $cuadrante->estado = $nuevo_estado;
+            $cuadrante->save();
+        }
+        //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
+        });
+        return is_null($exception) ? 'Cambios guardados' : $exception;
+    
+    } catch(Exception $e) {
+        // return $e;
+        return "Error: no se han podido guardar los cambios".$e;
     }
-    if ($cambios == true) {
-        $cuadrante->estado = 'AceptadoCambios';
-        $cuadrante->save();
-    }
-    if ($request->has('cambio_estado')) {
-        $nuevo_estado = $request->cambio_estado;
-        $cuadrante->estado = $nuevo_estado;
-        $cuadrante->save();
-    }
-    //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
+
 }
 
 public function aceptarHorarios ($cuadrante_id){
   
     $cuadrante = Cuadrante::findOrFail($cuadrante_id);
-
     switch ($cuadrante->estado) {
         case 'AceptadoCambios':
             # borro las lineacambios y cambio el estado a Aceptado
             $cuadrante->lineacambios()->delete();//no se si esto funcionará
             $cuadrante->estado = 'Aceptado'; 
+            $cuadrante->save();
             break;
         case 'Aceptado':
             //TO DO: creo que en este caso mejor mandarlo a home con un aviso
@@ -132,7 +152,7 @@ public function aceptarHorarios ($cuadrante_id){
             break;
         case 'Pendiente':
             $lineascambiadas = $cuadrante->lineacambios()->get();
-            if($lineascambiadas){
+            if(count($lineascambiadas)){
                 dd('No tendría porque haber lineascambiadas en una plantilla Pendiente');
             }
             $cuadrante->estado = 'Aceptado';
@@ -333,8 +353,11 @@ public function mostrarCuadrante($cuadrante_id = NULL)
 
     $predefinidos = DB::table('predefinidos')->select('id AS value','nombre AS label','entrada1','salida1','entrada2','salida2')->get();
     //crear collection con los alias y con key id (no lo convierto a array porque sino da error en el script de abajo)
-    $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
-    return view('cuadrantes.detalle',compact('lineas','year','semana','inicio_semana','final_semana','cuadrante','predefinidos','empleados'));
+    //me parece que $empleados no se está usando. Lo he quitado también del compact
+    // $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
+
+    $lineasconcambios = $cuadrante->lineacambios()->get();
+    return view('cuadrantes.detalle',compact('lineas','year','semana','inicio_semana','final_semana','cuadrante','predefinidos','lineasconcambios'));
 }
 
 public function mostrarNieuwCuadrante()
