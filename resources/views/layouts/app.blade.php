@@ -18,8 +18,10 @@
     
     <!-- Scripts -->
 
-    <script src="/js/app.js"></script>
+
     <script src="{{asset('js/jquery-3.1.1.min.js')}}"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/app.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="{{asset('js/jquery-ui.js')}}"></script>
     <script src="{{asset('js/datepicker-es.js')}}"></script>  

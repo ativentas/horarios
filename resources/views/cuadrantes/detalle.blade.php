@@ -398,6 +398,7 @@ $(document).ready(function(){
     };
   } );
 
+
 // TO DO: si hay algún día cerrado o festivo, cambiar el color de la columna. Se puede hacer con css, creo que no hace falta jquery. Un caso a estudiar es cuando se pone manualmente un día como cerrado, entonces sí que haría falta jquery, a no ser que recarge la página (mejor que no recarge para asegurarse que no se graba por error)
 // TO DO: click en botón Abierto o Cerrado del día de la semana, abre modal para elegir Abierto o Cerrado. Si se marca cerrado, borrará todos los horarios de ese día, pero no grabará los cambios en la base de datos.
 

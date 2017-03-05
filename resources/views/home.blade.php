@@ -32,8 +32,8 @@
             <tbody>
             @foreach($cuadrantes as $cuadrante)
                 <tr>
-                    <th>{{$cuadrante->yearsemana}}</th>
-                    <td></td>
+                    <th>{{$cuadrante->semana}}</th>
+                    <th>{{$cuadrante->abarca}}</th>
                     <td>{{$cuadrante->centro->nombre}}</td>
                     <td>{{$cuadrante->estado}}</td>
                     <td><a href="{{ url('/cuadrante/' . $cuadrante->id) }}">Ver</a></td>

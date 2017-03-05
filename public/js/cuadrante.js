@@ -7,15 +7,31 @@ $.ajaxSetup({
 var estadocuadrante = $('#tabla_plantilla').data('estadocuadrante');
 var isadmin = $('#tabla_plantilla').data('isadmin');
 var cambios = $('#tabla_plantilla').data('cambios');
-//poner en rojo los bordes de donde haya cambios
+
+
+
+
+//poner en rojo los bordes de donde haya cambios y crear los tooltips
 $.each(cambios, function(index,obj){
-  // $.each(obj,function(key,value){
     var empl = obj['empleado_id'];
     var dia = obj['dia'];
-
+    var situacion = '';
+    if(obj['situacion']!=null){
+      situacion = obj['situacion'];
+    }
+    var html = obj['entrada1'].substr(0,5)+' '+obj['salida1'].substr(0,5)+'</br>'+
+          obj['entrada2'].substr(0,5)+' '+obj['salida2'].substr(0,5)+'</br>'+
+          situacion;
     $('#wrapper-'+empl+'-'+dia).css({"border-style":"solid","border-color":"red"});
-  // });
+
+    $('#wrapper-'+empl+'-'+dia).tooltip({title: html, html: true});
+
 });
+
+
+
+
+
 // TO DO: según el caso, habilitar las funciones para modificar la plantilla
 switch(estadocuadrante) {
   case '':    
@@ -43,7 +59,9 @@ switch(estadocuadrante) {
     if(isadmin){
       $('#div_aceptar').show();
     }
-    $('#btn_guardar').show();
+    if(!isadmin){
+      $('#btn_guardar').show();
+    }
     break;
   case 'Archivado':
     alert('Archivado');
