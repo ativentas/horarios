@@ -357,7 +357,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     // $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
 
     $lineasconcambios = $cuadrante->lineacambios()->get();
-    return view('cuadrantes.detalle',compact('lineas','year','semana','inicio_semana','final_semana','cuadrante','predefinidos','lineasconcambios'));
+    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios'));
 }
 
 public function mostrarNieuwCuadrante()

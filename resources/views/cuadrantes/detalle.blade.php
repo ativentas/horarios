@@ -43,7 +43,8 @@ td input {
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-        <div class="col-md-5 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$semana}} ({{$year}}) - {{date_format($inicio_semana,'d M')}} al {{date_format($final_semana,'d M')}}</span>
+
+        <div class="col-md-5 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$cuadrante->semana}} ({{$cuadrante->year}}) - {{$cuadrante->abarca}}</span>
         </div>
         </div>
     <!-- <h2>Detalle Horario Semana</h2> -->
@@ -74,11 +75,7 @@ td input {
 
 
         </div>
-<!--         <div class="row">
-        <div class="col-md-4 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$semana}} ({{$year}}) - {{date_format($inicio_semana,'d M')}} al {{date_format($final_semana,'d M')}}</span>
-        </div>
-        </div>
- -->    
+
 
 <!-- Imagen que ocupa las 4 celdas si se pone en la entrada1, puede servir para cuando sea VT, pero prefiero probar a poner un fondo en los td que sean VT o SD.
 TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita imagen que sea solo la letra V y que vaya en medio de los 4 horarios y así no tapa y no hay que poner opacidad -->
@@ -111,7 +108,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         </colgroup>
             <tr>
                 <th class="tg-s6z2"></th>
-                <th data-dia="1" data-estadodia="{{$cuadrante->dia_1}}" class="tg-s6z2 diasemana {{$cuadrante->dia_1}}" id="estadodia_1" colspan="2" disabled>Lunes</th>
+                <th data-dia="1" data-estadodia="{{$cuadrante->dia_1}}" class="tg-s6z2 diasemana {{$cuadrante->dia_1}}" id="estadodia_1" colspan="2">Lunes</th>
                 <input type="hidden" name="nuevoestadodia_1" id="nuevoestadodia_1">
                 <th data-dia="2" data-estadodia="{{$cuadrante->dia_2}}" class="tg-s6z2 diasemana {{$cuadrante->dia_2}}" id="estadodia_2" colspan="2">Martes</th>
                 <input type="hidden" name="nuevoestadodia_2" id="nuevoestadodia_2">
@@ -134,7 +131,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="1" class="tg-031e" id="">
                     <input class="horariosdia_1" type="text" name="entrada1_1_{{$linea->empleado_id}}" id="entrada1_1_{{$linea->empleado_id}}" value="{{is_null($linea->ELU) ? '' : date('H:i',strtotime($linea->ELU))}}">
                     <div class="wrapper" id="wrapper-{{$linea->empleado_id}}-1">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}" disabled>{{$linea->situacion1}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
                     </div>
                     <input type="hidden" name="situacion_1_{{$linea->empleado_id}}" id="situacion_1_{{$linea->empleado_id}}" value="{{$linea->situacion1}}">
                 </td>             
