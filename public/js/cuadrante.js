@@ -105,9 +105,11 @@ $('#btn_guardar').on("click", function(e){
     var data = form.serialize();
     // console.log(jQuery.type(data));
     $.post(url, data).done(function(data){
+            console.log(data);
             alert(data);
             location.reload();
     }).fail(function(data){
+        console.log(data);
         alert(data);
     });    
 });
@@ -147,6 +149,34 @@ $('#boton_aceptar').click(function(e){
 
 
 });
+
+$('#btn_añadir_empleado').click(function(e){
+    e.preventDefault();
+    if(!$('#select_añadir').val()){
+        alert('no hay');
+        return;
+    }
+    var empleado = $('#select_añadir').val();
+    //lanzar post para añadir empleado al cuadrante. 
+    // Luego pedir que guarde datos para ver los cambios
+    var form = $('#form_añadir_empleado');
+    var url = form.attr('action').replace(':EMPLEADO_ID',empleado);
+    var data = form.serialize();
+
+    // por si acaso hay que especificar mas
+    // alert('Se va a añadir a '+$('#select_añadir option:selected').val());
+    $.post(url, data).done(function(data){
+        alert(data);
+    }).fail(function(data){
+        alert(data);
+    });   
+
+
+});
+
+
+
+
 
 $('.ausencia').on( "click", function(event) {
   event.stopPropagation();

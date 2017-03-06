@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Lineacambio extends Model
 {
@@ -32,5 +33,29 @@ class Lineacambio extends Model
     public function linea()
     {
         return $this->belongsTo('App\Linea');
+    }
+    
+    public function getEntrada1Attribute($value){
+        return substr($value,0,5);
+
+    }
+    public function getSalida1Attribute($value){
+        return substr($value,0,5);
+
+    }
+    public function getEntrada2Attribute($value){
+        return substr($value,0,5);
+
+    }
+    public function getSalida2Attribute($value){
+        return substr($value,0,5);
+
+    }
+    public function getFechaAttribute($value){
+        $value = Carbon::createFromFormat('Y-m-d',$value);
+        return $value->format('d-m-Y');
+    }
+    public function setFechaAttribute ($value){
+        $this->attributes['fecha'] = Carbon::createFromFormat('d-m-Y',$value);
     }
 }

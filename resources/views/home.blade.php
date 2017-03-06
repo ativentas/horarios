@@ -62,8 +62,8 @@
             <tbody>
             @foreach($completados as $completado)
                 <tr>
-                    <th>{{$completado->yearsemana}}</th>
-                    <td></td>
+                    <th>{{$completado->semana}}</th>
+                    <td>{{$completado->abarca}}</td>
                     <td>{{$completado->centro->nombre}}</td>
                     <td>{{$completado->estado}}</td>
                     <td><a href="{{ url('/cuadrante/' . $completado->id) }}">Ver</a></td>

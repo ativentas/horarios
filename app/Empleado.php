@@ -8,6 +8,11 @@ class Empleado extends Model
 {
     protected $table = 'empleados';
     
+    public function scopeActivo($query)
+    {
+        return $query->where('activo', 1);
+    }
+
     public function lineas()
     {
     	return 	$this->hasMany('App\Linea','empleado_id');

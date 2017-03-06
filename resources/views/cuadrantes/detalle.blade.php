@@ -258,6 +258,22 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 </td>
             </tr>
             @endforeach
+            @if(count($empleadosdisponibles))
+            <tr>
+                <td> 
+                <!-- <div class="form-group"> -->
+                  <select class="form-control" id="select_añadir">
+                    <option value="" >Añadir</option>
+                    @foreach ($empleadosdisponibles as $empleado)
+                    <option value="{{$empleado->id}}">{{$empleado->alias}}</option>
+                    @endforeach
+                  </select>
+
+                <!-- </div> -->
+                </td>
+                <td colspan="2"><button type="button" class="btn-success btn-xs btn-añadir" id="btn_añadir_empleado" name="añadir_empleado" style="">Añadir</button></td>
+            </tr>
+            @endif
         </table></div>
         
         <input type="hidden" name="cambio_estado" id="cambio_estado" val="">
@@ -266,7 +282,9 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
     </div>
 
 
-
+<form id="form_añadir_empleado" action="{{route('añadirEmpleado',array('empleado'=>':EMPLEADO_ID','cuadrante'=>$cuadrante->id))}}" method="POST"> 
+{{csrf_field()}}
+</form>
 
 
 
@@ -329,11 +347,11 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         </div>
         <div class="form-group">
         <input class="predefinidos-entrada1" type="text" tabindex="" name="entrada1" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
-        <input class="predefinidos-salida1" type="text" tabindex="" name="salida1" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]|[2][4]:[0][0]" id="" size="5" placeholder="00:00" value="">
+        <input class="predefinidos-salida1" type="text" tabindex="" name="salida1" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
         </div>
         <div class="form-group">
         <input class="predefinidos-entrada2" type="text" tabindex="" name="entrada2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
-        <input class="predefinidos-salida2" type="text" tabindex="" name="salida2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]|[2][4]:[0][0]" id="" size="5" placeholder="00:00" value="">
+        <input class="predefinidos-salida2" type="text" tabindex="" name="salida2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
         </div>
         </div>
     </fieldset>

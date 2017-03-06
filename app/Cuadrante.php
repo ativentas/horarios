@@ -46,7 +46,8 @@ class Cuadrante extends Model
         $inicio_semana = $inicio_semana->format('d M');
         $final_semana = new Carbon($date->endOfWeek());
         $final_semana = $final_semana->format('d M');
-        $abarca = 'del '.$inicio_semana.' al '.$final_semana;
+        $abarca = $inicio_semana.' al '.$final_semana;
         return $abarca;
     }
+
 }

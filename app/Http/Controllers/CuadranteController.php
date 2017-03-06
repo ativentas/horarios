@@ -81,7 +81,8 @@ public function guardarHorarios(Request $request, $cuadrante_id){
             $salida2 = $request->{'salida2_'.$dia.'_'.$empleado_id};
             if ($cuadrante->estado == 'Aceptado'||$cuadrante->estado == 'AceptadoCambios'){
                 $arraynuevo = [$situacion,$entrada1,$entrada2,$salida1,$salida2];
-                $arrayaprobado = [$linea->situacion,substr($linea->entrada1,0,5),substr($linea->entrada2,0,5),substr($linea->salida1,0,5),substr($linea->salida2,0,5)];
+                // $arrayaprobado = [$linea->situacion,substr($linea->entrada1,0,5),substr($linea->entrada2,0,5),substr($linea->salida1,0,5),substr($linea->salida2,0,5)];   
+                $arrayaprobado = [$linea->situacion,$linea->entrada1?:null,$linea->entrada2?:null,$linea->salida1?:null,$linea->salida2?:null];
                 if($arraynuevo != $arrayaprobado && $linea->doesntHave('lineacambio')){
                     #si ya hay lineaconcambios, no hacer nada, TO DO: si acaso podría comprobar que el registro de linea cambio fuese igual al arrayaprobado
                     $lineaconcambios = Lineacambio::where('linea_id',$linea->id)->first();
@@ -208,11 +209,10 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     if(!$cuadrante){
         return redirect('cuadrante');
     }
-    if($cuadrante->archivado == '0'){
-        //TO DO: actualizar las lineas con las ausencias, ver si hay conflictos (por ejemplo cuando es vacaciones pero en la linea pone Vacaciones Trabaja).
+    if($cuadrante->archivado == '0') {
+        #TO DO: actualizar las lineas con las ausencias, ver si hay conflictos (por ejemplo cuando es vacaciones pero en la linea pone Vacaciones Trabaja).
         $centro_id = $cuadrante->centro_id;
         $empleados = Empleado::where('centro_id',$centro_id)->pluck('id')->toArray();
-
         $yearsemana = $cuadrante->yearsemana;
         $year = substr($yearsemana,0,4);
         $semana = substr($yearsemana,-2,2);
@@ -220,7 +220,6 @@ public function mostrarCuadrante($cuadrante_id = NULL)
         $date = new Carbon($date->setISODate($year,$semana));
         $date_clon = clone $date;
         $inicio_semana = new Carbon($date_clon->startOfWeek());
-
         $final_semana = new Carbon($date_clon->endOfWeek());
         //ver si las lineas con ausencias se corresponden con la tabla de ausencias
         $lineasconausencias = $cuadrante->lineas()->where('ausencia_id','>',0)->get();
@@ -256,13 +255,10 @@ public function mostrarCuadrante($cuadrante_id = NULL)
                     ]);
                     }    
                 }
-
             }
         }
-
         //actualizar las lineas con los datos de la tabla de ausencias
         $ausencias = Ausencia::where('fecha_fin','>=',$inicio_semana->toDateTimeString())->where('fecha_inicio','<=',$final_semana->toDateTimeString())->whereIn('empleado_id',$empleados)->get();
-        // dd($ausencias,$empleados);
         if($ausencias){   
             //TO DO: como $diassemana lo utilizo en mas de 1 sitio, crear la función generateDateRangeWeek ($yearsemana) y simplificar lo siguiente
             $inicio_semana_clon = clone $inicio_semana;
@@ -304,7 +300,9 @@ public function mostrarCuadrante($cuadrante_id = NULL)
             }
             //TO DO: si me decanto por el $arrayausencias, actualizar la tabla de lineas con los datos del array
         }
+        $empleadosdisponibles = $this->empleadosdisponibles($cuadrante);
     }
+
 //TO DO: en teoría no debe ocurrir, pero cuando no hay lineas en el cuadrante, sale un error de sql
     $lineas = DB::table('lineas')
         ->join('empleados', 'lineas.empleado_id', '=', 'empleados.id')
@@ -357,7 +355,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     // $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
 
     $lineasconcambios = $cuadrante->lineacambios()->get();
-    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios'));
+    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','empleadosdisponibles'));
 }
 
 public function mostrarNieuwCuadrante()
@@ -489,6 +487,43 @@ public function generateDateRangeWeek($yearsemana)
     $final_semana = new Carbon($date->endOfWeek());
     $dates = $this->generateDateRange($inicio_semana, $final_semana);
     return $dates;
+
+}
+public function empleadosdisponibles ($cuadrante)
+{
+#empleados activos del centro perteneciente a ese cuadrante pero que no están en ese cuadrante
+    $empleadosdisponibles = Empleado::activo()
+        ->where('centro_id',$cuadrante->centro_id)
+        ->whereNotIn('id', function($q) use($cuadrante){
+            $q->select('empleado_id')
+                ->from('lineas')
+                ->where('cuadrante_id',$cuadrante->id);
+        })->get();
+    return $empleadosdisponibles;
+
+
+}
+public function añadirempleado ($empleado_id,$cuadrante_id){
+    //TO DO: unificar esta función con la de addlineas
+    $cuadrante = Cuadrante::find($cuadrante_id);
+    $yearsemana = $cuadrante->yearsemana;
+    $year = substr($yearsemana,0,4);
+    $semana = substr($yearsemana,-2,2);
+    $date = new Carbon();
+    $date->setISODate($year,$semana);
+    $fecha_ini = new Carbon($date->startOfWeek()); 
+    $fecha_fin = new Carbon($date->endOfWeek());
+    
+    while ($fecha_ini <= $fecha_fin) {
+            $linea = new Linea;
+            $linea->cuadrante_id = $cuadrante_id;
+            $linea->fecha = $fecha_ini;
+            $linea->dia = $fecha_ini->dayOfWeek;
+            $linea->empleado_id = $empleado_id;          
+            $linea->save();     
+            $fecha_ini = $fecha_ini->addDay();
+    }
+    return 'hecho';
 
 }
 
