@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DateTime;
+use DB;
 use App\Empleado;
+use App\Ausencia;
+use App\Cuadrante;
 use App\Linea;
 
 
@@ -55,16 +59,34 @@ class EmpleadoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id,$cuadrante_id=NULL)
     {
-
-        $lineas = Linea::where('empleado_id',$id)->whereHas('cuadrante', function ($query) {
-            $query->where('estado', '!=', NULL);
-        })->get();
-
         $empleado = Empleado::findOrFail($id);
+        $cuadrante=Cuadrante::find($cuadrante_id);
+        if(!$cuadrante){
+            $date = new DateTime();
+            $yearsemana = $date->format("YW");
+            //buscar el cuadrante actual
+            $cuadrante = Cuadrante::where('yearsemana','<=',$yearsemana)->where('centro_id',$empleado->centro_id)->orderBy('yearsemana','desc')->first();
+        }
+        $beginyear = substr($yearsemana, 0,4).'-01-01';
+        $endyear = substr($yearsemana,0,4).'-12-31';
+        $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('empleado_id',$id)->whereHas('cuadrante', function ($query) {
+            $query->where('estado', '<>', NULL);
+            })->get();
 
-        return view('empleados.detalle', compact('lineas','empleado'));
+        $resumen = DB::table('lineas')
+                ->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
+                ->where('empleado_id',$id)
+                ->where('cuadrantes.estado','<>',NULL)             
+                ->select(
+                    DB::raw("count(CASE WHEN lineas.situacion = 'V' THEN lineas.situacion ELSE NULL END) AS 'Vacaciones'"),
+                    DB::raw("count(CASE WHEN lineas.situacion = 'B' THEN lineas.situacion ELSE NULL END) AS 'Otras'"),
+                    )->get();
+        dd($resumen);
+
+        $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
+        return view('empleados.detalle', compact('lineas','empleado','ausenciasyear'));
     }
 
     /**

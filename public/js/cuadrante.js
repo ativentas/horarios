@@ -142,7 +142,8 @@ $('#boton_aceptar').click(function(e){
     var data = form.serialize();
     $.post(url, data).done(function(data){
             alert(data);
-            location.reload();
+            $(location).attr("href", '/home'); 
+            // location.reload();
     }).fail(function(data){
         alert(data);
     });   

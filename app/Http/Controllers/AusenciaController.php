@@ -132,7 +132,7 @@ class AusenciaController extends Controller
      */
     public function edit($id)
     {
-        $ausencia = Ausencia::findOrFail($id);
+      $ausencia = Ausencia::findOrFail($id);
 		$ausencia->fecha_inicio =  $this->change_date_format_fullcalendar($ausencia->fecha_inicio);
 		$ausencia->fecha_fin =  $this->change_date_format_fullcalendar($ausencia->fecha_fin);
 		$ausencia->finalDay = $this->change_date_format2($ausencia->finalDay);

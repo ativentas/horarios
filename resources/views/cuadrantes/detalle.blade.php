@@ -43,8 +43,19 @@ td input {
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-
+<!-- 
         <div class="col-md-5 col-md-offset-3"><span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$cuadrante->semana}} ({{$cuadrante->year}}) - {{$cuadrante->abarca}}</span>
+        </div> -->
+        <div class="col-md-10 col-md-offset-1">
+            <ul class="pager">
+            @if($anteriorId)
+            <li><a href="{{ url('cuadrante/'.$anteriorId) }}">Ant.</a></li>
+            @endif
+            <span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$cuadrante->semana}} ({{$cuadrante->year}}) - {{$cuadrante->abarca}}</span>
+            @if($posteriorId)
+            <li><a href="{{ url('cuadrante/'.$posteriorId) }}">Prox.</a></li>
+            @endif
+          </ul>
         </div>
         </div>
     <!-- <h2>Detalle Horario Semana</h2> -->
@@ -58,6 +69,7 @@ td input {
                     @if ($cuadrante->archivado == '0')
                     <li><button class="btn-success btn-xs btn-guardar" id="btn_guardar" name="guardar" style="display:none;">Guardar Cambios</button></li>
                     @endif
+                    <h3 style="display:inline;margin-left: 3em"><span class="label label-warning">{{$cuadrante->estado}}</span></h3>
                     <div id="div_verificar" style="float:right;margin-right: 50px;display:none;">
                     <input style="text-align:left;width:auto;margin:6px;margin-left: 60px;" type="checkbox" name="check_preparado" id="check_preparado" value="1"><span style="margin-left: 0px">Marcar para enviar</span>
                     <button class="btn-primary btn-xs btn-danger" name="solicitarverificacion" id="boton_solicitarverificacion">Click para Enviar a Oficina</button>

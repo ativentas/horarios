@@ -213,6 +213,15 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     if(!$cuadrante){
         return redirect('cuadrante');
     }
+    $anteriorId = Cuadrante::where('centro_id',$cuadrante->centro_id)->orderBy('yearsemana','desc')->where('yearsemana','<',$cuadrante->yearsemana)->first();
+    if($anteriorId){
+        $anteriorId = $anteriorId->id;
+    }
+    $posteriorId = Cuadrante::where('centro_id',$cuadrante->centro_id)->orderBy('yearsemana','asc')->where('yearsemana','>',$cuadrante->yearsemana)->first();
+    if($posteriorId){
+        $posteriorId = $posteriorId->id;
+    }
+
     if($cuadrante->archivado == '0') {
         #TO DO: actualizar las lineas con las ausencias, ver si hay conflictos (por ejemplo cuando es vacaciones pero en la linea pone Vacaciones Trabaja).
         $centro_id = $cuadrante->centro_id;
@@ -359,7 +368,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     // $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
 
     $lineasconcambios = $cuadrante->lineacambios()->get();
-    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','empleadosdisponibles'));
+    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','empleadosdisponibles','anteriorId','posteriorId'));
 }
 
 public function mostrarNieuwCuadrante()
