@@ -83,8 +83,12 @@ public function guardarHorarios(Request $request, $cuadrante_id){
                 $arraynuevo = [$situacion,$entrada1,$entrada2,$salida1,$salida2];
                 // $arrayaprobado = [$linea->situacion,substr($linea->entrada1,0,5),substr($linea->entrada2,0,5),substr($linea->salida1,0,5),substr($linea->salida2,0,5)];   
                 $arrayaprobado = [$linea->situacion,$linea->entrada1?:null,$linea->entrada2?:null,$linea->salida1?:null,$linea->salida2?:null];
+                if($arraynuevo == $arrayaprobado && count($linea->lineacambio)){
+                    $linea->lineacambio()->delete();
+                }
+
                 if($arraynuevo != $arrayaprobado && $linea->doesntHave('lineacambio')){
-                    #si ya hay lineaconcambios, no hacer nada, TO DO: si acaso podría comprobar que el registro de linea cambio fuese igual al arrayaprobado
+                    #si ya hay lineaconcambios, no hacer nada, TO DO: si acaso podría comprobar que el registro de lineacambio fuese igual al arrayaprobado
                     $lineaconcambios = Lineacambio::where('linea_id',$linea->id)->first();
                     if(!$lineaconcambios){                 
                         $lineaconcambios = new Lineacambio([
@@ -190,9 +194,9 @@ public function rechazarHorarios ($cuadrante_id){
 public function mostrarCuadrante($cuadrante_id = NULL)
 {
     if(!$cuadrante_id){
-        if (Auth::user()->isAdmin()){
+        // if (Auth::user()->isAdmin()){
             return redirect ('home');
-        }
+        // }
         $ultimo = Cuadrante::where('centro_id', Auth::user()->centro_id)->orderBy('yearsemana','desc')->first();
         if(!$ultimo){
             return view('cuadrantes.geencuadrante');
