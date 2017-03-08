@@ -56,8 +56,8 @@ class EmpleadoController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-        'alias' => 'required|min:4|max:15|unique:empleados',
-        'nombre' => 'required|min:8|unique:empleados,nombre_completo',   
+        'alias' => 'required|min:4|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
+        'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
         'centro' => 'required',   
         ]);
 
@@ -115,7 +115,9 @@ class EmpleadoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $empleado = Empleado::find($id);
+        $centros=Centro::all();
+        return view('empleados.edit',compact('empleado','centros')); 
     }
 
     /**
@@ -127,7 +129,23 @@ class EmpleadoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd('aqui actualizo el estado entre otras cosas');
+        if ($request->has('estado')) {
+            $empleado=Empleado::find($id);
+            $empleado->activo=$request->estado;
+            $empleado->save();
+        }else {  
+            $this->validate($request, [
+            'alias' => 'required|min:4|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
+            'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
+            'centro' => 'required',   
+            ]);
+            $empleado=Empleado::find($id);
+            $empleado->alias = $request->alias;
+            $empleado->nombre_completo = $request->nombre;
+            $empleado->centro_id = $request->centro;
+            $empleado->save();
+        }
+        return redirect()->route('empleados.index')->with('info','Empleado modificado');
     }
 
     /**

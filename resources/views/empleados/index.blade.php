@@ -56,7 +56,7 @@
             <tbody>
             <?php $i = 1;?>
             @foreach($empleados as $empleado)
-                <tr>
+                <tr data-id="{{$empleado->id}}">
                     <th scope="row">{{ $i++ }}</th>
                     <td><a href="{{ url('/empleados/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
                     <td>{{$empleado->centro->nombre}}</td>

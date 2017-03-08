@@ -33,12 +33,13 @@ Route::resource('empleados', 'EmpleadoController');
 		$data = ['page_title' => 'Vacaciones',];
 	    return view('ausencias/index', $data);
 		});
-	Route::get('ausencias/listadoVacaciones', [
-		'uses' => '\Horarios\Http\Controllers\AusenciaController@listadoVacaciones',
-		'as' => 'listadoVacaciones',
-		]);
-	Route::any('vacaciones/{id}', [
-		'uses' => '\Horarios\Http\Controllers\AusenciaController@confirmarVacaciones',
+//creo que esta ruta no se usa
+	// Route::get('ausencias/listadoVacaciones', [
+	// 	'uses' => 'AusenciaController@listadoVacaciones',
+	// 	'as' => 'listadoVacaciones',
+	// 	]);
+	Route::post('vacaciones/{id}', [
+		'uses' => 'AusenciaController@confirmarVacaciones',
 		'as' => 'confirmarVacaciones',
 		]);
 	

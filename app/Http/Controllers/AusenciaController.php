@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Ausencia;
 use App\Empleado;
+use App\Centro;
 use DateTime;
 use Carbon\Carbon;
 use Auth;
@@ -25,31 +26,46 @@ class AusenciaController extends Controller
      */
     public function index()
     {
+		if(Auth::user()->isAdmin()){
 		$data = [
-			'page_title' => 'Listado',
 			'ausencias'	 => Ausencia::orderBy('estado')->orderBy('fecha_inicio')->get(),
 		];
+		}else{
+		$data = [
+			'ausencias'	 => Centro::find(Auth::user()->centro_id)->ausencias()->orderBy('estado')->orderBy('fecha_inicio')->get(),
+		];
+		}
 		return view('ausencias/list', $data);
     }
     
-    public function listadoVacaciones()
-    {
-    	$data = [
-			'page_title' => 'Listado',
-			'ausencias'	 => Ausencia::where('empleado_id',Auth::user()->id)->orderBy('estado')->orderBy('fecha_inicio')->get(),
-		];
-    	return view('ausencias.list',$data);
-    }
+    //creo que este metodo no se usa
+  //   public function listadoVacaciones()
+  //   {
+  //   	$data = [
+		// 	'page_title' => 'Listado',
+		// 	'ausencias'	 => Ausencia::where('empleado_id',Auth::user()->id)->orderBy('estado')->orderBy('fecha_inicio')->get(),
+		// ];
+  //   	return view('ausencias.list',$data);
+  //   }
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {        
+    { 
+
+    //TO DO: si el usuario es admin, entonces mostrar todos los empleados, o mejor, hacer que primero elija el centro
+
+      if(Auth::user()->isAdmin()){
+		$data = [
+			'empleados' => Empleado::all(),
+		];
+      }else{     
 		$data = [
 			'empleados' => Empleado::where('centro_id',Auth::user()->centro_id)->get(),
 		];
+		}
 		return view('ausencias/nieuwausencia', $data);
     }
 

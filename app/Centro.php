@@ -15,4 +15,9 @@ class Centro extends Model
     	return 	$this->hasMany('App\Cuadrante','centro_id');
     }
 
+    public function ausencias()
+    {
+        return $this->hasManyThrough('App\Ausencia', 'App\Empleado');
+    }
+
 }

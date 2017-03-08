@@ -451,7 +451,7 @@ public function crearNieuwCuadrante(Request $request)
 }
 
 public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
-    $empleados = Empleado::where('centro_id',$centro_id)->get();
+    $empleados = Empleado::activo()->where('centro_id',$centro_id)->get();
     if(!$empleados){
         // TO DO: lanzar excepción para que no cree nada
         dd('no hay ningún empleado, no se puede crear un horario vacío');

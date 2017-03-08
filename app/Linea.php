@@ -31,20 +31,20 @@ class Linea extends Model
     }
     function getHorasdiariasAttribute() {
  
-        if($this->entrada2){
+        // if($this->entrada2){
         $nextDay1=$this->entrada1>$this->salida1?1:0;
         $nextDay2=$this->entrada2>$this->salida2?1:0;
-        $dep1=explode(':',$this->entrada1);
-        $arr1=explode(':',$this->salida1);        
-        $dep2=explode(':',$this->entrada2);
-        $arr2=explode(':',$this->salida2);
+        $dep1=explode(':',$this->entrada1?:'00:00');
+        $arr1=explode(':',$this->salida1?:'00:00');        
+        $dep2=explode(':',$this->entrada2?:'00:00');
+        $arr2=explode(':',$this->salida2?:'00:00');
         $diff=ABS(MKTIME($dep1[0],$dep1[1],0,DATE('n'),DATE('j'),DATE('y'))-MKTIME($arr1[0],$arr1[1],0,DATE('n'),DATE('j')+$nextDay1,DATE('y'))+MKTIME($dep2[0],$dep2[1],0,DATE('n'),DATE('j'),DATE('y'))-MKTIME($arr2[0],$arr2[1],0,DATE('n'),DATE('j')+$nextDay2,DATE('y')));
         $hours=FLOOR($diff/(60*60));
         $mins=FLOOR(($diff-($hours*60*60))/(60));
         IF(STRLEN($hours)<2){$hours="0".$hours;}
         IF(STRLEN($mins)<2){$mins="0".$mins;}
         return $hours.':'.$mins;
-        }
+        // }
         
     }
 
