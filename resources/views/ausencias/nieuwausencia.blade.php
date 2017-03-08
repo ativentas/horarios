@@ -43,7 +43,7 @@
                     <option value="">Elige...</option>
                     <option value="V" @if(old('tipo')=='V') selected="selected" @endif>Vacaciones</option>
                     <option value="B" @if(old('tipo')=='B') selected="selected" @endif>Baja Medica</option>
-                    <option value="AS" @if(old('tipo')=='AS') selected="selected" @endif>Falta sin just.</option>
+                    <option value="AN" @if(old('tipo')=='AN') selected="selected" @endif>Falta sin just.</option>
                 </select>
 
                 @if ($errors->has('tipo'))

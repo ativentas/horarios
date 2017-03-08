@@ -256,6 +256,10 @@ $('.wrapper').on("click", function() {
   if(isadmin||estadocuadrante=='Archivado'){
     return;
   }
+  if($.inArray(situacion,['V','B','AJ','AN','L'])){    
+
+    $('#container_horarioL').show();
+  } 
   dialog_horariodia = $( "#dialogHorarioDia-form" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
       autoOpen: false,
@@ -288,7 +292,7 @@ $('.wrapper').on("click", function() {
   $('#dialogHorarioDia-form input.predefinidos-entrada2').val($("#entrada2_"+dia+"_"+empleado_id).val());
   $('#dialogHorarioDia-form input.predefinidos-salida2').val($("#salida2_"+dia+"_"+empleado_id).val());         
 
-  $( "#dialogHorarioDia-form" ).dialog({ title: 'Horario: '+diassemana[dia]+' - '+empleados[empleado_id] });  
+  $( "#dialogHorarioDia-form" ).dialog({ title: 'Horarios: '+diassemana[dia]+' - '+empleados[empleado_id] });  
   dialog_horariodia
     .data( 'empleado_id', empleado_id ) 
     .data( 'dia', dia ) 

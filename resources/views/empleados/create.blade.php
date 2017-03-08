@@ -20,13 +20,49 @@
 
     <div class="col-md-12">
 
-            <h2>Aqui va el formulario para crear nuevo empleado</h2>
+    <div class="row col-md-6">
+        <form autocomplete="off" class="form-vertical" role="form" method="post" action="{{route('empleados.store')}}">
+        {{ csrf_field() }}
+
+            <div class="form-group{{$errors->has('alias') ? ' has-error' : ''}}">
+                <label for="alias" class="control-label">Nombre</label>
+                <input type="text" autocomplete="off" name="alias" class="form-control" id="alias" value="{{Request::old('alias') ?: ''}}">
+                @if ($errors->has('alias'))
+                    <span class="help-block">{{$errors->first('alias')}}</span>
+                @endif
+            </div>
+            <div class="form-group{{$errors->has('nombre') ? ' has-error' : ''}}">
+                <label for="nombre" class="control-label">Nombre completo</label>
+                <input type="text" name="nombre" class="form-control" id="nombre" value="{{Request::old('nombre') ?: ''}}">
+                @if ($errors->has('nombre'))
+                    <span class="help-block">{{$errors->first('nombre')}}</span>
+                @endif                  
+            </div>
 
 
+            <div class="form-group{{$errors->has('centro') ? ' has-error' : ''}}">
+                <label for="centro" class="control-label"></label>
+                <select class="form-control" id="centro" name="centro">
+                    <option {{Request::old('centro')==''?' selected':''}} value="">Elige un Centro</option>
+                    @foreach ($centros as $centro)
+                    <option {{Request::old('centro')==$centro->id ?' selected':''}} value={{$centro->id}}>{{$centro->nombre}}</option>
+                    @endforeach
+                </select>
+                @if ($errors->has('centro'))
+                    <span class="help-block">{{$errors->first('centro')}}</span>
+                @endif  
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Registrar</button>
+            </div>      
+
+
+        </form>
+    </div>
     </div>
 
 
-    </div>
+    </div> <!-- FIN PANEL BODY -->
 </div>
 </div>
 </div>

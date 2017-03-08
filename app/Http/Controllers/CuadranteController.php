@@ -194,9 +194,9 @@ public function rechazarHorarios ($cuadrante_id){
 public function mostrarCuadrante($cuadrante_id = NULL)
 {
     if(!$cuadrante_id){
-        // if (Auth::user()->isAdmin()){
+        if (Auth::user()->isAdmin()){
             return redirect ('home');
-        // }
+        }
         $ultimo = Cuadrante::where('centro_id', Auth::user()->centro_id)->orderBy('yearsemana','desc')->first();
         if(!$ultimo){
             return view('cuadrantes.geencuadrante');
@@ -255,6 +255,10 @@ public function mostrarCuadrante($cuadrante_id = NULL)
                         }else{
                             $linea->update([
                             'situacion' => $ausencia->tipo,
+                            'entrada1' => null,
+                            'salida1' => null,
+                            'entrada2' => null,
+                            'salida2' => null,
                             ]);
                         }
                     }

@@ -9,6 +9,7 @@ use App\Empleado;
 use App\Ausencia;
 use App\Cuadrante;
 use App\Linea;
+use App\Centro;
 
 
 class EmpleadoController extends Controller
@@ -19,8 +20,6 @@ class EmpleadoController extends Controller
         $this->middleware('auth');
     }
 
-
-
     /**
      * Display a listing of the resource.
      *
@@ -28,8 +27,13 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        $empleados = Empleado::all();
-        return view('empleados.index',compact('empleados'));
+        $query = Empleado::orderBy('centro_id')->orderBy('alias');
+        $query = \Request::has('centro') ? $query->where('centro_id',\Request::input('centro')) : $query;
+
+        $empleados = $query->get(); 
+
+        $centros = Centro::all();
+        return view('empleados.index',compact('empleados','centros'));
     }
 
     /**
@@ -39,7 +43,8 @@ class EmpleadoController extends Controller
      */
     public function create()
     {
-        return view('empleados.create');
+        $centros = Centro::all();
+        return view('empleados.create',compact('centros'));
     }
 
     /**
@@ -50,7 +55,20 @@ class EmpleadoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+        'alias' => 'required|min:4|max:15|unique:empleados',
+        'nombre' => 'required|min:8|unique:empleados,nombre_completo',   
+        'centro' => 'required',   
+        ]);
+
+        $empleado = new Empleado;
+        $empleado->alias = $request->alias;
+        $empleado->nombre_completo = $request->nombre;
+        $empleado->centro_id = $request->centro;
+
+        $empleado->save();
+    
+        return redirect()->back()->with('info', 'Nuevo empleado registrado');
     }
 
     /**
@@ -81,12 +99,12 @@ class EmpleadoController extends Controller
                 ->where('cuadrantes.estado','<>',NULL)             
                 ->select(
                     DB::raw("count(CASE WHEN lineas.situacion = 'V' THEN lineas.situacion ELSE NULL END) AS 'Vacaciones'"),
-                    DB::raw("count(CASE WHEN lineas.situacion = 'B' THEN lineas.situacion ELSE NULL END) AS 'Otras'"),
+                    DB::raw("count(CASE WHEN lineas.situacion IN ('B','AJ','AN') THEN lineas.situacion ELSE NULL END) AS 'Otras'")
                     )->get();
-        dd($resumen);
+        // dd($resumen);
 
         $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
-        return view('empleados.detalle', compact('lineas','empleado','ausenciasyear'));
+        return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','resumen'));
     }
 
     /**
@@ -109,7 +127,7 @@ class EmpleadoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd('aqui actualizo el estado entre otras cosas');
     }
 
     /**

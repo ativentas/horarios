@@ -21,7 +21,12 @@
                     <li><a href="{{ url('/empleados/create') }}">Nuevo</a></li>
                 </ol>
         </div>
+    
+
     </div>
+
+
+
 
     <div class="panel-body">
 
@@ -80,7 +85,7 @@
           <tr>
             <td class="tg-031e">Vacaciones</td>
             <td class="tg-031e"></td>
-            <td class="tg-031e"></td>
+            <td class="tg-031e">{{$resumen}}</td>
           </tr>
           <tr>
             <td class="tg-031e">Ausencias</td>
