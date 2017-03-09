@@ -38,6 +38,25 @@ public function yearsemana($fecha)
     return $year.$semana;
 }
 
+public function index()
+{
+    $isadmin = Auth::user()->isAdmin();
+    switch ($isadmin) {
+        case true:
+            $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios'))->get();                
+            $completados = Cuadrante::whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','asc')->get();
+            break;
+        
+        default:
+            $yearsemana = $this->yearsemana(date('Y-m-d'));
+            $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana)->get();
+            $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','<',$yearsemana)->orderBy('yearsemana','desc')->get();
+            
+            break;
+    }
+    return view('cuadrantes.list',compact('cuadrantes','completados'));
+}
+
 public function guardarHorarios(Request $request, $cuadrante_id){
     #TO DO: cuando el cuadrante esté aceptado, comparar los datos a grabar con lo grabado y si hay cambios, grabar el antiguo dato en lineacambios y esas lineas de lineacambios se borrarán cuando se ponga el cuadrante como archivado
 

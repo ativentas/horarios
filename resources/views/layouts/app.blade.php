@@ -58,7 +58,8 @@
                     <!-- Left Side Of Navbar -->
                     @if (Auth::check())
                     <ul class="nav navbar-nav">
-                        <li><a href="{{ url('/cuadrante') }}">Horario</a></li>
+                        <li><a href="{{ url('/home') }}">Inicio</a></li>
+                        <li><a href="{{ url('/cuadrantes') }}">Horario</a></li>
                         <li><a href="{{ url('/ausencias') }}">Ausencias</a></li>
                         @if (Auth::user()->isAdmin())
                         <li><a href="{{ url('/empleados') }}">Empleados</a></li>

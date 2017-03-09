@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Cuadrante;
+use App\Ausencia;
+use App\Centro;
 use Auth;
 use Carbon\Carbon;
 
@@ -38,16 +40,17 @@ class HomeController extends Controller
         switch ($isadmin) {
             case true:
                 $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios'))->get();                
-                $completados = Cuadrante::whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','asc')->get();
+                $completados = Cuadrante::whereIn('estado',array('Aceptado'))->orderBy('yearsemana','asc')->get();
+                $ausencias = Ausencia::where('estado','Pendiente')->get();
                 break;
             
             default:
                 $yearsemana = $this->yearsemana(date('Y-m-d'));
                 $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana)->get();
-                $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','<',$yearsemana)->orderBy('yearsemana','desc')->get();
-                
+                $completados = collect();
+                $ausencias = Centro::find(Auth::user()->centro_id)->ausencias()->where('estado','Pendiente')->orderBy('fecha_inicio')->get();
                 break;
         }
-        return view('home',compact('cuadrantes','completados'));
+        return view('home',compact('cuadrantes','completados','ausencias'));
     }
 }

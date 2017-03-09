@@ -3,24 +3,27 @@
 @section('content')
 <div class="container">
 <div class="row">
-<!-- <div class="col-md-10 col-md-offset-1"> -->
-<div class="col-md-12">
+<div class="col-md-8 col-md-offset-2">
 <div class="panel panel-default">
 
-    <div class="panel-heading"><h2>Programa Horarios</h2>
+    <div class="panel-heading"><h2>Listado Horarios</h2>
         @include('layouts.alerts')
         <div class="row">
                 <ol class="breadcrumb">
-                    <li class="active">Inicio</li>
+                    <li><a href="{{ url('home') }}">Salir</a></li>
+                    <li class="active">Listado</li>
+                    @if (!Auth::user()->isAdmin())               
+                    <li><a href="{{ url('nieuwcuadrante') }}">Nuevo Horario</a></li>
+                    @endif
+                    
                 </ol>
         </div>
     </div>
 
     <div class="panel-body">
 
-    <div class="col-md-6">
+    <div class="col-md-12">
         @if($cuadrantes->count() > 0)
-        Horarios Pendientes de Aceptar
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -49,9 +52,8 @@
         @endif
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-12">
         @if($completados->count() > 0)
-        Horarios Pendientes de Archivar
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -70,35 +72,6 @@
                     <td>{{$completado->centro->nombre}}</td>
                     <td>{{$completado->estado}}</td>
                     <td><a href="{{ url('/cuadrante/' . $completado->id) }}">Ver</a></td>
-
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-        @else
-            <h2></h2>
-        @endif
-    </div>
-
-    <div class="col-md-6">
-        @if($ausencias->count() > 0)
-        Ausencias Pendientes de Confirmar
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Empleado</th>
-                    <th>Abarca</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach($ausencias as $ausencia)
-                <tr>
-                    <th>{{$ausencia->tipo}}</th>
-                    <td>{{$ausencia->alias}}</td>
-                    <td>{{$ausencia->abarca}}</td>
-                    <td><a href="{{ url('ausencias/' . $ausencia->id . '/edit') }}">Ver</a></td>
 
                 </tr>
             @endforeach
