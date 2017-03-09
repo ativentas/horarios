@@ -152,9 +152,16 @@ class AusenciaController extends Controller
 		$ausencia->fecha_inicio =  $this->change_date_format_fullcalendar($ausencia->fecha_inicio);
 		$ausencia->fecha_fin =  $this->change_date_format_fullcalendar($ausencia->fecha_fin);
 		$ausencia->finalDay = $this->change_date_format2($ausencia->finalDay);
+      $tipos = array(
+      	'V' => 'Vacaciones', 
+      	'AN' => 'Ausencia sin justif.',
+      	'B' => 'Baja Médica',
+      	'AJ' => 'Ausencia justif.');
+;  
         $data = [
 			'page_title' 	=> 'Edit '.$ausencia->tipo,
 			'ausencia'		=> $ausencia,
+			'tipos'			=> $tipos,
 		];
 		return view('ausencias/edit', $data);
     }
@@ -169,7 +176,6 @@ class AusenciaController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-			'empleado_id'	=> 'required|max:15',
 			'tipo' => 'required',
 			'time'	=> 'required|duration'
 		]);
@@ -177,7 +183,6 @@ class AusenciaController extends Controller
 		$time = explode(" - ", $request->input('time'));
 		
 		$ausencia 				= Ausencia::findOrFail($id);
-		$ausencia->empleado_id	= $request->input('empleado_id');
 		$ausencia->tipo 		= $request->input('tipo');
 		$ausencia->fecha_inicio = $this->change_date_format($time[0]);
 		$ausencia->finalDay 	= $this->change_date_format($time[1]);

@@ -36,14 +36,34 @@
             <input type="hidden" name="_method" value="PUT" />
             <div class="form-group @if($errors->has('empleado_id')) has-error has-feedback @endif">
                 <label for="empleado_id">Empleado</label>
-                <input type="text" class="form-control" name="empleado_id" value="{{ $ausencia->empleado_id }}" placeholder="">
+                <input type="text" class="form-control" name="" value="{{ $ausencia->empleado->alias }}" placeholder="" readonly="true">
                 @if ($errors->has('empleado_id'))
                     <p class="help-block"><span class="glyphicon glyphicon-exclamation-sign"></span> 
                     {{ $errors->first('empleado_id') }}
                     </p>
                 @endif
-            </div>
+            </div>            
+
             <div class="form-group @if($errors->has('tipo')) has-error has-feedback @endif">
+                <label for="title">Tipo</label>
+                <select class="form-control" id="tipo" name="tipo">
+                    @foreach ($tipos as $sigla => $nombre)
+                    <option {{Request::old('tipo')==$sigla ? ' selected' : $ausencia->tipo==$sigla ? ' selected' : ''}} value={{$sigla}}>{{$nombre}}</option>
+                    @endforeach
+                </select>
+
+                @if ($errors->has('tipo'))
+                    <p class="help-block"><span class="glyphicon glyphicon-exclamation-sign"></span> 
+                    {{ $errors->first('tipo') }}
+                    </p>
+                @endif
+            </div>
+
+
+
+
+
+<!--             <div class="form-group @if($errors->has('tipo')) has-error has-feedback @endif">
                 <label for="title">Ausencia</label>
                 <input type="text" class="form-control" name="tipo" value="{{ $ausencia->tipo }}" placeholder="">
                 @if ($errors->has('tipo'))
@@ -51,7 +71,7 @@
                     {{ $errors->first('tipo') }}
                     </p>
                 @endif
-            </div>
+            </div> -->
             <div class="form-group @if($errors->has('time')) has-error @endif">
                 <label for="time">Fechas</label>
                 <div class="input-group">
