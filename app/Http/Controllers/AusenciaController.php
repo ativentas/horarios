@@ -13,11 +13,18 @@ use Auth;
 
 class AusenciaController extends Controller
 {
-    
+   private $tipos;
+ 
 	public function __construct()
-    {
-        $this->middleware('auth');
-    }
+   {
+      $this->middleware('auth');
+    
+      $this->tipos = array(
+      	'V' => 'Vacaciones', 
+      	'AN' => 'Ausencia sin justif.',
+      	'B' => 'Baja Médica',
+      	'AJ' => 'Ausencia justif.');
+   }
 
     /**
      * Display a listing of the resource.
@@ -60,10 +67,12 @@ class AusenciaController extends Controller
       if(Auth::user()->isAdmin()){
 		$data = [
 			'empleados' => Empleado::all(),
+			'tipos'		=> $this->tipos,
 		];
       }else{     
 		$data = [
 			'empleados' => Empleado::where('centro_id',Auth::user()->centro_id)->get(),
+			'tipos'		=> $this->tipos,
 		];
 		}
 		return view('ausencias/nieuwausencia', $data);
@@ -151,17 +160,11 @@ class AusenciaController extends Controller
       $ausencia = Ausencia::findOrFail($id);
 		$ausencia->fecha_inicio =  $this->change_date_format_fullcalendar($ausencia->fecha_inicio);
 		$ausencia->fecha_fin =  $this->change_date_format_fullcalendar($ausencia->fecha_fin);
-		$ausencia->finalDay = $this->change_date_format2($ausencia->finalDay);
-      $tipos = array(
-      	'V' => 'Vacaciones', 
-      	'AN' => 'Ausencia sin justif.',
-      	'B' => 'Baja Médica',
-      	'AJ' => 'Ausencia justif.');
-;  
+		$ausencia->finalDay = $this->change_date_format2($ausencia->finalDay); 
         $data = [
 			'page_title' 	=> 'Edit '.$ausencia->tipo,
 			'ausencia'		=> $ausencia,
-			'tipos'			=> $tipos,
+			'tipos'			=> $this->tipos,
 		];
 		return view('ausencias/edit', $data);
     }

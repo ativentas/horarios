@@ -45,9 +45,16 @@ Route::resource('empleados', 'EmpleadoController');
 	
 	Route::resource('ausencias', 'AusenciaController');
 
+	//TO DO: HABRIA QUE PREPARARLO PARA QUE DIERA LAS AUSENCIAS POR CENTRO DE TRABAJO Y NO TODOS A LA VEZ. DE MOMENTO Y COMO PRIMER PASO, DAR LAS DEL CENTRO DEL USER Y SI ES ADMIN DE TODOS. EN UNA SEGUNDA ETAPA, EL ADMIN PODRA ELEGIR DE QUE CENTRO.
+
 	Route::get('/api', function () {
-		$ausencias = DB::table('ausencias')->select('id', 'empleado_id', 'tipo', 'fecha_inicio as start', 'fecha_fin as end','finalDay','allDay')->get();
-			$tiposAusencia = ['V' => 'vacaciones', 'B' => 'baja', 'AJ' => 'ausencia justif.','AN' => 'ausencia no justif.'];
+		$centro = Auth::user()->centro_id;
+		$ausencias = DB::table('ausencias')
+			->join('empleados', 'ausencias.empleado_id', '=', 'empleados.id')
+			->select('empleados.centro_id','ausencias.id', 'ausencias.empleado_id', 'ausencias.tipo', 'ausencias.fecha_inicio as start', 'ausencias.fecha_fin as end','ausencias.finalDay','ausencias.allDay')
+			->where('empleados.centro_id','=',$centro)
+			->get();
+		$tiposAusencia = ['V' => 'vacaciones', 'B' => 'baja', 'AJ' => 'ausencia justif.','AN' => 'ausencia no justif.'];
     	$empleados = DB::table('empleados')->pluck('alias','id');
 
 		foreach($ausencias as $ausencia){
@@ -60,7 +67,7 @@ Route::resource('empleados', 'EmpleadoController');
 				}else{$ausencia->allDay = true;}
 		}
 		return $ausencias;
-	});
+	})->middleware('auth');
 
 
 Route::post('/validar/{id}', [

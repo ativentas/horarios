@@ -41,9 +41,9 @@
             <div class="form-group @if($errors->has('tipo')) has-error has-feedback @endif">
                 <select class="form-control" id="tipo" name="tipo">
                     <option value="">Elige...</option>
-                    <option value="V" @if(old('tipo')=='V') selected="selected" @endif>Vacaciones</option>
-                    <option value="B" @if(old('tipo')=='B') selected="selected" @endif>Baja Medica</option>
-                    <option value="AN" @if(old('tipo')=='AN') selected="selected" @endif>Falta sin just.</option>
+                    @foreach($tipos as $sigla => $nombre)
+                    <option {{Request::old('tipo')==$sigla ? ' selected' : ''}} value={{$sigla}}>{{$nombre}}</option>
+                    @endforeach
                 </select>
 
                 @if ($errors->has('tipo'))

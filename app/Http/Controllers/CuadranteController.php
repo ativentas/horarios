@@ -18,6 +18,7 @@ use App\Ausencia;
 
 class CuadranteController extends Controller
 {
+//de momento parece que no uso $semanaactual y $hoy, averiguar para que las quería y sino se pueden borrar, también están en el construct
 private $semanaactual;
 private $hoy;
 private $situacionesconAusenciaId;
@@ -266,7 +267,8 @@ public function mostrarCuadrante($cuadrante_id = NULL)
                     $linea->update([
                     'ausencia_id' => NULL,
                     ]);
-                    if (in_array($linea->sitaucion,$this->situacionesMustAusencia)){
+                    // if (in_array($linea->sitaucion,$this->situacionesMustAusencia)){
+                    if (in_array($linea->sitaucion,$this->situacionesconAusenciaId)){
                         $linea->update([
                         'situacion' => NULL,
                     ]);
