@@ -31,6 +31,19 @@
     <div class="panel-body">
 
     <div class="col-md-7">
+            <ul class="pager">
+            @if($anteriorId)
+            <li><a href="{{ url('empleados/'.$empleado->id.'/'.$anteriorId) }}">Ant.</a></li>
+            @endif
+            <span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$cuadrante->semana}} ({{$cuadrante->year}}) - {{$cuadrante->abarca}}</span>
+            @if($posteriorId)
+            <li><a href="{{ url('empleados/'.$empleado->id.'/'.$posteriorId) }}">Prox.</a></li>
+            @endif
+          </ul>
+
+
+
+
         @if($lineas->count() > 0)
         <table class="table table-striped">
             <thead>
