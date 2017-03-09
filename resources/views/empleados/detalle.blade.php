@@ -71,29 +71,63 @@
             <h2 align="center"><span class="label label-info">Resumen</span></h2>
         </div>
         <div class="tg-wrap">
-        <table class="tg" style="undefined;table-layout: fixed; width: 304px">
-        <colgroup>
-        <col style="width: 101px">
-        <col style="width: 101px">
-        <col style="width: 102px">
-        </colgroup>
-          <tr>
-            <th class="tg-031e"></th>
-            <th class="tg-s6z2">Mes<br></th>
-            <th class="tg-s6z2">Año</th>
-          </tr>
-          <tr>
-            <td class="tg-031e">Vacaciones</td>
-            <td class="tg-031e"></td>
-            <td class="tg-031e">{{$resumen}}</td>
-          </tr>
-          <tr>
-            <td class="tg-031e">Ausencias</td>
-            <td class="tg-031e"></td>
-            <td class="tg-031e"></td>
-          </tr>
-        </table>
+            <table class="tg" style="undefined;table-layout: fixed; width: 304px">
+            <colgroup>
+            <col style="width: 121px">
+            <col style="width: 101px">
+            <col style="width: 82px">
+            </colgroup>
+              <tr>
+                <th class="tg-031e"></th>
+    <!--             <th class="tg-s6z2">Mes<br></th>
+     -->            <th class="tg-s6z2">{{$year}}</th>
+              </tr>
+              <tr>
+                <td class="tg-031e">Vacaciones</td>
+    <!--             <td class="tg-031e"></td>
+     -->            <td class="tg-031e">{{$vaclineasacum}}</td>
+              </tr>
+              <tr>
+                <td class="tg-031e">Otras Ausencias</td>
+    <!--             <td class="tg-031e"></td>
+     -->            <td class="tg-031e">{{$otraslineasacum}}</td>
+              </tr>
+            </table>
         </div>
+
+
+
+    <div class="">
+        @if($ausenciasyear->count() > 0)
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Abarca</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            @foreach($ausenciasyear as $ausencia)
+                <tr>
+                    <th>{{ $ausencia->tipo }}</th>
+                    <td>{{ $ausencia->abarca }}</td>
+                    <td>{{ $ausencia->estado }}</td>
+
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+        @endif
+    </div>
+
+
+
+
+
+
+
     </div>
     </div> <!-- FIN PANEL BODY -->
 </div>

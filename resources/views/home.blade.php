@@ -20,7 +20,11 @@
 
     <div class="col-md-6">
         @if($cuadrantes->count() > 0)
+        @if(Auth::user()->isAdmin())
         Horarios Pendientes de Aceptar
+        @else
+        Ultimos horarios
+        @endif
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -45,11 +49,8 @@
             </tbody>
         </table>
         @else
-            <h2></h2>
         @endif
-    </div>
 
-    <div class="col-md-6">
         @if($completados->count() > 0)
         Horarios Pendientes de Archivar
         <table class="table table-striped">
@@ -88,7 +89,7 @@
                 <tr>
                     <th>Tipo</th>
                     <th>Empleado</th>
-                    <th>Abarca</th>
+                    <th>Periodo</th>
                     <th></th>
                 </tr>
             </thead>
@@ -98,7 +99,25 @@
                     <th>{{$ausencia->tipo}}</th>
                     <td>{{$ausencia->alias}}</td>
                     <td>{{$ausencia->abarca}}</td>
-                    <td><a href="{{ url('ausencias/' . $ausencia->id . '/edit') }}">Ver</a></td>
+                    <td>
+                        @if($ausencia->owner == Auth::user()->id||Auth::user()->isAdmin())
+                        <a class="btn btn-primary btn-xs" href="{{ url('ausencias/' . $ausencia->id . '/edit')}}"><span class="glyphicon glyphicon-edit"></span> Edit</a> 
+                        @endif
+                        @if(Auth::user()->isAdmin())
+                        <form action="{{ route('confirmarVacaciones',$ausencia->id) }}" style="display:inline" method="POST">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="accion" value="REQUERIR" />
+                            <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-ok-sign"></span> Confirmar</button>
+                        </form>
+                        @endif                     
+                        @if($ausencia->owner == Auth::user()->id||Auth::user()->isAdmin())
+                        <form action="{{ url('ausencias/' . $ausencia->id) }}" style="display:inline" method="POST">
+                            <input type="hidden" name="_method" value="DELETE" />
+                            {{ csrf_field() }}
+                            <button class="btn btn-danger btn-xs" type="submit"><span class="glyphicon glyphicon-trash"></span> Eliminar</button>
+                        </form>
+                        @endif
+                    </td>
 
                 </tr>
             @endforeach

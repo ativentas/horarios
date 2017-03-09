@@ -99,7 +99,8 @@ class AusenciaController extends Controller
 		$empleado = Empleado::where('id',$empleado_id)->first();
 
 		$ausencia 					= new Ausencia;
-		$ausencia->empleado_id		= $empleado->id;
+		$ausencia->empleado_id	= $empleado->id;
+		$ausencia->owner			= Auth::user()->id;
 		$ausencia->alias 			= $empleado->alias;
 		$ausencia->tipo 			= $request->input('tipo');
 		$ausencia->fecha_inicio		= $this->change_date_format($time[0]);
@@ -187,6 +188,7 @@ class AusenciaController extends Controller
 		
 		$ausencia 				= Ausencia::findOrFail($id);
 		$ausencia->tipo 		= $request->input('tipo');
+		$ausencia->owner 		= Auth::user()->id;
 		$ausencia->fecha_inicio = $this->change_date_format($time[0]);
 		$ausencia->finalDay 	= $this->change_date_format($time[1]);
 		$format = 'd/m/Y';

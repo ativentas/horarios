@@ -15,9 +15,13 @@ use App\Centro;
 class EmpleadoController extends Controller
 {
 
+    private $hoy;
     public function __construct()
     {
         $this->middleware('auth');
+        $this->hoy = new Datetime();
+        $this->hoy = $this->hoy->format('Y-m-d');
+
     }
 
     /**
@@ -87,24 +91,30 @@ class EmpleadoController extends Controller
             //buscar el cuadrante actual
             $cuadrante = Cuadrante::where('yearsemana','<=',$yearsemana)->where('centro_id',$empleado->centro_id)->orderBy('yearsemana','desc')->first();
         }
-        $beginyear = substr($yearsemana, 0,4).'-01-01';
-        $endyear = substr($yearsemana,0,4).'-12-31';
+        $year = substr($yearsemana,0,4);
+        $beginyear = $year.'-01-01';
+        $endyear = $year.'-12-31';
         $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('empleado_id',$id)->whereHas('cuadrante', function ($query) {
             $query->where('estado', '<>', NULL);
             })->get();
 
-        $resumen = DB::table('lineas')
-                ->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
-                ->where('empleado_id',$id)
-                ->where('cuadrantes.estado','<>',NULL)             
-                ->select(
-                    DB::raw("count(CASE WHEN lineas.situacion = 'V' THEN lineas.situacion ELSE NULL END) AS 'Vacaciones'"),
-                    DB::raw("count(CASE WHEN lineas.situacion IN ('B','AJ','AN') THEN lineas.situacion ELSE NULL END) AS 'Otras'")
-                    )->get();
+        //creo que es mejor calcular los datos de la tabla cruzada uno a uno
+        // $resumen = DB::table('lineas')
+        //         ->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
+        //         ->where('empleado_id',$id)
+        //         ->where('cuadrantes.estado','<>',NULL)             
+        //         ->select(
+        //             DB::raw("count(CASE WHEN lineas.situacion = 'V' THEN lineas.situacion ELSE NULL END) AS 'Vacaciones'"),
+        //             DB::raw("count(CASE WHEN lineas.situacion IN ('B','AJ','AN') THEN lineas.situacion ELSE NULL END) AS 'Otras'")
+        //             )->get();
         // dd($resumen);
 
+        $query = Linea::where('empleado_id',$id)->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])->whereHas('cuadrante', function ($query) {
+            $query->where('estado', '<>', NULL);});
+        $vaclineasacum = $query->where('situacion','V')->count();
+        $otraslineasacum = $query->where('situacion',array('AN','AJ','B'))->count();
         $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
-        return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','resumen'));
+        return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','year'));
     }
 
     /**
