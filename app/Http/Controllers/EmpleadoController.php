@@ -59,6 +59,9 @@ class EmpleadoController extends Controller
      */
     public function store(Request $request)
     {
+        if(!isset($id)){
+            $id = 'NULL';
+        }
         $this->validate($request, [
         'alias' => 'required|min:4|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
         'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
@@ -91,13 +94,17 @@ class EmpleadoController extends Controller
             //buscar el cuadrante actual
             $cuadrante = Cuadrante::where('yearsemana','<=',$yearsemana)->where('centro_id',$empleado->centro_id)->orderBy('yearsemana','desc')->first();
         }
-        $yearsemana = $cuadrante->yearsemana;
-
-        $anteriorId = Cuadrante::where('centro_id',$cuadrante->centro_id)->orderBy('yearsemana','desc')->where('yearsemana','<',$yearsemana)->first();
+        //para que cuando no hay nigún cuadrante, tengamos un valor de yearsemana para calcular el resto de variables
+        $cuadrante_id = NULL;
+        if($cuadrante){
+            $yearsemana = $cuadrante->yearsemana;
+            $cuadrante_id = $cuadrante->id;
+        }
+        $anteriorId = Cuadrante::where('centro_id',$empleado->centro_id)->orderBy('yearsemana','desc')->where('yearsemana','<',$yearsemana)->first();
         if($anteriorId){
             $anteriorId = $anteriorId->id;
         }
-        $posteriorId = Cuadrante::where('centro_id',$cuadrante->centro_id)->orderBy('yearsemana','asc')->where('yearsemana','>',$yearsemana)->first();
+        $posteriorId = Cuadrante::where('centro_id',$empleado->centro_id)->orderBy('yearsemana','asc')->where('yearsemana','>',$yearsemana)->first();
         if($posteriorId){
             $posteriorId = $posteriorId->id;
         }
@@ -105,20 +112,9 @@ class EmpleadoController extends Controller
         $year = substr($yearsemana,0,4);
         $beginyear = $year.'-01-01';
         $endyear = $year.'-12-31';
-        $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('empleado_id',$id)->whereHas('cuadrante', function ($query) {
+        $lineas = Linea::where('cuadrante_id',$cuadrante_id)->where('empleado_id',$id)->whereHas('cuadrante', function ($query) {
             $query->where('estado', '<>', NULL);
             })->get();
-
-        //creo que es mejor calcular los datos de la tabla cruzada uno a uno
-        // $resumen = DB::table('lineas')
-        //         ->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
-        //         ->where('empleado_id',$id)
-        //         ->where('cuadrantes.estado','<>',NULL)             
-        //         ->select(
-        //             DB::raw("count(CASE WHEN lineas.situacion = 'V' THEN lineas.situacion ELSE NULL END) AS 'Vacaciones'"),
-        //             DB::raw("count(CASE WHEN lineas.situacion IN ('B','AJ','AN') THEN lineas.situacion ELSE NULL END) AS 'Otras'")
-        //             )->get();
-        // dd($resumen);
 
         $query = Linea::where('empleado_id',$id)->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])->whereHas('cuadrante', function ($query) {
             $query->where('estado', '<>', NULL);});

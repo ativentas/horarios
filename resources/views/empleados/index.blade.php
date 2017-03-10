@@ -58,7 +58,7 @@
             @foreach($empleados as $empleado)
                 <tr data-id="{{$empleado->id}}">
                     <th scope="row">{{ $i++ }}</th>
-                    <td><a href="{{ url('/empleados/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
+                    <td><a href="{{ url('/empleados_c/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
                     <td>{{$empleado->centro->nombre}}</td>
                     <td> 
                     <button data-activa="1" class="btn btn-success btn-xs btn-activar" type="button" value={{$empleado->id}} name="botonActivarMaquina" id="activar{{$empleado->id}}" @if($empleado->activo==1) style="display:none;" @endif></span>Reactivar

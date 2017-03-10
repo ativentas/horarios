@@ -35,7 +35,9 @@
             @if($anteriorId)
             <li><a href="{{ url('empleados/'.$empleado->id.'/'.$anteriorId) }}">Ant.</a></li>
             @endif
+            @if($cuadrante)
             <span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$cuadrante->semana}} ({{$cuadrante->year}}) - {{$cuadrante->abarca}}</span>
+            @endif
             @if($posteriorId)
             <li><a href="{{ url('empleados/'.$empleado->id.'/'.$posteriorId) }}">Prox.</a></li>
             @endif
