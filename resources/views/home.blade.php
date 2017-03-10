@@ -18,12 +18,15 @@
 
     <div class="panel-body">
 
-    <div class="col-md-6">
+    <div class="col-md-6"> <!-- DIV IZQUIERDA -->
+        
         @if($cuadrantes->count() > 0)
+                <div class="panel panel-default">
+
         @if(Auth::user()->isAdmin())
-        Horarios Pendientes de Aceptar
+        <div class="panel-heading"><h4>Horarios Pendientes de Aceptar</h4></div>
         @else
-        Ultimos horarios
+        <div class="panel-heading"><h4>Ultimos horarios</h4></div>
         @endif
         <table class="table table-striped">
             <thead>
@@ -48,11 +51,14 @@
             @endforeach
             </tbody>
         </table>
-        @else
+        </div>
         @endif
 
+
+
         @if($completados->count() > 0)
-        Horarios Pendientes de Archivar
+                <div class="panel panel-default">
+        <div class="panel-heading"><h4>Horarios Pendientes de Archivar</h4></div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -76,14 +82,17 @@
             @endforeach
             </tbody>
         </table>
-        @else
-            <h2></h2>
+        </div>
         @endif
-    </div>
 
-    <div class="col-md-6">
+
+    </div> <!-- FIN DIV IZQUIERDA -->
+
+    <div class="col-md-6"> <!-- DIV COLUMNA DERECHA -->
+        
+        <div class="panel panel-default">
         @if($ausencias->count() > 0)
-        Ausencias Pendientes de Confirmar
+        <div class="panel-heading"><h4>Ausencias Pendientes de Confirmar</h4></div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -126,12 +135,36 @@
         @else
             <h2></h2>
         @endif
-    </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Notas sin resolver</h4></div>
+            <div class="list-group">
+                @if(!empty($notas_pdtes[0]))
+                @foreach($notas_pdtes as $nota)
+                    <div class="list-group-item">
+                        <p>{{ $nota->body }}</p>
+                        <p>On {{ $nota->created_at->format('M d,Y \a\t h:i a') }}</p>
+                        <p>{{$nota->author->name}} - Horario Semana: <a href="{{ url('cuadrante/'.$nota->cuadrante->id) }}">{{ $nota->cuadrante->semana}}</a></p>
+                    </div>
+                @endforeach
+                @else
+                <div class="list-group-item">
+                    <p>You have not commented till now. Your latest 5 comments will be displayed here</p>
+                </div>
+                @endif
+            </div>
+        </div>
+
+
+
+
+    </div> <!-- FIN DIV DERECHA -->
 
                 
 
 
-    </div>
+    </div> <!-- FIN PANEL BODY -->
 
 </div>
 </div>

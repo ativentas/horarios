@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Cuadrante;
 use App\Ausencia;
 use App\Centro;
+use App\Comment;
 use Auth;
 use Carbon\Carbon;
 
@@ -42,6 +43,7 @@ class HomeController extends Controller
                 $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios'))->get();                
                 $completados = Cuadrante::whereIn('estado',array('Aceptado'))->orderBy('yearsemana','asc')->get();
                 $ausencias = Ausencia::where('estado','Pendiente')->get();
+                $notas_pdtes = Comment::where('resuelto',0)->orderBy('updated_at','desc')->get();
                 break;
             
             default:
@@ -51,6 +53,6 @@ class HomeController extends Controller
                 $ausencias = Centro::find(Auth::user()->centro_id)->ausencias()->where('estado','Pendiente')->orderBy('fecha_inicio')->get();
                 break;
         }
-        return view('home',compact('cuadrantes','completados','ausencias'));
+        return view('home',compact('cuadrantes','completados','ausencias','notas_pdtes'));
     }
 }

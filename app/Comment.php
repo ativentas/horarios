@@ -13,7 +13,7 @@ class Comment extends Model
     return $this->belongsTo('App\User','from_user');
   }
   // returns post of any comment
-  public function post()
+  public function cuadrante()
   {
     return $this->belongsTo('App\Cuadrante','on_cuadrante');
   }
