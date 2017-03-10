@@ -25,6 +25,18 @@ class Cuadrante extends Model
     	return $this->belongsTo('App\Centro','centro_id');
     }
     
+    // returns all comments on that post
+    public function comments()
+    {
+    return $this->  hasMany('App\Comment','on_cuadrante');
+    }
+    // returns the instance of the user who is author of that post
+    public function author()
+    {
+    return $this->belongsTo('App\User','author_id');
+    }
+    
+
     public function getSemanaAttribute()
     {
         $semana = substr($this->yearsemana,-2,2);

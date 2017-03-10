@@ -291,7 +291,61 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         <input type="hidden" name="cambio_estado" id="cambio_estado" val="">
 
         </form>
+   
+
+
+<div class="col-md-8 col-md-offset-2">
+
+    <div class="panel-body">
+      <form method="post" action="/comment/add">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="on_cuadrante" value="{{ $cuadrante->id }}">
+        <input type="hidden" name="cuadrante_id" value="{{ $cuadrante->id }}">
+        <div class="form-group">
+          <textarea required="required" placeholder="Escribe una nota aquí..." name = "body" class="form-control"></textarea>
+        </div>
+        <input type="submit" name='post_comment' class="btn btn-success" value = "Enviar"/>
+      </form>
     </div>
+
+  <div>
+    @if($comments)
+    <ul style="list-style: none; padding: 0">
+      @foreach($comments as $comment)
+        <li class="panel-body">
+          <div class="list-group">
+            <div class="list-group-item">
+              <h3>{{ $comment->author->name }}</h3>
+              <p>{{ $comment->created_at->format('d-M-Y h:i a') }}</p>
+            </div>
+            <div class="list-group-item">
+              <p>{{ $comment->body }}</p>
+            </div>
+          </div>
+        </li>
+      @endforeach
+    </ul>
+    @endif
+  </div>
+</div>
+
+
+
+
+
+
+
+    </div> <!-- FIN PANEL BODY -->
+
+
+  
+
+
+
+
+
+
+
 
 
 <form id="form_añadir_empleado" action="{{route('añadirEmpleado',array('empleado'=>':EMPLEADO_ID','cuadrante'=>$cuadrante->id))}}" method="POST"> 

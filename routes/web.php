@@ -88,3 +88,9 @@ Route::post('/aceptar/{id}', [
 	'middleware' => ['auth']
 	]);
 
+
+ Route::post('comment/add','CommentController@store')->middleware('auth');
+ // delete comment
+ Route::post('comment/delete/{id}','CommentController@destroy')->middleware('auth');
+
+

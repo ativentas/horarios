@@ -52,5 +52,26 @@ class User extends Authenticatable
     }
 
 
+    public function cuadrantesP()
+    {
+    return $this->hasMany('App\Cuadrante','author_id');
+    }
+    // user has many comments
+    public function comments()
+    {
+    return $this->hasMany('App\Comment','from_user');
+    }
+    public function can_post()
+    {
+    $role = $this->role;
+    if($role == 'author' || $role == 'admin')
+    {
+    return true;
+    }
+    return false;
+    }
+
+
+
 
 }

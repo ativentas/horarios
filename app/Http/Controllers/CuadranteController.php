@@ -393,7 +393,10 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     // $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
 
     $lineasconcambios = $cuadrante->lineacambios()->get();
-    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','empleadosdisponibles','anteriorId','posteriorId'));
+    
+    $comments = $cuadrante->comments;
+
+    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','empleadosdisponibles','anteriorId','posteriorId','comments'));
 }
 
 public function mostrarNieuwCuadrante()
@@ -422,6 +425,7 @@ public function crearNieuwCuadrante(Request $request)
     $cuadrante = new Cuadrante;
     $cuadrante->yearsemana = $year.$semana;
     $cuadrante->centro_id = $centro_id;
+    $cuadrante->author_id = Auth::user()->id;
 
     //grabar dia de cierre, en su caso
     $diacierre = Centro::where('id',$centro_id)->firstOrFail()->dia_cierre;
