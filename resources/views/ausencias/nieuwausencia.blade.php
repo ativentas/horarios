@@ -66,7 +66,7 @@
                     </p>
                 @endif
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Crear</button>
         </form> 
         </div>
     </div>
@@ -80,11 +80,38 @@
 $(document).ready(function(){
 
 $('input[name="time"]').daterangepicker({
+    "showWeekNumbers": true,
     "autoApply": true,
     "locale": {
         "format": "DD/MM/YYYY",
+        "weekLabel": "S",
         "separator": " - ",
+        "firstDay": 1,
+        "daysOfWeek": [
+            "Do",
+            "Lu",
+            "Ma",
+            "Mi",
+            "Ju",
+            "Vi",
+            "Sa"
+        ],
+        "monthNames": [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre"
+        ],
     }
+
 });
 });
 </script>

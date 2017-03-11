@@ -124,9 +124,32 @@ $('#boton_solicitarverificacion').click(function(e){
     }
     //guardar los datos poniendo la plantilla como pendiente
     $('#cambio_estado').val('Pendiente');
+    // $('#btn_guardar').trigger('click');
+
+var deferred = $.Deferred();
+deferred.then(function() {
     $('#btn_guardar').trigger('click');
-    $('.btn-guardar').hide();
+    return;
+}).then(function(){
+    alert('se va a enviar el horario a la oficina');
+    $(location).attr("href", '/cuadrantes');
 });
+
+// console.log(deferred)
+
+deferred.resolve();
+
+
+
+
+
+
+    //TO DO: lo ideal sería salir a la ruta /cuadrantes, 
+    // pero el problema es que el trigger se está ejecutando todavía, 
+    // creo que hay que utilizar deferred y promises
+    // $(location).attr("href", '/cuadrantes');
+});
+
 $('#boton_aceptar').click(function(e){
     e.preventDefault();
     if ($('#check_aceptar').prop('checked') == false) {
@@ -256,7 +279,7 @@ $('.wrapper').on("click", function() {
   if(isadmin||estadocuadrante=='Archivado'){
     return;
   }
-  if($.inArray(situacion,['V','B','AJ','AN','L'])){    
+  if($.inArray(situacion,['V','B','AJ','AN','L','BP'])){    
 
     $('#container_horarioL').show();
   } 

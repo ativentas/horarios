@@ -242,9 +242,10 @@ public function mostrarCuadrante($cuadrante_id = NULL)
         $posteriorId = $posteriorId->id;
     }
 
+    $centro_id = $cuadrante->centro_id;
     if($cuadrante->archivado == '0') {
         #TO DO: actualizar las lineas con las ausencias, ver si hay conflictos (por ejemplo cuando es vacaciones pero en la linea pone Vacaciones Trabaja).
-        $centro_id = $cuadrante->centro_id;
+
         $empleados = Empleado::where('centro_id',$centro_id)->pluck('id')->toArray();
         $yearsemana = $cuadrante->yearsemana;
         $year = substr($yearsemana,0,4);
@@ -387,7 +388,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
         ->get();
     // dd($lineas);
 
-    $predefinidos = DB::table('predefinidos')->select('id AS value','nombre AS label','entrada1','salida1','entrada2','salida2')->get();
+    $predefinidos = DB::table('predefinidos')->where('centro_id',$centro_id)->select('id AS value','nombre AS label','entrada1','salida1','entrada2','salida2')->get();
     //crear collection con los alias y con key id (no lo convierto a array porque sino da error en el script de abajo)
     //me parece que $empleados no se está usando. Lo he quitado también del compact
     // $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
@@ -435,12 +436,19 @@ public function crearNieuwCuadrante(Request $request)
         $cuadrante->$columna = 'C';
     }
     //ver si hay algún festivo para esta semana
+    //TO DO: falta por poner FC o FA en el dia correspondiente del cuadrante,
+    // tal y como está hecho con el día de cierre
     $festivos = DB::table('festivos')->pluck('fecha')->toArray();
     $diassemana = $this->generateDateRangeWeek($cuadrante->yearsemana);
     $festivos_thisweek = [];
     foreach ($festivos as $festivo) {
         if(in_array($festivo,$diassemana))
             $festivos_thisweek [] = $festivo;
+    }
+    if(!empty($festivos_thisweek)){
+        foreach ($festivos_thisweek as $festivo) {
+            //TO DO: SEGUIR CON ESTO
+        }
     }
 
     //TO DO: cuando modifique la función addLineas para que en vez de fecha_ini y fecha_fin se le pase $diassemana, entonces puedo borrar las siguientes lineas.
@@ -463,8 +471,7 @@ public function crearNieuwCuadrante(Request $request)
         }
     }
     if (!is_null($festivos_thisweek)){
-        
-        $lineas = Linea::where('cuadrante_id',$cuadrante->id)->whereIn('dia',$festivos_thisweek)->get();
+        $lineas = Linea::where('cuadrante_id',$cuadrante->id)->whereIn('fecha',$festivos_thisweek)->get();
         foreach ($lineas as $linea) {
             $linea->situacion ='F';
             $linea->save();

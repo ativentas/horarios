@@ -23,7 +23,8 @@ class AusenciaController extends Controller
       	'V' => 'Vacaciones', 
       	'AN' => 'Ausencia sin justif.',
       	'B' => 'Baja Médica',
-      	'AJ' => 'Ausencia justif.');
+      	'AJ' => 'Ausencia justif.',
+      	'BP' => 'Baja Paternidad');
    }
 
     /**
@@ -119,11 +120,13 @@ class AusenciaController extends Controller
 		$ausencia->dias = $intervalo->format("%a");
 		$ausencia->save();	
 
+		
+		//TO DO: MENSAJE INFO PARA DECIR QUE SE HA GUARDADO LA AUSENCIA
 		$request->session()->flash('success', 'Guardado!');
 		// if (isset($_POST['solicitudEmpleado'])){
 		// 	return redirect()->back();
 		// }
-		return redirect('ausencias/create');
+		return redirect('ausencias');
     }
 
     /**

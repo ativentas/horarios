@@ -53,12 +53,20 @@ $('#fecha').on( 'change', function() {
     // TO DO: coger la fecha y convertirlo a semana
     // alert ($('#fecha').val());
     var fecha = new Date($('#fecha').val());
-    // var year = '2017';
+    fecha = getMonday(fecha);
+
+    var year = fecha.getFullYear();
     var semana = $.datepicker.iso8601Week( fecha );    
     var output = ("00" + semana).slice(-2);
-    $('#fecha').val(output+'-2017');
+    $('#fecha').val(output+'-'+year);
 });
 
+    function getMonday(d) {
+        d = new Date(d);
+        var day = d.getDay(),
+          diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+        return new Date(d.setDate(diff));
+    }
 });
 
 

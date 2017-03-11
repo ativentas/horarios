@@ -15,7 +15,7 @@ class CommentController extends Controller
     $input['body'] = $request->input('body');
     $cuadrante_id = $request->input('cuadrante_id');
     Comment::create( $input );
-    return redirect('cuadrantes/'.$cuadrante_id)->with('info', 'Comentario enviado');     
+    return redirect('cuadrante/'.$cuadrante_id)->with('info', 'Comentario enviado');     
   }
 
 }
