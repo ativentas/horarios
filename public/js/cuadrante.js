@@ -321,6 +321,8 @@ $('.wrapper').on("click", function() {
     .data( 'dia', dia ) 
     .data( 'elemento', elemento ) 
     .dialog('open');
+    form[0].reset();
+
 /*TO DO: dar la opción de dia Libre o se le debe (porque no tiene dia libre esa semana por ejemplo y se
 quiere que conste en el saldo de horas a devolver*/
 });
@@ -576,7 +578,7 @@ function aplicar_horarios(){
     });
     /*pongo a 00:00 los inputs del dialogo (no hace falta porque creo que el reset borra
     todos los inputs) y cierro el dialogo*/
-
+    $('.predefinidos').val('');
     dialog_horarios.dialog( "close" );
 }
 

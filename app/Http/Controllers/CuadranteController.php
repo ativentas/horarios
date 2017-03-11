@@ -210,7 +210,6 @@ public function rechazarHorarios ($cuadrante_id){
     }
 }
 
-
 public function mostrarCuadrante($cuadrante_id = NULL)
 {
     if(!$cuadrante_id){
@@ -421,64 +420,80 @@ public function crearNieuwCuadrante(Request $request)
     if (Auth::user()->isAdmin()){
         return redirect('home')->with('info','Los encargados son los que tienen que crear los horarios');
     }
-    $centro_id = Auth::user()->centro_id;
-    //TO DO: hacer try catch para que lo haga todo o nada    
-    $cuadrante = new Cuadrante;
-    $cuadrante->yearsemana = $year.$semana;
-    $cuadrante->centro_id = $centro_id;
-    $cuadrante->author_id = Auth::user()->id;
 
-    //grabar dia de cierre, en su caso
-    $diacierre = Centro::where('id',$centro_id)->firstOrFail()->dia_cierre;
-    
-    if ( !is_null ( $diacierre ) ){
-        $columna = 'dia_'.$diacierre;
-        $cuadrante->$columna = 'C';
-    }
-    //ver si hay algún festivo para esta semana
-    //TO DO: falta por poner FC o FA en el dia correspondiente del cuadrante,
-    // tal y como está hecho con el día de cierre
-    $festivos = DB::table('festivos')->pluck('fecha')->toArray();
-    $diassemana = $this->generateDateRangeWeek($cuadrante->yearsemana);
-    $festivos_thisweek = [];
-    foreach ($festivos as $festivo) {
-        if(in_array($festivo,$diassemana))
-            $festivos_thisweek [] = $festivo;
-    }
-    if(!empty($festivos_thisweek)){
-        foreach ($festivos_thisweek as $festivo) {
-            //TO DO: SEGUIR CON ESTO
-        }
-    }
+    //TO DO: hacer try catch para que lo haga todo o nada      
 
-    //TO DO: cuando modifique la función addLineas para que en vez de fecha_ini y fecha_fin se le pase $diassemana, entonces puedo borrar las siguientes lineas.
-    $date = new Carbon();
-    $date->setISODate($year,$semana);
-    $fecha_ini = new Carbon($date->startOfWeek()); 
-    $fecha_fin = new Carbon($date->endOfWeek());
+    try {
+        $exception = DB::transaction(function() use ($year,$semana) {
 
-    $cuadrante->save();
- 
-    //TO DO: creo que sería mejor que addLineas, en vez de fecha_ini y fecha_fin, se le pasara un array con las fechas. La idea es pasarle el array $diassemana
-    $this->addLineas($cuadrante->id,Auth::user()->centro_id,$fecha_ini,$fecha_fin);
-    /*incluir dia de cierre como libres y dias festivos*/
-    if (!is_null($diacierre)){
+        $centro_id = Auth::user()->centro_id;
+        $cuadrante = new Cuadrante;
+        $cuadrante->yearsemana = $year.$semana;
+        $cuadrante->centro_id = $centro_id;
+        $cuadrante->author_id = Auth::user()->id;
+
+        //grabar dia de cierre, en su caso
+        $diacierre = Centro::where('id',$centro_id)->firstOrFail()->dia_cierre;
         
-        $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('dia',$diacierre)->get();
-        foreach ($lineas as $linea) {
-            $linea->situacion ='L';
-            $linea->save();
+        if ( !is_null ( $diacierre ) ){
+            $columna = 'dia_'.$diacierre;
+            $cuadrante->$columna = 'C';
         }
-    }
-    if (!is_null($festivos_thisweek)){
-        $lineas = Linea::where('cuadrante_id',$cuadrante->id)->whereIn('fecha',$festivos_thisweek)->get();
-        foreach ($lineas as $linea) {
-            $linea->situacion ='F';
-            $linea->save();
+        //ver si hay algún festivo para esta semana
+        //TO DO: falta por poner FC o FA en el dia correspondiente del cuadrante,
+        // tal y como está hecho con el día de cierre
+        $festivos = DB::table('festivos')->pluck('fecha')->toArray();
+        $diassemana = $this->generateDateRangeWeek($cuadrante->yearsemana);
+        $festivos_thisweek = [];
+        foreach ($festivos as $festivo) {
+            if(in_array($festivo,$diassemana))
+                $festivos_thisweek [] = $festivo;
         }
-    }
+        if(!empty($festivos_thisweek)){
+            foreach ($festivos_thisweek as $festivo) {
+                $diafestivo = DateTime::createFromFormat('Y-m-d', $festivo);
+                $diafestivo = $diafestivo->format('w');
+                $columna = 'dia_'.$diafestivo;
+                $cuadrante->$columna = 'FC';
+            }
+        }
 
-    return redirect('cuadrante/'.$cuadrante->id);
+        //TO DO: cuando modifique la función addLineas para que en vez de fecha_ini y fecha_fin se le pase $diassemana, entonces puedo borrar las siguientes lineas.
+        $date = new Carbon();
+        $date->setISODate($year,$semana);
+        $fecha_ini = new Carbon($date->startOfWeek()); 
+        $fecha_fin = new Carbon($date->endOfWeek());
+
+        $cuadrante->save();
+     
+        //TO DO: creo que sería mejor que addLineas, en vez de fecha_ini y fecha_fin, se le pasara un array con las fechas. La idea es pasarle el array $diassemana
+        $this->addLineas($cuadrante->id,Auth::user()->centro_id,$fecha_ini,$fecha_fin);
+        /*incluir dia de cierre como libres y dias festivos*/
+        if (!is_null($diacierre)){
+            
+            $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('dia',$diacierre)->get();
+            foreach ($lineas as $linea) {
+                $linea->situacion ='L';
+                $linea->save();
+            }
+        }
+        if (!is_null($festivos_thisweek)){
+            $lineas = Linea::where('cuadrante_id',$cuadrante->id)->whereIn('fecha',$festivos_thisweek)->get();
+            foreach ($lineas as $linea) {
+                $linea->situacion ='F';
+                $linea->save();
+            }
+        }
+        // dd('he lleagado pero paro aqui');
+        
+        return redirect('cuadrante/'.$cuadrante->id);
+        }); #FIN $exception
+        return is_null($exception) ? 'Horario creado' : $exception;
+    
+    } catch(Exception $e) {
+        // return $e;
+        return "Error: no se ha podido crear el horario".$e;
+    }
 
 }
 
@@ -550,7 +565,6 @@ public function empleadosdisponibles ($cuadrante)
         })->get();
     return $empleadosdisponibles;
 
-
 }
 public function añadirempleado ($empleado_id,$cuadrante_id){
     //TO DO: unificar esta función con la de addlineas
@@ -573,7 +587,6 @@ public function añadirempleado ($empleado_id,$cuadrante_id){
             $fecha_ini = $fecha_ini->addDay();
     }
     return 'hecho';
-
 }
 
 }

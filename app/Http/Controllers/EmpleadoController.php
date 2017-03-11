@@ -21,7 +21,6 @@ class EmpleadoController extends Controller
         $this->middleware('auth');
         $this->hoy = new Datetime();
         $this->hoy = $this->hoy->format('Y-m-d');
-
     }
 
     /**
@@ -92,7 +91,7 @@ class EmpleadoController extends Controller
             $date = new DateTime();
             $yearsemana = $date->format("YW");
             //buscar el cuadrante actual
-            $cuadrante = Cuadrante::where('yearsemana','<=',$yearsemana)->where('centro_id',$empleado->centro_id)->orderBy('yearsemana','desc')->first();
+            $cuadrante = Cuadrante::where('estado','<>',null)->where('yearsemana','<=',$yearsemana)->where('centro_id',$empleado->centro_id)->orderBy('yearsemana','desc')->first();
         }
         //para que cuando no hay nigún cuadrante, tengamos un valor de yearsemana para calcular el resto de variables
         $cuadrante_id = NULL;
@@ -116,10 +115,11 @@ class EmpleadoController extends Controller
             $query->where('estado', '<>', NULL);
             })->get();
 
-        $query = Linea::where('empleado_id',$id)->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])->whereHas('cuadrante', function ($query) {
-            $query->where('estado', '<>', NULL);});
+        $query = Linea::where('empleado_id',$id)->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])->whereHas('cuadrante', function ($restrict) {
+            $restrict->where('estado', '<>', NULL);})->get();
+
+        $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP'))->count();
         $vaclineasacum = $query->where('situacion','V')->count();
-        $otraslineasacum = $query->where('situacion',array('AN','AJ','B'))->count();
         $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
         return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','year','cuadrante','anteriorId','posteriorId'));
     }

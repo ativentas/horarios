@@ -119,6 +119,7 @@
                 <tr>
                     <th>Tipo</th>
                     <th>Abarca</th>
+                    <th>dias</th>
                     <th>Estado</th>
                 </tr>
             </thead>
@@ -128,6 +129,7 @@
                 <tr>
                     <th>{{ $ausencia->tipo }}</th>
                     <td>{{ $ausencia->abarca }}</td>
+                    <td>{{ $ausencia->dias }}</td>
                     <td>{{ $ausencia->estado }}</td>
 
                 </tr>

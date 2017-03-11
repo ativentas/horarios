@@ -91,6 +91,41 @@
     </div>
 
 
+    <div class="col-md-8 col-md-offset-2">
+
+        <div class="panel-body">
+          <form method="post" action="/comment/add">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="on_ausencia" value="{{ $cuadrante->id }}">
+            <div class="form-group">
+              <textarea required="required" placeholder="Escribe una nota aquí..." name = "body" class="form-control"></textarea>
+            </div>
+            <input type="submit" name='post_comment' class="btn btn-success" value = "Enviar"/>
+          </form>
+        </div>
+
+      <div>
+        @if($comments)
+        <ul style="list-style: none; padding: 0">
+          @foreach($comments as $comment)
+            <li class="panel-body">
+              <div class="list-group">
+                <div class="list-group-item">
+                  <h3>{{ $comment->author->name }}</h3>
+                  <p>{{ $comment->created_at->format('d-M-Y h:i a') }}</p>
+                </div>
+                <div class="list-group-item">
+                  <p>{{ $comment->body }}</p>
+                </div>
+              </div>
+            </li>
+          @endforeach
+        </ul>
+        @endif
+      </div>
+    </div>
+
+
 
     </div>
 </div>

@@ -56,7 +56,7 @@ Route::resource('empleados', 'EmpleadoController');
 			->select('empleados.centro_id','ausencias.id', 'ausencias.empleado_id', 'ausencias.tipo', 'ausencias.fecha_inicio as start', 'ausencias.fecha_fin as end','ausencias.finalDay','ausencias.allDay')
 			->where('empleados.centro_id','=',$centro)
 			->get();
-		$tiposAusencia = ['V' => 'vacaciones', 'B' => 'baja', 'AJ' => 'ausencia justif.','AN' => 'ausencia no justif.'];
+		$tiposAusencia = ['V' => 'vacaciones', 'B' => 'baja', 'AJ' => 'ausencia justif.','AN' => 'ausencia no justif.','BP' => 'Baja Paternidad'];
     	$empleados = DB::table('empleados')->pluck('alias','id');
 
 		foreach($ausencias as $ausencia){

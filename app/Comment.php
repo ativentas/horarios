@@ -17,5 +17,9 @@ class Comment extends Model
   {
     return $this->belongsTo('App\Cuadrante','on_cuadrante');
   }
+  public function ausencia()
+  {
+    return $this->belongsTo('App\Ausencia','on_ausencia');
+  }
 
 }
