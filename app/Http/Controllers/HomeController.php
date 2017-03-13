@@ -42,6 +42,18 @@ class HomeController extends Controller
             case true:
                 $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios'))->get();                
                 $completados = Cuadrante::whereIn('estado',array('Aceptado'))->orderBy('yearsemana','asc')->get();
+                $arch_con_notaspdtes = Cuadrante::whereHas('comments', function ($query) {
+                        $query->where('resuelto',0);
+                    })->where('estado','Archivado')->get();
+                $otras_notaspdtes = collect();
+                foreach ($arch_con_notaspdtes as $archivado) {
+                    $notas = $archivado->comments()->get();
+                    foreach ($notas as $nota) {
+                        $otras_notaspdtes->push($nota);
+                    }
+                    
+                }
+                // dd($otras_notaspdtes);
                 $ausencias = Ausencia::where('estado','Pendiente')->get();
                 $notasC_pdtes = Comment::has('cuadrante')->where('resuelto',0)->orderBy('updated_at','desc')->get();
                 $notasA_pdtes = Comment::has('ausencia')->where('resuelto',0)->orderBy('updated_at','desc')->get();
@@ -55,6 +67,6 @@ class HomeController extends Controller
                 $ausencias = Centro::find(Auth::user()->centro_id)->ausencias()->where('estado','Pendiente')->orderBy('fecha_inicio')->get();
                 break;
         }
-        return view('home',compact('cuadrantes','completados','ausencias','notasC_pdtes','notasA_pdtes'));
+        return view('home',compact('cuadrantes','completados','ausencias','notasC_pdtes','notasA_pdtes','otras_notaspdtes'));
     }
 }

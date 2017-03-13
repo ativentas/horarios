@@ -12,7 +12,16 @@
 <!-- <div class="col-md-10 col-md-offset-1"> -->
 <div class="col-md-12">
 <div class="panel panel-default">
-    <div class="panel-heading"><h2>Datos {{$empleado->alias}}</h2>
+    <div class="panel-heading">
+        <ul class="pager">
+        @if($empleado_anterior)
+        <li><a href="{{ url('empleados_c/'.$empleado_anterior) }}">Ant.</a></li>
+        @endif
+        <span>Horarios {{$empleado->alias}}</span>
+        @if($empleado_posterior)
+        <li><a href="{{ url('empleados_c/'.$empleado_posterior) }}">Prox.</a></li>
+        @endif        
+        </ul>
         @include('layouts.alerts')
         <div class="row">
                 <ol class="breadcrumb">
@@ -20,12 +29,9 @@
                     <li><a href="{{ url('/empleados') }}">Listado</a></li>
                     <li><a href="{{ url('/empleados/create') }}">Nuevo</a></li>
                 </ol>
-        </div>
-    
+        </div>   
 
     </div>
-
-
 
 
     <div class="panel-body">

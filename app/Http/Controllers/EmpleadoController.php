@@ -86,6 +86,14 @@ class EmpleadoController extends Controller
     public function show($id,$cuadrante_id=NULL)
     {
         $empleado = Empleado::findOrFail($id);
+        $empleado_anterior = Empleado::where('centro_id', $empleado->centro_id)->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
+        if($empleado_anterior){
+            $empleado_anterior = $empleado_anterior->id;
+        }
+        $empleado_posterior = Empleado::where('centro_id', $empleado->centro_id)->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
+        if($empleado_posterior){
+            $empleado_posterior = $empleado_posterior->id;
+        }
         $cuadrante=Cuadrante::find($cuadrante_id);
         if(!$cuadrante){
             $date = new DateTime();
@@ -121,7 +129,7 @@ class EmpleadoController extends Controller
         $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP'))->count();
         $vaclineasacum = $query->where('situacion','V')->count();
         $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
-        return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','year','cuadrante','anteriorId','posteriorId'));
+        return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','year','cuadrante','anteriorId','posteriorId','empleado_anterior','empleado_posterior'));
     }
 
     /**

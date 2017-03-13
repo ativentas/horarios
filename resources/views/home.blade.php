@@ -52,14 +52,15 @@
                 @if($cuadrante->has('comments'))
                 @foreach($cuadrante->comments as $comment)
                 @if (!$comment->isSolved())
-                <!-- <tr> -->
-                    <th>{{$comment->author->name}}</th>
-                    <th colspan="3">{{$comment->body}}</th>
-                    <th>
-                    <button type="button" class="btn btn-default btn-sm">
-                    <span class="glyphicon glyphicon-pencil"></span></button>
+                <tr>
+                    
+                    <th colspan="5">{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}<button type="button" class="btn btn-warning btn-sm" style="float: right;">
+                    <span class="glyphicon glyphicon-pencil"> Respuesta</span></button>
+                    
+                    <br>
+                    <span>{{$comment->body}}</span>
                     </th>
-                <!-- </tr> -->
+                </tr>
                 @endif
                 @endforeach
                 @endif
@@ -94,6 +95,21 @@
                     <td><a href="{{ url('/cuadrante/' . $completado->id) }}">Ver</a></td>
 
                 </tr>
+                @if($cuadrante->has('comments'))
+                @foreach($cuadrante->comments as $comment)
+                @if (!$comment->isSolved())
+                <tr>
+                    <th colspan="5">{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}<button type="button" class="btn btn-warning btn-sm" style="float: right;">
+                    <span class="glyphicon glyphicon-pencil"></span></button></th>
+                </tr>
+                <tr>
+                    <th colspan="4">{{$comment->body}}</th>
+
+                </tr>
+                @endif
+                @endforeach
+                @endif
+
             @endforeach
             </tbody>
         </table>
@@ -102,10 +118,10 @@
 
 
         <div class="panel panel-default">
-            <div class="panel-heading"><h4>Notas sin resolver de Horarios</h4></div>
+            <div class="panel-heading"><h4>Otras notas sin resolver</h4></div>
             <div class="list-group">
-                @if(!empty($notasC_pdtes[0]))
-                @foreach($notasC_pdtes as $nota)
+                @if(!empty($otras_notaspdtes[0]))
+                @foreach($otras_notaspdtes as $nota)
                     <div class="list-group-item">
                         <p>{{ $nota->body }}</p>
                         <p></p>
@@ -114,7 +130,7 @@
                 @endforeach
                 @else
                 <div class="list-group-item">
-                    <p>No hay ninguna nota pendiente</p>
+                    <p>No hay ninguna nota mas pendiente</p>
                 </div>
                 @endif
             </div>
