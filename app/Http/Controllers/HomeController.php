@@ -60,6 +60,7 @@ class HomeController extends Controller
                 break;
             
             default:
+                
                 $yearsemana = $this->yearsemana(date('Y-m-d'));
                 //TO DO: PONER CUANTAS SEMANAS ATRAS PUEDE VER EL ENCARGADO EN EL ARCHIVO DE CONFIGURACION. CADA EMPRESA PUEDE TENER UN VALOR DISTINTO, TB SE PUEDE HACER UN NUEVO CAMPO EN LA BBDD DE USUARIOS
                 $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana-100)->get();

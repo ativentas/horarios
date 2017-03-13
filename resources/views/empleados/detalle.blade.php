@@ -17,7 +17,7 @@
         @if($empleado_anterior)
         <li><a href="{{ url('empleados_c/'.$empleado_anterior) }}">Ant.</a></li>
         @endif
-        <span>Horarios {{$empleado->alias}}</span>
+        <h2 style="display:inline;"><span class="label label-info">Horarios {{$empleado->alias}}</span></h2>
         @if($empleado_posterior)
         <li><a href="{{ url('empleados_c/'.$empleado_posterior) }}">Prox.</a></li>
         @endif        

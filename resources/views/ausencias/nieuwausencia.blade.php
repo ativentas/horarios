@@ -19,9 +19,9 @@
     </div>
 
     <div class="panel-body">
-        <div class="col-md-4 row">
         <form action="{{ url('ausencias') }}" method="POST" autocomplete="off">
             {{ csrf_field() }}
+            <div class="col-md-4 row">
 
             <div class="form-group @if($errors->has('empleado_id')) has-error has-feedback @endif">
                 <select class="form-control" id="empleado_id" name="empleado_id">
@@ -67,8 +67,27 @@
                 @endif
             </div>
             <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+            
+            <div class="col-md-6">
+            <div class="panel-body">
+              <!-- <form method="post" action="/comment/add"> -->
+                <div class="form-group">
+                  <textarea placeholder="Escribe una nota aquí..." name = "body" class="form-control"></textarea>
+                </div>
+                <!-- <input type="submit" name='post_comment' class="btn btn-success" value = "Enviar"/> -->
+              <!-- </form> -->
+            </div>
+            </div>
+
+
+
+
+
+
+
         </form> 
-        </div>
+
     </div>
 </div>
 </div>

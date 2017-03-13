@@ -62,7 +62,7 @@ class EmpleadoController extends Controller
             $id = 'NULL';
         }
         $this->validate($request, [
-        'alias' => 'required|min:4|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
+        'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
         'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
         'centro' => 'required',   
         ]);
@@ -160,7 +160,7 @@ class EmpleadoController extends Controller
             $empleado->save();
         }else {  
             $this->validate($request, [
-            'alias' => 'required|min:4|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
+            'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
             'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
             'centro' => 'required',   
             ]);

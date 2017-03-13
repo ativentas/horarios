@@ -214,9 +214,9 @@ $('.ausencia').on( "click", function(event) {
     return;
   }
   $('#container_horarioVT').hide();  
-  /*si no es V o L o B, no mostrar checkbox*/
+  /*si no es V o L o B o F, no mostrar checkbox*/
   $('#check_trabaja').hide();
-  myarray=['V','L','B'];
+  myarray=['V','L','B','F'];
   if(jQuery.inArray(situacion, myarray) !== -1){
     $('#check_trabaja').show();    
   }
@@ -488,6 +488,18 @@ function modificar_ausencia(){
         $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
         $("#situacion_"+dia+"_"+empleado_id).val('VT');
+        elemento.hide();
+        break;
+      case 'F': 
+        var entrada1 = $('#dialogAusencia-form input.predefinidos-entrada1').val();
+        var salida1 = $('#dialogAusencia-form input.predefinidos-salida1').val();
+        var entrada2 = $('#dialogAusencia-form input.predefinidos-entrada2').val();
+        var salida2 = $('#dialogAusencia-form input.predefinidos-salida2').val();    
+        $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
+        $("#salida1_"+dia+"_"+empleado_id).val(salida1);
+        $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
+        $("#salida2_"+dia+"_"+empleado_id).val(salida2);
+        $("#situacion_"+dia+"_"+empleado_id).val('FT');
         elemento.hide();
         break;
       case 'L': 
