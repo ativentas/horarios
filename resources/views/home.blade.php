@@ -28,7 +28,8 @@
         @else
         <div class="panel-heading"><h4>Ultimos horarios</h4></div>
         @endif
-        <table class="table table-striped">
+        <!-- <table class="table table-striped"> -->
+        <table class="table">
             <thead>
                 <tr>
                     <th>Semana</th>
@@ -40,7 +41,7 @@
             </thead>
             <tbody>
             @foreach($cuadrantes as $cuadrante)
-                <tr>
+                <tr class="active">
                     <th>{{$cuadrante->semana}}</th>
                     <th>{{$cuadrante->abarca}}</th>
                     <td>{{$cuadrante->centro->nombre}}</td>
@@ -48,6 +49,21 @@
                     <td><a href="{{ url('/cuadrante/' . $cuadrante->id) }}">Ver</a></td>
 
                 </tr>
+                @if($cuadrante->has('comments'))
+                @foreach($cuadrante->comments as $comment)
+                @if (!$comment->isSolved())
+                <!-- <tr> -->
+                    <th>{{$comment->author->name}}</th>
+                    <th colspan="3">{{$comment->body}}</th>
+                    <th>
+                    <button type="button" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-pencil"></span></button>
+                    </th>
+                <!-- </tr> -->
+                @endif
+                @endforeach
+                @endif
+
             @endforeach
             </tbody>
         </table>
@@ -55,9 +71,8 @@
         @endif
 
 
-
         @if($completados->count() > 0)
-                <div class="panel panel-default">
+        <div class="panel panel-default">
         <div class="panel-heading"><h4>Horarios Pendientes de Archivar</h4></div>
         <table class="table table-striped">
             <thead>
@@ -84,6 +99,28 @@
         </table>
         </div>
         @endif
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>Notas sin resolver de Horarios</h4></div>
+            <div class="list-group">
+                @if(!empty($notasC_pdtes[0]))
+                @foreach($notasC_pdtes as $nota)
+                    <div class="list-group-item">
+                        <p>{{ $nota->body }}</p>
+                        <p></p>
+                        <p>{{$nota->author->name}} - Horario Semana: <a href="{{ url('cuadrante/'.$nota->cuadrante->id) }}" >{{ $nota->cuadrante->semana}}</a> *{{ $nota->created_at->format('d-M-Y, h:i a') }}</p>
+                    </div>
+                @endforeach
+                @else
+                <div class="list-group-item">
+                    <p>No hay ninguna nota pendiente</p>
+                </div>
+                @endif
+            </div>
+        </div>
+
+
 
 
     </div> <!-- FIN DIV IZQUIERDA -->
@@ -138,14 +175,14 @@
 
 
         <div class="panel panel-default">
-            <div class="panel-heading"><h4>Notas sin resolver</h4></div>
+            <div class="panel-heading"><h4>Notas sin resolver de Ausencias</h4></div>
             <div class="list-group">
-                @if(!empty($notas_pdtes[0]))
-                @foreach($notas_pdtes as $nota)
+                @if(!empty($notasA_pdtes[0]))
+                @foreach($notasA_pdtes as $nota)
                     <div class="list-group-item">
                         <p>{{ $nota->body }}</p>
                         <p></p>
-                        <p>{{$nota->author->name}} - Horario Semana: <a href="{{ url('cuadrante/'.$nota->cuadrante->id) }}" >{{ $nota->cuadrante->semana}}</a> *{{ $nota->created_at->format('d-M-Y, h:i a') }}</p>
+                        <p>{{$nota->author->name}} - Ausencia: <a href="{{ url('ausencias/'.$nota->ausencia->id).'/edit' }}" >{{ $nota->ausencia->id}}</a> *{{ $nota->created_at->format('d-M-Y, h:i a') }}</p>
                     </div>
                 @endforeach
                 @else

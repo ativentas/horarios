@@ -91,12 +91,13 @@
     </div>
 
 
-    <div class="col-md-8 col-md-offset-2">
+    <!-- <div class="col-md-8 col-md-offset-2"> -->
+    <div class="col-md-6">
 
         <div class="panel-body">
           <form method="post" action="/comment/add">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="on_ausencia" value="{{ $cuadrante->id }}">
+            <input type="hidden" name="on_ausencia" value="{{ $ausencia->id }}">
             <div class="form-group">
               <textarea required="required" placeholder="Escribe una nota aquí..." name = "body" class="form-control"></textarea>
             </div>

@@ -43,7 +43,8 @@ class HomeController extends Controller
                 $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios'))->get();                
                 $completados = Cuadrante::whereIn('estado',array('Aceptado'))->orderBy('yearsemana','asc')->get();
                 $ausencias = Ausencia::where('estado','Pendiente')->get();
-                $notas_pdtes = Comment::where('resuelto',0)->orderBy('updated_at','desc')->get();
+                $notasC_pdtes = Comment::has('cuadrante')->where('resuelto',0)->orderBy('updated_at','desc')->get();
+                $notasA_pdtes = Comment::has('ausencia')->where('resuelto',0)->orderBy('updated_at','desc')->get();
                 break;
             
             default:
@@ -54,6 +55,6 @@ class HomeController extends Controller
                 $ausencias = Centro::find(Auth::user()->centro_id)->ausencias()->where('estado','Pendiente')->orderBy('fecha_inicio')->get();
                 break;
         }
-        return view('home',compact('cuadrantes','completados','ausencias','notas_pdtes'));
+        return view('home',compact('cuadrantes','completados','ausencias','notasC_pdtes','notasA_pdtes'));
     }
 }

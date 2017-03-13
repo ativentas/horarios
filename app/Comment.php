@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
   protected $guarded = [];
+
+  protected $casts = [
+    'is_solved' => 'boolean',
+
+    ];
+
   // user who has commented
   public function author()
   {
@@ -21,5 +27,16 @@ class Comment extends Model
   {
     return $this->belongsTo('App\Ausencia','on_ausencia');
   }
+
+
+
+  public function isSolved()
+  {
+      return $this->resuelto;
+  }
+
+
+
+
 
 }

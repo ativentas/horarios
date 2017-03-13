@@ -165,10 +165,12 @@ class AusenciaController extends Controller
 		$ausencia->fecha_inicio =  $this->change_date_format_fullcalendar($ausencia->fecha_inicio);
 		$ausencia->fecha_fin =  $this->change_date_format_fullcalendar($ausencia->fecha_fin);
 		$ausencia->finalDay = $this->change_date_format2($ausencia->finalDay); 
+      $comments = $ausencia->comments;
         $data = [
 			'page_title' 	=> 'Edit '.$ausencia->tipo,
 			'ausencia'		=> $ausencia,
 			'tipos'			=> $this->tipos,
+			'comments'		=> $comments,
 		];
 		return view('ausencias/edit', $data);
     }

@@ -19,10 +19,10 @@ class CommentController extends Controller
     $ausencia_id = $request->input('on_ausencia');
     Comment::create( $input );
     // return redirect('cuadrante/'.$cuadrante_id)->with('info', 'Comentario enviado');     
-    if(isset($request->input('on_cuadrante'))){
+    if ($request->has('on_cuadrante')) {
       return redirect('cuadrante/'.$cuadrante_id)->with('info', 'Comentario enviado'); 
-    }elseif(isset($reques->input('on_ausencia'))){
-      return redirect('ausencias')->wiht('info','Se ha guardado la nota');
+    }elseif ($request->has('on_ausencia')) {
+      return redirect('ausencias')->with('info','Se ha guardado la nota');
     }    
   }
 
