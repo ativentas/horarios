@@ -458,9 +458,9 @@ function cambiar_abierto(){
         $("#estadodia_"+dia).data('estadodia','FA');
         $("#nuevoestadodia_"+dia).val("FA");
         alert('cambiado a '+$("#nuevoestadodia_"+dia).val());
+        $('#cambio_apertura_dia').val(dia+'-FA');
         //TO DO: cambiar la situación de ese día de todos los trabajadores a '' 
-        // y quitar el botón de F (TO DO: poner situacion F cuando el día es 
-        // festivo cuando se crea el cuadrante)
+        // y quitar el botón de F
         break;
     }
   }
@@ -499,7 +499,8 @@ function modificar_ausencia(){
         $("#salida1_"+dia+"_"+empleado_id).val(salida1);
         $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
-        $("#situacion_"+dia+"_"+empleado_id).val('FT');
+        if($("#entrada1_"+dia+"_"+empleado_id).val(entrada1) != NULL)
+        {$("#situacion_"+dia+"_"+empleado_id).val('FT');}
         elemento.hide();
         break;
       case 'L': 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Ausencia;
 use App\Empleado;
 use App\Centro;
+use App\Comment;
 use DateTime;
 use Carbon\Carbon;
 use Auth;
@@ -87,6 +88,9 @@ class AusenciaController extends Controller
      */
     public function store(Request $request)
     {
+		if(isset($request->body)){
+			
+		}
 		$centro_id = Auth::user()->centro_id;
 		$this->validate($request, [
 			'empleado_id'	=> 'required',
@@ -120,6 +124,15 @@ class AusenciaController extends Controller
 		$ausencia->dias = $intervalo->format("%a");
 		$ausencia->save();	
 
+		//grabo la nota/comentario si es que hay
+
+		if(isset($request->body)){
+			$input['from_user'] = $request->user()->id;
+			$input['on_ausencia'] = $ausencia->id;
+			$input['body'] = $request->input('body');
+			Comment::create( $input );
+	
+		}
 		
 		//TO DO: MENSAJE INFO PARA DECIR QUE SE HA GUARDADO LA AUSENCIA
 		$request->session()->flash('success', 'Guardado!');

@@ -147,6 +147,15 @@ public function guardarHorarios(Request $request, $cuadrante_id){
             $cuadrante->estado = $nuevo_estado;
             $cuadrante->save();
         }
+
+        if($request->has('cambio_apertura_dia')){
+            $nuevo_estado = substr($request->cambio_apertura_dia, -2);
+            $dia = substr($request->cambio_apertura_dia,0,1);
+            
+            $dia = 'dia_'.$dia;
+            $cuadrante->{$dia} = $nuevo_estado;
+            $cuadrante->save();
+        }
         //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
         });
         return is_null($exception) ? 'Cambios guardados' : $exception;
@@ -454,6 +463,9 @@ public function crearNieuwCuadrante(Request $request)
                 $diafestivo = DateTime::createFromFormat('Y-m-d', $festivo);
                 $diafestivo = $diafestivo->format('w');
                 $columna = 'dia_'.$diafestivo;
+                if(Centro::find($centro_id)->abrefestivos == 1){
+                    $cuadrante->$columna = 'FA';
+                }
                 $cuadrante->$columna = 'FC';
             }
         }
@@ -484,7 +496,6 @@ public function crearNieuwCuadrante(Request $request)
                 $linea->save();
             }
         }
-        // dd('he lleagado pero paro aqui');
         
         return redirect('cuadrante/'.$cuadrante->id);
         }); #FIN $exception

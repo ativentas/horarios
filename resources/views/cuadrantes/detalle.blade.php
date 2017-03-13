@@ -289,6 +289,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         </table></div>
         
         <input type="hidden" name="cambio_estado" id="cambio_estado" val="">
+        <input type="hidden" name="cambio_apertura_dia" id="cambio_apertura_dia" val="">
 
         </form>
    
