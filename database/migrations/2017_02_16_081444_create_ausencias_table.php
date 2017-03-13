@@ -19,8 +19,8 @@ class CreateAusenciasTable extends Migration
             $table->integer('owner')->unsigned();
             $table->string('alias');
             $table->enum('tipo',['V','B','AJ','AN','BP'])->nullable();      
-            $table->timestamp('fecha_inicio')->nullable();
-            $table->timestamp('fecha_fin')->nullable();
+            $table->datetime('fecha_inicio');
+            $table->datetime('fecha_fin');
             $table->date('finalDay');
             $table->integer('dias')->nullable();
             $table->text('nota')->nullable();

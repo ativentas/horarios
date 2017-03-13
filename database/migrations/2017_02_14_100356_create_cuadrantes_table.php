@@ -19,8 +19,8 @@ class CreateCuadrantesTable extends Migration
             $table->integer('centro_id')->unsigned();
             $table->integer('author_id')->unsigned();
             //TO DO: ver si eliminar archivdo
-            $table->boolean('archivado')->nullable();
-            $table->enum('estado',['Pendiente','Aceptado','AceptadoCambios','Archivado'])->default(NULL);
+            $table->boolean('archivado')->default(0);
+            $table->enum('estado',['Pendiente','Aceptado','AceptadoCambios','Archivado'])->nullable();
             $table->enum('dia_1',['A','C','FA','FC'])->default('A');
             $table->enum('dia_2',['A','C','FA','FC'])->default('A');
             $table->enum('dia_3',['A','C','FA','FC'])->default('A');

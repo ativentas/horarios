@@ -17,8 +17,8 @@ class Comments extends Migration
         Schema::create('comments', function(Blueprint $table)
         {
           $table->increments('id');
-          $table -> integer('on_cuadrante') -> unsigned() -> default(NULL);
-          $table -> integer('on_ausencia') -> unsigned() -> default(NULL);
+          $table -> integer('on_cuadrante')->unsigned()->nullable();
+          $table -> integer('on_ausencia')->unsigned()->nullable();
           $table->foreign('on_cuadrante')
               ->references('id')->on('cuadrantes')
               ->onDelete('cascade');
