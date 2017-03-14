@@ -499,7 +499,7 @@ function modificar_ausencia(){
         $("#salida1_"+dia+"_"+empleado_id).val(salida1);
         $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
-        if($("#entrada1_"+dia+"_"+empleado_id).val(entrada1) != NULL)
+        if($("#entrada1_"+dia+"_"+empleado_id).val(entrada1).length)
         {$("#situacion_"+dia+"_"+empleado_id).val('FT');}
         elemento.hide();
         break;
