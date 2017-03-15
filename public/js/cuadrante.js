@@ -310,6 +310,7 @@ $('.wrapper').on("click", function() {
   var dia = $(this).parent().data('dia');
 
   /*coger el horario y ponerlo en el diálogo para poder modificarlo*/
+  form[0].reset();
   $('#dialogHorarioDia-form input.predefinidos-entrada1').val($("#entrada1_"+dia+"_"+empleado_id).val());
   $('#dialogHorarioDia-form input.predefinidos-salida1').val($("#salida1_"+dia+"_"+empleado_id).val());
   $('#dialogHorarioDia-form input.predefinidos-entrada2').val($("#entrada2_"+dia+"_"+empleado_id).val());
@@ -321,7 +322,7 @@ $('.wrapper').on("click", function() {
     .data( 'dia', dia ) 
     .data( 'elemento', elemento ) 
     .dialog('open');
-    form[0].reset();
+    
 
 /*TO DO: dar la opción de dia Libre o se le debe (porque no tiene dia libre esa semana por ejemplo y se
 quiere que conste en el saldo de horas a devolver*/

@@ -331,20 +331,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 </div>
 
 
-
-
-
-
-
     </div> <!-- FIN PANEL BODY -->
-
-
-  
-
-
-
-
-
 
 
 
@@ -360,7 +347,13 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
     <fieldset>
         <div class="form-group">
         <label for="predefinidos">Elegir horario base</label>
-        <input type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all">
+<!--         <input type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all"> -->        
+        <select class="predefinidos form-control" name="predefinidos" id="">
+            <option value=""></option>
+            @foreach ($predefinidos as $key => $predefinido)
+            <option data-key="{{$key}}" class="" value="">{{$predefinido->label}}</option>
+            @endforeach                
+        </select>
         </div>
         <div class="form-group">
         <input class="predefinidos-entrada1" type="text" tabindex="" name="entrada1" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
@@ -381,10 +374,15 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             <label><input type="checkbox" id="check_trabaja" value="VT">Este dia trabaja</label>
         </div>
         <div id="container_horarioVT">
+        
         <div class="form-group">
-        <!-- <label for="predefinidos">Elegir horario base</label> -->
-
-        <input type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all" placeholder="Elige horario">
+<!--         <input type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all" placeholder="Elige horario"> -->
+        <select class="predefinidos form-control" name="predefinidos" id="">
+            <option value=""></option>
+            @foreach ($predefinidos as $key => $predefinido)
+            <option data-key="{{$key}}" class="" value="">{{$predefinido->label}}</option>
+            @endforeach                
+        </select>
         </div>
         <div class="form-group">
         <input class="predefinidos-entrada1" type="text" tabindex="" name="entrada1" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
@@ -409,8 +407,17 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             <label><input type="checkbox" id="check_vacaciones" value="">Cambiar a Vacaciones</label>
         </div>
         <div id="container_horarioL">
-        <div class="form-group">
+        <!-- <div class="form-group">
         <input class="predefinidos" type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all" placeholder="Elige horario">
+        </div> -->
+        
+        <div class="form-group">
+        <select class="predefinidos form-control" name="predefinidos" id="">
+            <option value=""></option>
+            @foreach ($predefinidos as $key => $predefinido)
+            <option data-key="{{$key}}" class="" value="">{{$predefinido->label}}</option>
+            @endforeach                
+        </select>
         </div>
         <div class="form-group">
         <input class="predefinidos-entrada1" type="text" tabindex="" name="entrada1" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
@@ -447,38 +454,57 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 $(document).ready(function(){
 
   var predefinidos = <?php echo $predefinidos; ?>;
-  console.log(predefinidos);
-  $( function() {
-    $( ".predefinidos" ).autocomplete({
-      minLength: 0,
-      source: predefinidos,
-      focus: function( event, ui ) {
-        $( ".predefinidos" ).val( ui.item.label );
-        return false;
-      },
-      select: function( event, ui ) {
-        var entrada1 = ui.item.entrada1;
-        var salida1 = ui.item.salida1;
-        var entrada2 = ui.item.entrada2;
-        var salida2 = ui.item.salida2;
-        if(entrada1 != null){entrada1 = entrada1.replace(/(:\d{2})$/, "");}
-        if(salida1 != null){salida1 = salida1.replace(/(:\d{2})$/, "");}
-        if(entrada2 != null){entrada2 = entrada2.replace(/(:\d{2})$/, "");}
-        if(salida2 != null){salida2 = salida2.replace(/(:\d{2})$/, "");}
-        $( ".predefinidos" ).val( ui.item.label );
-        $( ".predefinidos-entrada1").val(entrada1 );
-        $( ".predefinidos-salida1").val(salida1 );
-        $( ".predefinidos-entrada2").val(entrada2 );
-        $( ".predefinidos-salida2").val(salida2 );
-        return false;
-      }
-    })
-    .autocomplete( "instance" )._renderItem = function( ul, item ) {
-      return $( "<li>" )
-        .append( "<div>" + item.label + "</div>" )
-        .appendTo( ul );
-    };
-  } );
+  // console.log(predefinidos);
+  
+
+  $('.predefinidos').on('change', function(e){
+    var indice = $( "option:selected", this ).data('key');
+    var entrada1 = predefinidos[indice].entrada1;
+    var salida1 = predefinidos[indice].salida1;
+    var entrada2 = predefinidos[indice].entrada2;
+    var salida2 = predefinidos[indice].salida2;
+    if(entrada1 != null){entrada1 = entrada1.replace(/(:\d{2})$/, "");}    
+    if(salida1 != null){salida1 = salida1.replace(/(:\d{2})$/, "");}    
+    if(entrada2 != null){entrada2 = entrada2.replace(/(:\d{2})$/, "");}    
+    if(salida2 != null){salida2 = salida2.replace(/(:\d{2})$/, "");}    
+    $( ".predefinidos-entrada1").val(entrada1);
+    $( ".predefinidos-salida1").val(salida1);
+    $( ".predefinidos-entrada2").val(entrada2);
+    $( ".predefinidos-salida2").val(salida2);
+  });
+
+
+  // $( function() {
+  //   $( ".predefinidos" ).autocomplete({
+  //     minLength: 0,
+  //     source: predefinidos,
+  //     focus: function( event, ui ) {
+  //       $( ".predefinidos" ).val( ui.item.label );
+  //       return false;
+  //     },
+  //     select: function( event, ui ) {
+  //       var entrada1 = ui.item.entrada1;
+  //       var salida1 = ui.item.salida1;
+  //       var entrada2 = ui.item.entrada2;
+  //       var salida2 = ui.item.salida2;
+  //       if(entrada1 != null){entrada1 = entrada1.replace(/(:\d{2})$/, "");}
+  //       if(salida1 != null){salida1 = salida1.replace(/(:\d{2})$/, "");}
+  //       if(entrada2 != null){entrada2 = entrada2.replace(/(:\d{2})$/, "");}
+  //       if(salida2 != null){salida2 = salida2.replace(/(:\d{2})$/, "");}
+  //       $( ".predefinidos" ).val( ui.item.label );
+  //       $( ".predefinidos-entrada1").val(entrada1 );
+  //       $( ".predefinidos-salida1").val(salida1 );
+  //       $( ".predefinidos-entrada2").val(entrada2 );
+  //       $( ".predefinidos-salida2").val(salida2 );
+  //       return false;
+  //     }
+  //   })
+  //   .autocomplete( "instance" )._renderItem = function( ul, item ) {
+  //     return $( "<li>" )
+  //       .append( "<div>" + item.label + "</div>" )
+  //       .appendTo( ul );
+  //   };
+  // } );
 
 
 // TO DO: si hay algún día cerrado o festivo, cambiar el color de la columna. Se puede hacer con css, creo que no hace falta jquery. Un caso a estudiar es cuando se pone manualmente un día como cerrado, entonces sí que haría falta jquery, a no ser que recarge la página (mejor que no recarge para asegurarse que no se graba por error)
