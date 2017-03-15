@@ -93,4 +93,6 @@ Route::post('/aceptar/{id}', [
  // delete comment
  Route::post('comment/delete/{id}','CommentController@destroy')->middleware('auth');
 
+ Route::get('vacaciones','VacacionesController@index')->middleware('auth');
+
 

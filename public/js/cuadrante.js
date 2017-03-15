@@ -10,7 +10,6 @@ var cambios = $('#tabla_plantilla').data('cambios');
 
 
 
-
 //poner en rojo los bordes de donde haya cambios y crear los tooltips
 $.each(cambios, function(index,obj){
     var empl = obj['empleado_id'];
@@ -27,8 +26,6 @@ $.each(cambios, function(index,obj){
     $('#wrapper-'+empl+'-'+dia).tooltip({title: html, html: true});
 
 });
-
-
 
 
 
@@ -140,10 +137,6 @@ deferred.then(function() {
 deferred.resolve();
 
 
-
-
-
-
     //TO DO: lo ideal sería salir a la ruta /cuadrantes, 
     // pero el problema es que el trigger se está ejecutando todavía, 
     // creo que hay que utilizar deferred y promises
@@ -195,11 +188,7 @@ $('#btn_añadir_empleado').click(function(e){
         alert(data);
     });   
 
-
 });
-
-
-
 
 
 $('.ausencia').on( "click", function(event) {
@@ -256,7 +245,7 @@ $('.ausencia').on( "click", function(event) {
   - si es B, AJ, o AN, ver si se permite hacer algo*/
 });
 
-/*para que cuando en una ausencia (V o L) se marque que trabaja en el diálogo*/
+/*para que cuando (V o L o F) se marque que trabaja en el diálogo*/
 $("#check_trabaja").change(function() {
     if(this.checked) {
       $('#container_horarioVT').show();
@@ -271,6 +260,20 @@ $("#check_libre").change(function() {
     }
       $('#container_horarioL').show();
 });
+$("#check_festivo").change(function() {
+    if(this.checked) {
+      $('#container_horarioL').hide();
+      return;
+    }
+      $('#container_horarioL').show();
+});
+$("#check_vacaciones").change(function() {
+    if(this.checked) {
+      $('#container_horarioL').hide();
+      return;
+    }
+      $('#container_horarioL').show();
+});
 
 $('.wrapper').on("click", function() {
   var elemento = $(this);
@@ -279,8 +282,20 @@ $('.wrapper').on("click", function() {
   if(isadmin||estadocuadrante=='Archivado'){
     return;
   }
-  if($.inArray(situacion,['V','B','AJ','AN','L','BP'])){    
-
+  if($.inArray(situacion,['V','B','AJ','AN','L','BP','F'])){    
+    switch(situacion) {
+      case 'VT':
+      case 'V':
+        $('#div_check_vacaciones').show();
+        break;
+      case 'FT':
+      case 'F':
+        $('#div_check_festivo').show();
+        break;
+      default:
+        $('#div_check_libre').show();
+        break;
+    }
     $('#container_horarioL').show();
   } 
   dialog_horariodia = $( "#dialogHorarioDia-form" ).dialog({
@@ -296,6 +311,9 @@ $('.wrapper').on("click", function() {
         }
       },
       close: function() {
+        $('#div_check_festivo').hide();
+        $('#div_check_libre').hide();
+        $('#div_check_vacaciones').hide();
         form[ 0 ].reset();
       }  
   });
@@ -533,17 +551,61 @@ function modificar_horariodia(){
   var empleado_id = $(this).data('empleado_id');
   var dia = $(this).data('dia');
   var elemento = $(this).data('elemento');
-  if($("#check_libre").is(":checked")) {
+  var caso = '';
+  if($("#check_libre").is(":checked")){
+    caso = 'L';
+  }
+  if($("#check_vacaciones").is(":checked")){
+    caso = 'V';
+  }
+  if($("#check_festivo").is(":checked")){
+    caso = 'F';
+  }
+
+  switch (caso){
+    case '':  
+      var entrada1 = $('#dialogHorarioDia-form input.predefinidos-entrada1').val();
+      var salida1 = $('#dialogHorarioDia-form input.predefinidos-salida1').val();
+      var entrada2 = $('#dialogHorarioDia-form input.predefinidos-entrada2').val();
+      var salida2 = $('#dialogHorarioDia-form input.predefinidos-salida2').val();    
+      $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
+      $("#salida1_"+dia+"_"+empleado_id).val(salida1);
+      $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
+      $("#salida2_"+dia+"_"+empleado_id).val(salida2); 
+      break;
+    case 'F':
+    case 'L':
+    case 'V':
+      $("#entrada1_"+dia+"_"+empleado_id).val('');
+      $("#salida1_"+dia+"_"+empleado_id).val('');
+      $("#entrada2_"+dia+"_"+empleado_id).val('');
+      $("#salida2_"+dia+"_"+empleado_id).val('');
+      /*mostrar el button, y ponerle L o V o F como texto*/
+      elemento.children().text(caso);
+      $('#situacion_'+dia+'_'+empleado_id).val(caso);
+      elemento.children().show();
+      break;
+    default:
+      alert('Este mensaje no debería salir. Error FLV');
+      break;
+
+  }
+
+
+
+/*
+  if($("#check_libre").is(":checked")||$("#check_festivo").is(":checked")
+      ||$("#check_vacaciones").is(":checked")) {
     $("#entrada1_"+dia+"_"+empleado_id).val('');
     $("#salida1_"+dia+"_"+empleado_id).val('');
     $("#entrada2_"+dia+"_"+empleado_id).val('');
     $("#salida2_"+dia+"_"+empleado_id).val('');
-    /*mostrar el button, y ponerle L como texto*/
+    //mostrar el button, y ponerle L o V o F como texto
     elemento.children().text('L');
     $('#situacion_'+dia+'_'+empleado_id).val('L');
     elemento.children().show();
   }else{
-    /*Cojo el horario introducido y lo paso a la tabla*/
+    //Cojo el horario introducido y lo paso a la tabla
     var entrada1 = $('#dialogHorarioDia-form input.predefinidos-entrada1').val();
     var salida1 = $('#dialogHorarioDia-form input.predefinidos-salida1').val();
     var entrada2 = $('#dialogHorarioDia-form input.predefinidos-entrada2').val();
@@ -552,7 +614,7 @@ function modificar_horariodia(){
     $("#salida1_"+dia+"_"+empleado_id).val(salida1);
     $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
     $("#salida2_"+dia+"_"+empleado_id).val(salida2);    
-  }
+  }*/
   dialog_horariodia.dialog( "close" );
 }
 

@@ -400,11 +400,14 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <div id="dialogHorarioDia-form" title="">
   <form autofocus>
     <fieldset>
-        <div id="div_check_libre" class="checkbox">
+        <div id="div_check_libre" class="checkbox" style="display:none;"">
             <label><input type="checkbox" id="check_libre" value="">Cambiar a Dia Libre</label>
         </div>
         <div id="div_check_vacaciones" class="checkbox" style="display:none;">
             <label><input type="checkbox" id="check_vacaciones" value="">Cambiar a Vacaciones</label>
+        </div>
+        <div id="div_check_festivo" class="checkbox" style="display:none;">
+            <label><input type="checkbox" id="check_festivo" value="">Cambiar a Festivo</label>
         </div>
         <div id="container_horarioL">
         <!-- <div class="form-group">

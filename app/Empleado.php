@@ -12,14 +12,17 @@ class Empleado extends Model
     {
         return $query->where('activo', 1);
     }
-
     public function lineas()
     {
     	return 	$this->hasMany('App\Linea','empleado_id');
     }
     public function ausencias()
     {
-    	return 	$this->hasMany('App\Ausencia','empleado_id');
+        return  $this->hasMany('App\Ausencia','empleado_id');
+    }
+    public function saldos()
+    {
+    	return 	$this->hasMany('App\Saldo','empleado_id');
     }
     public function centro()
     {

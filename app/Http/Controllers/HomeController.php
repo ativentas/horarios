@@ -50,8 +50,7 @@ class HomeController extends Controller
                     $notas = $archivado->comments()->get();
                     foreach ($notas as $nota) {
                         $otras_notaspdtes->push($nota);
-                    }
-                    
+                    }                    
                 }
                 // dd($otras_notaspdtes);
                 $ausencias = Ausencia::where('estado','Pendiente')->get();
