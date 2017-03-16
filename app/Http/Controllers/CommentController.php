@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Comment;
+use Auth;
 
 class CommentController extends Controller
 {
@@ -27,7 +28,14 @@ class CommentController extends Controller
   }
   public function storeRespuesta(Request $request, $nota_id)
   {
-    dd('hasta aqui bien'.$nota_id);
+    $nota = Comment::find($nota_id);
+
+    $nota->update([
+      'visible'=> $request->visible,
+      'resuelto'=> $request->resuelto,
+      'resuelto_por'=> Auth::user()->id,
+      'nota_respuesta'=> $request->body,
+    ]);
   }
 
 }

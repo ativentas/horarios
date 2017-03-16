@@ -214,16 +214,15 @@
 
     </div> <!-- FIN PANEL BODY -->
 
-
 <div id="dialogRespuestaNota" title="">
-    <form id = "respuesta_form" autofocus  action="{{url('comment/addrespuesta/3')}}" method="POST"> 
+    <form id = "respuesta_form" autofocus  action="{{url('comment/addrespuesta/:NOTA_ID')}}" method="POST"> 
     {{csrf_field()}}
     <fieldset>
     <div id="div_check_resuelto" class="checkbox" style="">
-        <label><input type="checkbox" id="check_resuelto" value="">Nota Resuelta</label>
+        <label><input type="checkbox" id="check_resuelto" name="resuelto" value="1">Marcar como Resuelta</label>
     </div>
     <div id="div_check_visible" class="checkbox" style="">
-        <label><input type="checkbox" id="check_visible" value="">Responder al Encargado</label>
+        <label><input type="checkbox" id="check_visible"  name="visible" value="1">Enviar respuesta al Encargado</label>
     </div>
     <div class="form-group">
       <textarea required="required" placeholder="Escribe aquí..." name="body" class="form-control"></textarea>
@@ -246,16 +245,14 @@ $( "#dialogRespuestaNota" ).dialog({
 $('.btn_respuesta').on('click',function(){
     var elemento = $(this);
     var nota_id = $(this).parents("tr").data('nota_id');
-    
-    var form;
     dialog_respuesta = $( "#dialogRespuestaNota" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
       autoOpen: false,
       height: 300,
-      width: 300,
+      width: 380,
       modal: true,
       buttons: {
-        "Guardar": guardar_respuesta(),
+        "Guardar": guardar_respuesta,
         Cancelar: function() {
           dialog_respuesta.dialog( "close" );
         }
@@ -264,33 +261,32 @@ $('.btn_respuesta').on('click',function(){
         form[ 0 ].reset();
       }  
     });
-    form = dialog_respuesta.find( "form" ).on( "submit", function( event ) {
+    var form = dialog_respuesta.find( "form" ).on( "submit", function( event ) {
         event.preventDefault();
-        guardar_respuesta();
+        guardar_respuesta(nota_id);
     });
     dialog_respuesta.dialog({ title: 'Respuesta a la nota' });  
-    dialog_respuesta.dialog('open');
+    dialog_respuesta
+    .data('nota_id',nota_id)
+    .dialog('open');
     form[0].reset();
-    
-    function guardar_respuesta(){
-        alert(nota_id);
-        var form = $('#respuesta_form');
-        var url = form.attr('action').replace(':NOTA_ID',nota_id);   
-        var data = form.serialize();
-        $.post(url, data).done(function(data){
-                console.log(data);
-                alert(data);
-                location.reload();
-        }).fail(function(data){
+
+});
+
+function guardar_respuesta(){
+    var nota_id = $(this).data('nota_id');
+    var form = $('#respuesta_form');
+    var url = form.attr('action').replace(':NOTA_ID',nota_id);   
+    var data = form.serialize();
+    $.post(url, data).done(function(data){
             console.log(data);
             alert(data);
-        });    
-    }
-
-
-
-
-})
+            location.reload();
+    }).fail(function(data){
+        console.log(data);
+        alert(data);
+    });    
+}
 
 });
 
