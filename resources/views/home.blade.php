@@ -28,22 +28,21 @@
         @else
         <div class="panel-heading"><h4>Ultimos horarios</h4></div>
         @endif
-        <!-- <table class="table table-striped"> -->
         <table class="table">
             <thead>
                 <tr>
-                    <th>Semana</th>
+                    <th>Sem.</th>
                     <th>Periodo</th>
                     <th>Centro Trabajo</th>
                     <th>Estado</th>
-                    <th>Ver</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
             @foreach($cuadrantes as $cuadrante)
                 <tr class="active">
-                    <th>{{$cuadrante->semana}}</th>
-                    <th>{{$cuadrante->abarca}}</th>
+                    <td>{{$cuadrante->semana}}</td>
+                    <td>{{$cuadrante->abarca}}</td>
                     <td>{{$cuadrante->centro->nombre}}</td>
                     <td>{{$cuadrante->estado}}</td>
                     <td><a href="{{ url('/cuadrante/' . $cuadrante->id) }}">Ver</a></td>
@@ -52,14 +51,16 @@
                 @if($cuadrante->has('comments'))
                 @foreach($cuadrante->comments as $comment)
                 @if (!$comment->isSolved())
+                <tr data-nota_id="{{$comment->id}}">
+                    
+                    <td colspan="5">{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}
+                    <button type="button" class="btn_respuesta btn btn-warning btn-sm" style="float: right;"><span class="glyphicon glyphicon-pencil"> </span> Respuesta</button>
+                    
+                    </td>
+                </tr>
                 <tr>
-                    
-                    <th colspan="5">{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}<button type="button" class="btn btn-warning btn-sm" style="float: right;">
-                    <span class="glyphicon glyphicon-pencil"> Respuesta</span></button>
-                    
-                    <br>
-                    <span>{{$comment->body}}</span>
-                    </th>
+                    <td colspan="5">{{$comment->body}}</td>
+
                 </tr>
                 @endif
                 @endforeach
@@ -75,7 +76,7 @@
         @if($completados->count() > 0)
         <div class="panel panel-default">
         <div class="panel-heading"><h4>Horarios Pendientes de Archivar</h4></div>
-        <table class="table table-striped">
+        <table class="table">
             <thead>
                 <tr>
                     <th>Semana</th>
@@ -87,23 +88,24 @@
             </thead>
             <tbody>
             @foreach($completados as $completado)
-                <tr>
-                    <th>{{$completado->semana}}</th>
+                <tr class="active">
+                    <td>{{$completado->semana}}</td>
                     <td>{{$completado->abarca}}</td>
                     <td>{{$completado->centro->nombre}}</td>
                     <td>{{$completado->estado}}</td>
                     <td><a href="{{ url('/cuadrante/' . $completado->id) }}">Ver</a></td>
 
                 </tr>
-                @if($cuadrante->has('comments'))
-                @foreach($cuadrante->comments as $comment)
+                @if($completado->has('comments'))
+                @foreach($completado->comments as $comment)
                 @if (!$comment->isSolved())
-                <tr>
-                    <th colspan="5">{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}<button type="button" class="btn btn-warning btn-sm" style="float: right;">
-                    <span class="glyphicon glyphicon-pencil"></span></button></th>
+                <tr data-nota_id="{{$comment->id}}">
+                    <td colspan="5">{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}
+                        <button type="button" class="btn_respuesta btn btn-warning btn-sm" style="float: right;"><span class="glyphicon glyphicon-pencil"></span> Respuesta</button>
+                    </td>
                 </tr>
                 <tr>
-                    <th colspan="4">{{$comment->body}}</th>
+                    <td colspan="5">{{$comment->body}}</td>
 
                 </tr>
                 @endif
@@ -138,7 +140,6 @@
 
 
 
-
     </div> <!-- FIN DIV IZQUIERDA -->
 
     <div class="col-md-6"> <!-- DIV COLUMNA DERECHA -->
@@ -147,7 +148,7 @@
         @if($ausencias->count() > 0)
         <div class="panel panel-default">
         <div class="panel-heading"><h4>Ausencias Pendientes de Confirmar</h4></div>
-        <table class="table table-striped">
+        <table class="table">
             <thead>
                 <tr>
                     <th>Tipo</th>
@@ -158,57 +159,51 @@
             </thead>
             <tbody>
             @foreach($ausencias as $ausencia)
-                <tr>
-                    <th>{{$ausencia->tipo}}</th>
+                <tr class="active">
+                    <td>{{$ausencia->tipo}}</td>
                     <td>{{$ausencia->alias}}</td>
                     <td>{{$ausencia->abarca}}</td>
                     <td>
                         @if($ausencia->owner == Auth::user()->id||Auth::user()->isAdmin())
-                        <a class="btn btn-primary btn-xs" href="{{ url('ausencias/' . $ausencia->id . '/edit')}}"><span class="glyphicon glyphicon-edit"></span> Edit</a> 
+                        <button class="btn btn-primary btn-xs" href="{{ url('ausencias/' . $ausencia->id . '/edit')}}"><span class="glyphicon glyphicon-edit"></span> Edit</button> 
                         @endif
                         @if(Auth::user()->isAdmin())
-                        <form action="{{ route('confirmarVacaciones',$ausencia->id) }}" style="display:inline" method="POST">
+                        <form action="{{ route('confirmarVacaciones',$ausencia->id) }}" style="display:inline;" method="POST">
                             {{ csrf_field() }}
                             <input type="hidden" name="accion" value="REQUERIR" />
-                            <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-ok-sign"></span> Confirmar</button>
+                            <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-ok-sign"></span> Confir.</button>
                         </form>
                         @endif                     
                         @if($ausencia->owner == Auth::user()->id||Auth::user()->isAdmin())
-                        <form action="{{ url('ausencias/' . $ausencia->id) }}" style="display:inline" method="POST">
-                            <input type="hidden" name="_method" value="DELETE" />
+                        <form action="{{ url('ausencias/' . $ausencia->id) }}" style="display:inline;" method="POST">
                             {{ csrf_field() }}
+                            <input type="hidden" name="_method" value="DELETE" />
                             <button class="btn btn-danger btn-xs" type="submit"><span class="glyphicon glyphicon-trash"></span> Eliminar</button>
                         </form>
                         @endif
                     </td>
 
                 </tr>
+                @if($ausencia->has('comments'))
+                @foreach($ausencia->comments as $comment)
+                @if (!$comment->isSolved())
+                <tr data-nota_id="{{$comment->id}}">
+                    <td colspan="4">{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}
+                    <button type="button" class="btn_respuesta btn btn-warning btn-sm" style="float: right;"><span class="glyphicon glyphicon-pencil"></span> Respuesta</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">{{$comment->body}}</td>
+
+                </tr>
+                @endif
+                @endforeach
+                @endif
             @endforeach
             </tbody>
         </table>
         </div>
         @endif
-
-
-        <div class="panel panel-default">
-            <div class="panel-heading"><h4>Notas sin resolver de Ausencias</h4></div>
-            <div class="list-group">
-                @if(!empty($notasA_pdtes[0]))
-                @foreach($notasA_pdtes as $nota)
-                    <div class="list-group-item">
-                        <p>{{ $nota->body }}</p>
-                        <p></p>
-                        <p>{{$nota->author->name}} - Ausencia: <a href="{{ url('ausencias/'.$nota->ausencia->id).'/edit' }}" >{{ $nota->ausencia->id}}</a> *{{ $nota->created_at->format('d-M-Y, h:i a') }}</p>
-                    </div>
-                @endforeach
-                @else
-                <div class="list-group-item">
-                    <p>No hay ninguna nota pendiente</p>
-                </div>
-                @endif
-            </div>
-        </div>
-
 
 
 
@@ -219,8 +214,89 @@
 
     </div> <!-- FIN PANEL BODY -->
 
+
+<div id="dialogRespuestaNota" title="">
+    <form id = "respuesta_form" autofocus  action="{{url('comment/addrespuesta/3')}}" method="POST"> 
+    {{csrf_field()}}
+    <fieldset>
+    <div id="div_check_resuelto" class="checkbox" style="">
+        <label><input type="checkbox" id="check_resuelto" value="">Nota Resuelta</label>
+    </div>
+    <div id="div_check_visible" class="checkbox" style="">
+        <label><input type="checkbox" id="check_visible" value="">Responder al Encargado</label>
+    </div>
+    <div class="form-group">
+      <textarea required="required" placeholder="Escribe aquí..." name="body" class="form-control"></textarea>
+    </div>
+    </fieldset>
+    </form>
+</div>
+
 </div>
 </div>
 </div>
 </div>
+
+<script>
+$(document).ready(function(){
+
+$( "#dialogRespuestaNota" ).dialog({
+    autoOpen: false});
+
+$('.btn_respuesta').on('click',function(){
+    var elemento = $(this);
+    var nota_id = $(this).parents("tr").data('nota_id');
+    
+    var form;
+    dialog_respuesta = $( "#dialogRespuestaNota" ).dialog({
+      position: { my: "left center", at: "right top", of: elemento }, 
+      autoOpen: false,
+      height: 300,
+      width: 300,
+      modal: true,
+      buttons: {
+        "Guardar": guardar_respuesta(),
+        Cancelar: function() {
+          dialog_respuesta.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+      }  
+    });
+    form = dialog_respuesta.find( "form" ).on( "submit", function( event ) {
+        event.preventDefault();
+        guardar_respuesta();
+    });
+    dialog_respuesta.dialog({ title: 'Respuesta a la nota' });  
+    dialog_respuesta.dialog('open');
+    form[0].reset();
+    
+    function guardar_respuesta(){
+        alert(nota_id);
+        var form = $('#respuesta_form');
+        var url = form.attr('action').replace(':NOTA_ID',nota_id);   
+        var data = form.serialize();
+        $.post(url, data).done(function(data){
+                console.log(data);
+                alert(data);
+                location.reload();
+        }).fail(function(data){
+            console.log(data);
+            alert(data);
+        });    
+    }
+
+
+
+
+})
+
+});
+
+
+</script>
+
+
+
 @endsection

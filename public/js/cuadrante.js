@@ -83,8 +83,6 @@ diassemana[4] = 'Jueves';
 diassemana[5] = 'Viernes';
 diassemana[6] = 'Sabado';
 
-/*TO DO: crear un array con los dias de la semana, para mostrarlos en los diálogo*/
-/*TO DO: recibri un array con los empleados, para mostrarlos en los diálogo*/
 $( "#dialogHorarioDia-form" ).dialog({
     autoOpen: false});
 $( "#dialogAusencia-form" ).dialog({
@@ -203,11 +201,13 @@ $('.ausencia').on( "click", function(event) {
     return;
   }
   $('#container_horarioVT').hide();  
-  /*si no es V o L o B o F, no mostrar checkbox*/
-  $('#check_trabaja').hide();
-  myarray=['V','L','B','F'];
+  /*si no es V o L o F, no mostrar checkbox*/
+  myarray=['V','L','F'];
   if(jQuery.inArray(situacion, myarray) !== -1){
-    $('#check_trabaja').show();    
+    $('#div_check_trabaja').show();    
+  }else{
+    alert('Si quieres modificar esta ausencia, debes hacerlo en el apartado de Ausencias');
+    return;
   }
   dialog_ausencia = $( "#dialogAusencia-form" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
@@ -225,10 +225,10 @@ $('.ausencia').on( "click", function(event) {
         form[ 0 ].reset();
       }  
   });
-    form = dialog_ausencia.find( "form" ).on( "submit", function( event ) {
-      event.preventDefault();
-      modificar_ausencia($(this));
-    });
+  form = dialog_ausencia.find( "form" ).on( "submit", function( event ) {
+    event.preventDefault();
+    modificar_ausencia($(this));
+  });
     
   var empleado_id = $(this).parent().parent().parent().data('empleado_id');
   var dia = $(this).parent().parent().data('dia');

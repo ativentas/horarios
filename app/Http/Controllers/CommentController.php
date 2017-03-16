@@ -25,5 +25,9 @@ class CommentController extends Controller
       return redirect('ausencias')->with('info','Se ha guardado la nota');
     }    
   }
+  public function storeRespuesta(Request $request, $nota_id)
+  {
+    dd('hasta aqui bien'.$nota_id);
+  }
 
 }

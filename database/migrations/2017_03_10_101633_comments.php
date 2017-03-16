@@ -17,8 +17,8 @@ class Comments extends Migration
         Schema::create('comments', function(Blueprint $table)
         {
           $table->increments('id');
-          $table -> integer('on_cuadrante')->unsigned()->nullable();
-          $table -> integer('on_ausencia')->unsigned()->nullable();
+          $table -> integer('on_cuadrante')->unsigned() -> nullable();
+          $table -> integer('on_ausencia')->unsigned()-> nullable();
           $table->foreign('on_cuadrante')
               ->references('id')->on('cuadrantes')
               ->onDelete('cascade');
@@ -29,7 +29,8 @@ class Comments extends Migration
           $table->text('body');
           $table->boolean('resuelto') -> default(0);
           $table->integer('resuelto_por') -> unsigned() -> nullable();
-          $table->text('nota_interna')->nullable();
+          $table->text('nota_respuesta')-> nullable();
+          $table->boolean('visible') -> default(0);
           $table->timestamps();
         });
 

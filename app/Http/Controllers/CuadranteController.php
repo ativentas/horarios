@@ -27,8 +27,7 @@ public function __construct() {
     $this->semanaactual = date('W');
     $this->hoy = Carbon::today();
     $this->situacionesconAusenciaId = ['V','B','AJ','AN'];
-}
-    
+}    
 
 public function yearsemana($fecha)
 {

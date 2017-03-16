@@ -370,7 +370,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <div id="dialogAusencia-form" title="">
   <form autofocus>
     <fieldset>
-        <div class="checkbox">
+        <div id="div_check_trabaja" class="checkbox" style="display:none;">
             <label><input type="checkbox" id="check_trabaja" value="VT">Este dia trabaja</label>
         </div>
         <div id="container_horarioVT">
@@ -400,7 +400,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <div id="dialogHorarioDia-form" title="">
   <form autofocus>
     <fieldset>
-        <div id="div_check_libre" class="checkbox" style="display:none;"">
+        <div id="div_check_libre" class="checkbox" style="display:none;">
             <label><input type="checkbox" id="check_libre" value="">Cambiar a Dia Libre</label>
         </div>
         <div id="div_check_vacaciones" class="checkbox" style="display:none;">

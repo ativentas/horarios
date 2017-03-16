@@ -90,6 +90,7 @@ Route::post('/aceptar/{id}', [
 
 
  Route::post('comment/add','CommentController@store')->middleware('auth');
+ Route::post('comment/addrespuesta/{nota_id}','CommentController@storerespuesta')->middleware('auth');
  // delete comment
  Route::post('comment/delete/{id}','CommentController@destroy')->middleware('auth');
 
