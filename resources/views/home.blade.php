@@ -62,6 +62,12 @@
                     <td colspan="5">{{$comment->body}}</td>
 
                 </tr>
+                @if ($comment->nota_respuesta&&(Auth::user()->isAdmin()||$comment->visible==true))
+                
+                <tr>
+                    <td colspan="5"><em>{{$comment->resolvedor->name}}: {{$comment->updated_at->format('d-M-Y, h:i a')}}: </em><em style="color:blue"> {{$comment->nota_respuesta}}</em></td>
+                </tr>
+                @endif                
                 @endif
                 @endforeach
                 @endif
@@ -108,6 +114,12 @@
                     <td colspan="5">{{$comment->body}}</td>
 
                 </tr>
+                @if ($comment->nota_respuesta&&(Auth::user()->isAdmin()||$comment->visible==true))
+                
+                <tr>
+                    <td colspan="5"><em>{{$comment->resolvedor->name}}: {{$comment->updated_at->format('d-M-Y, h:i a')}}: </em><em style="color:blue"> {{$comment->nota_respuesta}}</em></td>
+                </tr>
+                @endif
                 @endif
                 @endforeach
                 @endif
@@ -196,6 +208,12 @@
                     <td colspan="4">{{$comment->body}}</td>
 
                 </tr>
+                @if ($comment->nota_respuesta&&(Auth::user()->isAdmin()||$comment->visible==true))
+                
+                <tr>
+                    <td colspan="5"><em>{{$comment->resolvedor->name}}: {{$comment->updated_at->format('d-M-Y, h:i a')}}: </em><em style="color:blue"> {{$comment->nota_respuesta}}</em></td>
+                </tr>
+                @endif
                 @endif
                 @endforeach
                 @endif
@@ -206,10 +224,8 @@
         @endif
 
 
-
     </div> <!-- FIN DIV DERECHA -->
-
-                
+             
 
 
     </div> <!-- FIN PANEL BODY -->

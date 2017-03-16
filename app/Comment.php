@@ -18,6 +18,10 @@ class Comment extends Model
   {
     return $this->belongsTo('App\User','from_user');
   }
+  public function resolvedor()
+  {
+    return $this->belongsTo('App\User','resuelto_por');
+  }
   // returns post of any comment
   public function cuadrante()
   {
