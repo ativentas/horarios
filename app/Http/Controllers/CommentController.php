@@ -10,6 +10,10 @@ class CommentController extends Controller
 {
   public function store(Request $request)
   {
+    $this->validate($request, [
+    'body' => 'required|min:4'   
+    ]);
+
     //on_post, from_user, body
     $input['from_user'] = $request->user()->id;
     $input['on_cuadrante'] = $request->input('on_cuadrante');
@@ -28,13 +32,14 @@ class CommentController extends Controller
   }
   public function storeRespuesta(Request $request, $nota_id)
   {
+
     $nota = Comment::find($nota_id);
 
     $nota->update([
       'visible'=> $request->visible,
       'resuelto'=> $request->resuelto,
       'resuelto_por'=> Auth::user()->id,
-      'nota_respuesta'=> $request->body,
+      'nota_respuesta'=> $request->respuesta,
     ]);
   }
 

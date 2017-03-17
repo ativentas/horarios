@@ -241,7 +241,7 @@
         <label><input type="checkbox" id="check_visible"  name="visible" value="1">Enviar respuesta al Encargado</label>
     </div>
     <div class="form-group">
-      <textarea required="required" placeholder="Escribe aquí..." name="body" class="form-control"></textarea>
+      <textarea required="required" placeholder="Escribe aquí..." name="respuesta" class="form-control"></textarea>
     </div>
     </fieldset>
     </form>
