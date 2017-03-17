@@ -31,6 +31,7 @@
         </p>
         
         <p>
+            @if($ausencia->estado=='Pendiente')
             <form action="{{ url('ausencias/' . $ausencia->id) }}" style="display:inline;" method="POST">
                 <input type="hidden" name="_method" value="DELETE" />
                 {{ csrf_field() }}
@@ -38,7 +39,7 @@
             </form>
             <a class="btn btn-primary" href="{{ url('ausencias/' . $ausencia->id . '/edit')}}">
                 <span class="glyphicon glyphicon-edit"></span> Edit</a> 
-            
+            @endif
         </p>
 
 
