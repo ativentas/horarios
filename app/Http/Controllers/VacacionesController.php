@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Empleado;
 use App\Centro;
 use DB;
+use Auth;
 
 class VacacionesController extends Controller
 {
@@ -13,6 +14,9 @@ class VacacionesController extends Controller
    {
    	
 		$centro_id = \Request::input('centro');
+		if(!Auth::user()->isAdmin()){
+			$centro_id = Auth::user()->centro_id;
+		}
 		//TO DO: que el año lo saque automáticamente, el anterior al año actual por ejemplo. También se podría hacer para navegar por años en el listado de vacaciones
      	$year = 2016;
      	$empleados = DB::table('empleados')

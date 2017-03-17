@@ -13,7 +13,7 @@
                     <li class="active">Listado</li>
                 </ol>
         </div>
-    
+        @if(Auth::user()->isAdmin())     
         <form method="get" action="{{url('vacaciones')}}" class="form-inline">
                 {{ csrf_field() }}
         
@@ -31,7 +31,7 @@
             <button type="submit" class="btn btn-default">Filtrar</button>
         </div>
         </form>
-
+        @endif
     </div>
 
     <div class="panel-body">

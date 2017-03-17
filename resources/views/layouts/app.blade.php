@@ -61,9 +61,10 @@
                         <li><a href="{{ url('/home') }}">Inicio</a></li>
                         <li><a href="{{ url('/cuadrantes') }}">Horario</a></li>
                         <li><a href="{{ url('/ausencias') }}">Ausencias</a></li>
+                        <li><a href="{{ url('/vacaciones') }}">Informe Vacaciones</a></li>
                         @if (Auth::user()->isAdmin())
                         <li><a href="{{ url('/empleados') }}">Empleados</a></li>
-                        <li><a href="{{ url('/vacaciones') }}">Informe Vacaciones</a></li>
+                        
                         @endif                    
                     </ul>
 
