@@ -24,6 +24,7 @@ class Compensables extends Migration
             $table->integer('resuelto_por') -> unsigned() -> nullable();
             $table->text('nota_respuesta')-> nullable();
             $table->boolean('visible') -> default(0);
+            $table->timestamps();
             
             $table->foreign('linea_id')
                     ->references('id')->on('lineas')

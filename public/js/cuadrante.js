@@ -541,7 +541,6 @@ function modificar_ausencia(){
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
         if($("#entrada1_"+dia+"_"+empleado_id).val(entrada1).length)
         {$("#situacion_"+dia+"_"+empleado_id).val('VT');}
-        alert(nota);
         $("#nota_"+dia+"_"+empleado_id).val(nota);
         elemento.hide();
         break;
@@ -557,7 +556,6 @@ function modificar_ausencia(){
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
         if($("#entrada1_"+dia+"_"+empleado_id).val(entrada1).length)
         {$("#situacion_"+dia+"_"+empleado_id).val('FT');}
-        alert(nota);
         $("#nota_"+dia+"_"+empleado_id).val(nota);
         elemento.hide();
         break;

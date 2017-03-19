@@ -15,7 +15,6 @@ use App\Linea;
 use App\Lineacambio;
 use App\Centro;
 use App\Ausencia;
-use App\Compensable;
 
 class CuadranteController extends Controller
 {
@@ -148,8 +147,10 @@ public function guardarHorarios(Request $request, $cuadrante_id){
                     $compensable->save();
                 }else{
                     //TO DO:create
-                }
-                
+                    $compensable = new \App\Compensable;
+                    $compensable->nota = $request->{'nota_'.$dia.'_'.$empleado_id};
+                    $linea->compensable()->save($compensable);
+                }             
             }
 
         }

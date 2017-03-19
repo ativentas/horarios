@@ -22,7 +22,11 @@ class Empleado extends Model
     }
     public function saldos()
     {
-    	return 	$this->hasMany('App\Saldo','empleado_id');
+        return  $this->hasMany('App\Saldo','empleado_id');
+    }
+    public function compensables()
+    {
+    	return 	$this->hasManyThrough('App\Compensable','App\Linea');
     }
     public function centro()
     {
