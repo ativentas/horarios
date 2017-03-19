@@ -146,6 +146,8 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                         <button class="ausencia" type="button" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
                     </div>
                     <input type="hidden" name="situacion_1_{{$linea->empleado_id}}" id="situacion_1_{{$linea->empleado_id}}" value="{{$linea->situacion1}}">
+                    <input type="hidden" name="nota_1_{{$linea->empleado_id}}" id="nota_1_{{$linea->empleado_id}}" value="{{$linea->nota1}}">
+
                 </td>             
                 <td class="tg-031e" id="">
                     <input class="horariosdia_1" type="text" name="salida1_1_{{$linea->empleado_id}}" id="salida1_1_{{$linea->empleado_id}}" value="{{is_null($linea->SLU) ? '' : date('H:i',strtotime($linea->SLU))}}">
@@ -157,6 +159,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                         <button class="ausencia" type="button" style="{{!in_array($linea->situacion2,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion2}}</button>
                     </div>
                     <input type="hidden" name="situacion_2_{{$linea->empleado_id}}" id="situacion_2_{{$linea->empleado_id}}" value="{{$linea->situacion2}}">
+                    <input type="hidden" name="nota_2_{{$linea->empleado_id}}" id="nota_2_{{$linea->empleado_id}}" value="{{$linea->nota2}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_2" type="text" name="salida1_2_{{$linea->empleado_id}}" id="salida1_2_{{$linea->empleado_id}}" value="{{is_null($linea->SMA) ? '' : date('H:i',strtotime($linea->SMA))}}">                    
@@ -168,6 +171,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                         <button class="ausencia" type="button" style="{{!in_array($linea->situacion3,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion3}}</button>
                     </div>
                     <input type="hidden" name="situacion_3_{{$linea->empleado_id}}" id="situacion_3_{{$linea->empleado_id}}"  value="{{$linea->situacion3}}">
+                    <input type="hidden" name="nota_3_{{$linea->empleado_id}}" id="nota_3_{{$linea->empleado_id}}" value="{{$linea->nota3}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_3" type="text" name="salida1_3_{{$linea->empleado_id}}" id="salida1_3_{{$linea->empleado_id}}" value="{{is_null($linea->SMI) ? '' : date('H:i',strtotime($linea->SMI))}}">                
@@ -179,6 +183,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                         <button class="ausencia" type="button" style="{{!in_array($linea->situacion4,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion4}}</button>
                     </div>
                     <input type="hidden" name="situacion_4_{{$linea->empleado_id}}" id="situacion_4_{{$linea->empleado_id}}"  value="{{$linea->situacion4}}">
+                    <input type="hidden" name="nota_4_{{$linea->empleado_id}}" id="nota_4_{{$linea->empleado_id}}" value="{{$linea->nota4}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_4" type="text" name="salida1_4_{{$linea->empleado_id}}" id="salida1_4_{{$linea->empleado_id}}" value="{{is_null($linea->SJU) ? '' : date('H:i',strtotime($linea->SJU))}}">                    
@@ -190,6 +195,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                         <button class="ausencia" type="button" style="{{!in_array($linea->situacion5,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion5}}</button>
                     </div>
                     <input type="hidden" name="situacion_5_{{$linea->empleado_id}}" id="situacion_5_{{$linea->empleado_id}}" value="{{$linea->situacion5}}">
+                    <input type="hidden" name="nota_5_{{$linea->empleado_id}}" id="nota_5_{{$linea->empleado_id}}" value="{{$linea->nota5}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_5" type="text" name="salida1_5_{{$linea->empleado_id}}" id="salida1_5_{{$linea->empleado_id}}" value="{{is_null($linea->SVI) ? '' : date('H:i',strtotime($linea->SVI))}}">                    
@@ -201,6 +207,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                         <button class="ausencia" type="button" style="{{!in_array($linea->situacion6,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion6}}</button>
                     </div>
                     <input type="hidden" name="situacion_6_{{$linea->empleado_id}}" id="situacion_6_{{$linea->empleado_id}}" value="{{$linea->situacion6}}">
+                    <input type="hidden" name="nota_6_{{$linea->empleado_id}}" id="nota_6_{{$linea->empleado_id}}" value="{{$linea->nota6}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_6" type="text" name="salida1_6_{{$linea->empleado_id}}" id="salida1_6_{{$linea->empleado_id}}" value="{{is_null($linea->SSA) ? '' : date('H:i',strtotime($linea->SSA))}}">                    
@@ -212,6 +219,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                         <button class="ausencia" type="button" style="{{!in_array($linea->situacion0,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion0}}</button>
                     </div>
                     <input type="hidden" name="situacion_0_{{$linea->empleado_id}}" id="situacion_0_{{$linea->empleado_id}}" value="{{$linea->situacion0}}">
+                    <input type="hidden" name="nota_0_{{$linea->empleado_id}}" id="nota_0_{{$linea->empleado_id}}" value="{{$linea->nota0}}">
                 </td>
                 <td class="tg-031e" id="">
                     <input class="horariosdia_0" type="text" name="salida1_0_{{$linea->empleado_id}}" id="salida1_0_{{$linea->empleado_id}}" value="{{is_null($linea->SDO) ? '' : date('H:i',strtotime($linea->SDO))}}">                    
@@ -393,6 +401,9 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         <input class="predefinidos-salida2" type="text" tabindex="" name="salida2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]|[2][4]:[0][0]" id="" size="5" placeholder="00:00" value="">
         </div>
         </div>
+        <div id="div_notaAusencia" style="display:none;"">
+          <textarea class="form-control" required="" placeholder="Escribe una nota aquí..." name = "nota" id=""></textarea>        
+        </div>
     </fieldset>
   </form>
 </div> 
@@ -430,6 +441,9 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         <input class="predefinidos-entrada2" type="text" tabindex="" name="entrada2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
         <input class="predefinidos-salida2" type="text" tabindex="" name="salida2" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" id="" size="5" placeholder="00:00" value="">
         </div>
+        </div>
+        <div id="div_notaWrapper" style="display:none;"">
+          <textarea class="form-control" required="" placeholder="Escribe una nota aquí..." name = "nota" id="">jhlkhk</textarea>        
         </div>
     </fieldset>
   </form>

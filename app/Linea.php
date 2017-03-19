@@ -52,6 +52,10 @@ class Linea extends Model
     {
         return $this->hasOne('App\Lineacambio');
     }
+    public function compensable()
+    {
+        return $this->hasOne('App\Compensable');
+    }
       
     public function getEntrada1Attribute($value){
         return substr($value,0,5);

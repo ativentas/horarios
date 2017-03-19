@@ -15,6 +15,7 @@ use App\Linea;
 use App\Lineacambio;
 use App\Centro;
 use App\Ausencia;
+use App\Compensable;
 
 class CuadranteController extends Controller
 {
@@ -88,8 +89,8 @@ public function guardarHorarios(Request $request, $cuadrante_id){
     }
 
     try {
-        $exception = DB::transaction(function() use ($lineas,$cuadrante,$request,$cambios) {
-
+        $exception = DB::transaction(function() use ($lineas,$cuadrante,$request,$cambios)
+        {
         foreach ($lineas as $linea) {
             $dia = $linea->dia;
             $empleado_id = $linea->empleado_id;
@@ -136,6 +137,21 @@ public function guardarHorarios(Request $request, $cuadrante_id){
                 'entrada2'=> $entrada2,
                 'salida2'=> $salida2,
                 ]);
+            if(count($linea->compensable) && !in_array($linea->situacion,array('FT','VT'))){
+                dd('Hay compensable y no es FT o VT. Linea: '.$linea->id);
+            }
+            if(in_array($linea->situacion, array('FT','VT'))){
+                if(count($linea->compensable)){
+                    //update
+                    $compensable = $linea->compensable;
+                    $compensable->nota = $request->{'nota_'.$dia.'_'.$empleado_id};
+                    $compensable->save();
+                }else{
+                    //TO DO:create
+                }
+                
+            }
+
         }
         if ($cambios == true) {
             $cuadrante->estado = 'AceptadoCambios';
@@ -155,9 +171,11 @@ public function guardarHorarios(Request $request, $cuadrante_id){
             $cuadrante->{$dia} = $nuevo_estado;
             $cuadrante->save();
         }
+        
         //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
         });
         return is_null($exception) ? 'Cambios guardados' : $exception;
+            
     
     } catch(Exception $e) {
         // return $e;
@@ -352,40 +370,48 @@ public function mostrarCuadrante($cuadrante_id = NULL)
 //TO DO: en teoría no debe ocurrir, pero cuando no hay lineas en el cuadrante, sale un error de sql
     $lineas = DB::table('lineas')
         ->join('empleados', 'lineas.empleado_id', '=', 'empleados.id')
+        ->leftjoin('compensables', 'lineas.id', '=', 'compensables.linea_id')
         ->where('lineas.cuadrante_id','=',$cuadrante->id)
         ->select(
             'empleados.alias AS nombre','empleados.id AS empleado_id', 
             DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.situacion ELSE NULL END) AS 'situacion1'"),
+            DB::raw("min(CASE WHEN lineas.dia = 1 THEN compensables.nota ELSE NULL END) AS 'nota1'"),
             DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.entrada1 ELSE NULL END) AS 'ELU'"),
             DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.salida1 ELSE NULL END) AS 'SLU'"),
             DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.entrada2 ELSE NULL END) AS 'E2LU'"),
             DB::raw("min(CASE WHEN lineas.dia = 1 THEN lineas.salida2 ELSE NULL END) AS 'S2LU'"),
             DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.situacion ELSE NULL END) AS 'situacion2'"),
+            DB::raw("min(CASE WHEN lineas.dia = 2 THEN compensables.nota ELSE NULL END) AS 'nota2'"),
             DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.entrada1 ELSE NULL END) AS 'EMA'"),
             DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.salida1 ELSE NULL END) AS 'SMA'"),
             DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.entrada2 ELSE NULL END) AS 'E2MA'"),
             DB::raw("min(CASE WHEN lineas.dia = 2 THEN lineas.salida2 ELSE NULL END) AS 'S2MA'"),
             DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.situacion ELSE NULL END) AS 'situacion3'"),
+            DB::raw("min(CASE WHEN lineas.dia = 3 THEN compensables.nota ELSE NULL END) AS 'nota3'"),
             DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.entrada1 ELSE NULL END) AS 'EMI'"),
             DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.salida1 ELSE NULL END) AS 'SMI'"),
             DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.entrada2 ELSE NULL END) AS 'E2MI'"),
             DB::raw("min(CASE WHEN lineas.dia = 3 THEN lineas.salida2 ELSE NULL END) AS 'S2MI'"),
             DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.situacion ELSE NULL END) AS 'situacion4'"),
+            DB::raw("min(CASE WHEN lineas.dia = 4 THEN compensables.nota ELSE NULL END) AS 'nota4'"),
             DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.entrada1 ELSE NULL END) AS 'EJU'"),
             DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.salida1 ELSE NULL END) AS 'SJU'"),
             DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.entrada2 ELSE NULL END) AS 'E2JU'"),
             DB::raw("min(CASE WHEN lineas.dia = 4 THEN lineas.salida2 ELSE NULL END) AS 'S2JU'"),
             DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.situacion ELSE NULL END) AS 'situacion5'"),
+            DB::raw("min(CASE WHEN lineas.dia = 5 THEN compensables.nota ELSE NULL END) AS 'nota5'"),
             DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.entrada1 ELSE NULL END) AS 'EVI'"),
             DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.salida1 ELSE NULL END) AS 'SVI'"),
             DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.entrada2 ELSE NULL END) AS 'E2VI'"),
             DB::raw("min(CASE WHEN lineas.dia = 5 THEN lineas.salida2 ELSE NULL END) AS 'S2VI'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.situacion ELSE NULL END) AS 'situacion6'"),
+            DB::raw("min(CASE WHEN lineas.dia = 6 THEN compensables.nota ELSE NULL END) AS 'nota6'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.entrada1 ELSE NULL END) AS 'ESA'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.salida1 ELSE NULL END) AS 'SSA'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.entrada2 ELSE NULL END) AS 'E2SA'"),
             DB::raw("min(CASE WHEN lineas.dia = 6 THEN lineas.salida2 ELSE NULL END) AS 'S2SA'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.situacion ELSE NULL END) AS 'situacion0'"),
+            DB::raw("min(CASE WHEN lineas.dia = 0 THEN compensables.nota ELSE NULL END) AS 'nota0'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.entrada1 ELSE NULL END) AS 'EDO'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.salida1 ELSE NULL END) AS 'SDO'"),
             DB::raw("min(CASE WHEN lineas.dia = 0 THEN lineas.entrada2 ELSE NULL END) AS 'E2DO'"),

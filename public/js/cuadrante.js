@@ -201,6 +201,7 @@ $('.ausencia').on( "click", function(event) {
     return;
   }
   $('#container_horarioVT').hide();  
+  $('#div_notaAusencia').hide();  
   /*si no es V o L o F, no mostrar checkbox*/
   myarray=['V','L','F'];
   if(jQuery.inArray(situacion, myarray) !== -1){
@@ -249,9 +250,18 @@ $('.ausencia').on( "click", function(event) {
 $("#check_trabaja").change(function() {
     if(this.checked) {
       $('#container_horarioVT').show();
+      var dia = $('#dialogAusencia-form').data('dia');
+      var empleado_id = $('#dialogAusencia-form').data('empleado_id');
+      var situacion = $("#situacion_"+dia+"_"+empleado_id).val();
+      myarray=['V','F'];
+      if(jQuery.inArray(situacion, myarray) !== -1){
+        $('#div_notaAusencia').show();
+      }
       return;
     }
       $('#container_horarioVT').hide();
+      $('#div_nota').hide();
+
 });
 $("#check_libre").change(function() {
     if(this.checked) {
@@ -277,22 +287,43 @@ $("#check_vacaciones").change(function() {
 
 $('.wrapper').on("click", function() {
   var elemento = $(this);
-  var situacion = $(this).children().first().html();
+  // var situacion = $(this).children().first().html();
   // alert('situacion wrapper html: '+situacion);
+  
+  // var numdia = $( "#dialogHorarioDia-form" ).data('dia');
+  // alert(numdia);
+  // var empleado = $( "#dialogHorarioDia-form" ).data('empleado_id');
+  var empleado_id = $(this).parent().parent().data('empleado_id');
+  var dia = $(this).parent().data('dia');
+  var situacion = $("#situacion_"+dia+"_"+empleado_id).val();
+
   if(isadmin||estadocuadrante=='Archivado'){
     return;
   }
-  if($.inArray(situacion,['V','B','AJ','AN','L','BP','F'])){    
+  if($.inArray(situacion,['V','VT','B','AJ','AN','L','BP','F','FT',''])!= -1){    
     switch(situacion) {
+      case'':
+        $('#div_check_libre').show();
+        break;
       case 'VT':
+        $('#div_check_vacaciones').show();      
+        $('#div_notaWrapper').show();
+        break;      
       case 'V':
+        alert('case V no debería ser posible');
         $('#div_check_vacaciones').show();
         break;
       case 'FT':
-      case 'F':
         $('#div_check_festivo').show();
+        $('#div_notaWrapper').show();
+        break;      
+      case 'F':
+        alert('case F no debería ser posible');
+        $('#div_check_festivo').show();
+        $('#div_notaWrapper').show();
         break;
       default:
+        alert('case default no debería ser posible');
         $('#div_check_libre').show();
         break;
     }
@@ -333,6 +364,7 @@ $('.wrapper').on("click", function() {
   $('#dialogHorarioDia-form input.predefinidos-salida1').val($("#salida1_"+dia+"_"+empleado_id).val());
   $('#dialogHorarioDia-form input.predefinidos-entrada2').val($("#entrada2_"+dia+"_"+empleado_id).val());
   $('#dialogHorarioDia-form input.predefinidos-salida2').val($("#salida2_"+dia+"_"+empleado_id).val());         
+  $('#dialogHorarioDia-form textarea').val($("#nota_"+dia+"_"+empleado_id).val());         
 
   $( "#dialogHorarioDia-form" ).dialog({ title: 'Horarios: '+diassemana[dia]+' - '+empleados[empleado_id] });  
   dialog_horariodia
@@ -502,11 +534,15 @@ function modificar_ausencia(){
         var salida1 = $('#dialogAusencia-form input.predefinidos-salida1').val();
         var entrada2 = $('#dialogAusencia-form input.predefinidos-entrada2').val();
         var salida2 = $('#dialogAusencia-form input.predefinidos-salida2').val();    
+        var nota = $('#dialogAusencia-form textarea').val();    
         $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
         $("#salida1_"+dia+"_"+empleado_id).val(salida1);
         $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
-        $("#situacion_"+dia+"_"+empleado_id).val('VT');
+        if($("#entrada1_"+dia+"_"+empleado_id).val(entrada1).length)
+        {$("#situacion_"+dia+"_"+empleado_id).val('VT');}
+        alert(nota);
+        $("#nota_"+dia+"_"+empleado_id).val(nota);
         elemento.hide();
         break;
       case 'F': 
@@ -514,12 +550,15 @@ function modificar_ausencia(){
         var salida1 = $('#dialogAusencia-form input.predefinidos-salida1').val();
         var entrada2 = $('#dialogAusencia-form input.predefinidos-entrada2').val();
         var salida2 = $('#dialogAusencia-form input.predefinidos-salida2').val();    
+        var nota = $('#dialogAusencia-form textarea').val();
         $("#entrada1_"+dia+"_"+empleado_id).val(entrada1);
         $("#salida1_"+dia+"_"+empleado_id).val(salida1);
         $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
         if($("#entrada1_"+dia+"_"+empleado_id).val(entrada1).length)
         {$("#situacion_"+dia+"_"+empleado_id).val('FT');}
+        alert(nota);
+        $("#nota_"+dia+"_"+empleado_id).val(nota);
         elemento.hide();
         break;
       case 'L': 
@@ -532,7 +571,8 @@ function modificar_ausencia(){
         $("#entrada2_"+dia+"_"+empleado_id).val(entrada2);
         $("#salida2_"+dia+"_"+empleado_id).val(salida2);
         $("#situacion_"+dia+"_"+empleado_id).val('');
-        /*TO DO: hay que cambiar tambien el data('situacion') a ''*/
+        /*TO DO: ver is afecta el cambio en el html del button ausencia. 
+        Igual es mejor no cambiarlo, no estoy seguro, si funciona dejarlo como está*/
         elemento.html('');
         elemento.hide();
         break;
