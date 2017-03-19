@@ -1,3 +1,7 @@
+<style type="text/css">
+.table{margin-bottom: 0px !important;}
+</style>
+
 @extends('layouts.app')
 
 @section('content')
@@ -57,10 +61,16 @@
                     <td></td>
                 </tr>
                 @foreach($empleado->compensables as $compensable)
-					<tr>
+					
+					<table class="table">
+					<tr data-empleado_id="{{$empleado->id}}" data-empleado_nombre="{{$empleado->alias}}">
+						<td></td>
 						<td>{{$compensable->dia}}</td>
+						<td>{{$compensable->linea->situacion}}</td>
 						<td>{{$compensable->nota}}</td>
+						<td><button class="btn btn-success btn-xs btn_asignar" type="button"><span class="glyphicon glyphicon-ok-sign"></span> Asignar</button></td>
 					</tr>
+					</table>
                 @endforeach
             @endforeach
             </tbody>
@@ -72,6 +82,17 @@
     </div>
 
     </div>
+
+   <div id="dialogAsignar-form" title="">
+  	<form id = "Asignar-form" autofocus>
+   <fieldset>
+        <div class="form-group">
+
+        </div>
+   </fieldset>
+  	</form>
+	</div>
+
 </div>
 </div>
 </div>
@@ -79,6 +100,49 @@
 <script>
 $(document).ready(function() {
 
+$('.btn_asignar').on('click', function() {
+
+	var elemento = $(this);
+	var form;
+	dialog_asignar = $( "#dialogAsignar-form" ).dialog({
+		position: { my: "left center", at: "right top", of: elemento }, 
+		autoOpen: false,
+		height: 300,
+		width: 300,
+		modal: true,
+		buttons: {
+		  "Aplicar": asignar_compensable,
+		  Cancelar: function() {
+		    dialog_asignar.dialog( "close" );
+		  }
+		},
+		close: function() {
+		  form[ 0 ].reset();
+		}
+	});
+
+	form = dialog_asignar.find( "form" ).on( "submit", function( event ) {
+    	event.preventDefault();
+    	asignar_compensable();
+   });
+
+   var empleado_id = $(this).parent().parent().data('empleado_id');
+   var empleado_nombre = $(this).parent().parent().data('empleado_nombre');
+   $( "#dialogAsignar-form" ).dialog({ title: 'Compensar día '+empleado_nombre });  
+   dialog_asignar
+    .data( 'empleado_id', empleado_id ) 
+    .dialog('open');
+   form[0].reset();
+
+
+
+
+
+
+});
+
+function asignar_compensable(){
+}
 
 });    
 

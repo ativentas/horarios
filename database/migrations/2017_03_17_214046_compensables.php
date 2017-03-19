@@ -20,7 +20,7 @@ class Compensables extends Migration
             $table->integer('linea_id')->unsigned()->unique();
             $table->text('nota')->nullable();
             $table->date('diacompensado')->nullable()->unique();
-            $table->boolean('resuelto') -> default(0);
+            $table->boolean('pagar') -> default(0);
             $table->integer('resuelto_por') -> unsigned() -> nullable();
             $table->text('nota_respuesta')-> nullable();
             $table->boolean('visible') -> default(0);
