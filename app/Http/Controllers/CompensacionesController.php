@@ -19,7 +19,10 @@ class CompensacionesController extends Controller
         //TO DO: ver bien para obtener los empleados que tengan compensables de este año o pendientes en general
         $empleados = Empleado::whereHas('compensables',function($query){
                 //aqui podría poner algun where       
-            })  ->with('compensables')
+            })  ->when($centro_id, function($query) use($centro_id){
+                    return $query->where('empleados.centro_id',$centro_id);
+            })
+                ->with('compensables')
                 ->withCount(['compensables'=> function ($query) {
                     $query->where('diacompensado', null);
                 }])

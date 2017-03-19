@@ -56,6 +56,12 @@
                     <td>{{$empleado->compensables_count}}</td>
                     <td></td>
                 </tr>
+                @foreach($empleado->compensables as $compensable)
+					<tr>
+						<td>{{$compensable->dia}}</td>
+						<td>{{$compensable->nota}}</td>
+					</tr>
+                @endforeach
             @endforeach
             </tbody>
         </table>
