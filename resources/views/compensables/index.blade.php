@@ -83,13 +83,27 @@
 
     </div>
 
-   <div id="dialogAsignar-form" title="">
+    <div id="dialogAsignar-form" title="">
   	<form id = "Asignar-form" autofocus>
-   <fieldset>
+    <fieldset>
         <div class="form-group">
-
+            <label class="radio-inline">
+              <input type="radio" name="radio_compensar" value="P">Pagar
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="radio_compensar" value="DL">Día Libre
+            </label>
         </div>
-   </fieldset>
+        <div class="form-group" id="group_pagar" style="display:none;">
+            <textarea class="form-control" required="" placeholder="Escribe un comentario aquí..." name = "nota" id="">jhlkhk</textarea> 
+        </div>
+        <div class="form-group" id="group_libre" style="display:none;">
+            <div class="col-md-8" style="">
+            <input type="text" name="fecha" class="form-control" id="fecha" value="" style="" placeholder="elige fecha" readonly>
+            </div>
+            <textarea class="form-control" required="" placeholder="Escribe una comentario aquí..." name = "nota" id=""></textarea> 
+        </div>
+    </fieldset>
   	</form>
 	</div>
 
@@ -97,52 +111,23 @@
 </div>
 </div>
 </div>
+<script type="text/javascript" src="{{asset('js/compensables.js')}}"></script>
+
 <script>
 $(document).ready(function() {
 
-$('.btn_asignar').on('click', function() {
+$.datepicker.setDefaults( $.datepicker.regional[ "es" ] );
 
-	var elemento = $(this);
-	var form;
-	dialog_asignar = $( "#dialogAsignar-form" ).dialog({
-		position: { my: "left center", at: "right top", of: elemento }, 
-		autoOpen: false,
-		height: 300,
-		width: 300,
-		modal: true,
-		buttons: {
-		  "Aplicar": asignar_compensable,
-		  Cancelar: function() {
-		    dialog_asignar.dialog( "close" );
-		  }
-		},
-		close: function() {
-		  form[ 0 ].reset();
-		}
-	});
+$( function() {
+    $( '#fecha' ).datepicker({
+        dateFormat: "dd-mm-yy",
+        showWeek: true,
+    });
 
-	form = dialog_asignar.find( "form" ).on( "submit", function( event ) {
-    	event.preventDefault();
-    	asignar_compensable();
-   });
-
-   var empleado_id = $(this).parent().parent().data('empleado_id');
-   var empleado_nombre = $(this).parent().parent().data('empleado_nombre');
-   $( "#dialogAsignar-form" ).dialog({ title: 'Compensar día '+empleado_nombre });  
-   dialog_asignar
-    .data( 'empleado_id', empleado_id ) 
-    .dialog('open');
-   form[0].reset();
+} );
 
 
 
-
-
-
-});
-
-function asignar_compensable(){
-}
 
 });    
 
