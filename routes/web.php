@@ -88,12 +88,17 @@ Route::post('/validar/{id}', [
 Route::post('/add/{empleado_id}/{cuadrante_id}', [
 	'uses' => 'CuadranteController@añadirempleado',
 	'as' => 'añadirEmpleado',
-	'middleware' => ['auth']
+	'middleware' => ['auth','isAdmin']
 	]);
 Route::post('/aceptar/{id}', [
 	'uses' => 'CuadranteController@aceptarHorarios',
 	'as' => 'aceptarCuadrante',
-	'middleware' => ['auth']
+	'middleware' => ['auth','isAdmin']
+	]);
+Route::post('/archivar/{id}', [
+	'uses' => 'CuadranteController@archivarHorarios',
+	'as' => 'archivarCuadrante',
+	'middleware' => ['auth','isAdmin']
 	]);
 
 

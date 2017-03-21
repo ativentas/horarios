@@ -176,14 +176,27 @@ public function guardarHorarios(Request $request, $cuadrante_id){
         //TO DO: guardar también los cambios en el cuadrante (por ejemplo si se ha cambiado el día de cerrado)
         });
         return is_null($exception) ? 'Cambios guardados' : $exception;
-            
-    
+               
     } catch(Exception $e) {
         // return $e;
         return "Error: no se han podido guardar los cambios".$e;
     }
+}
+
+public function archivarHorarios ($cuadrante_id){
+    $cuadrante = Cuadrante::findOrFail($cuadrante_id);
+    if($cuadrante->estado != 'Aceptado'){
+        return redirect('home')->with('info','No se ha podido archivar el Horario');
+    }
+    //TO DO: comprobar que todas las ausencias estén confirmadas
+    $cuadrante->estado = 'Archivado';
+    $cuadrante->save();
+
+    return redirect ('home');
 
 }
+
+
 
 public function aceptarHorarios ($cuadrante_id){
   
@@ -269,10 +282,12 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     }
 
     $centro_id = $cuadrante->centro_id;
-    if($cuadrante->archivado == '0') {
+    $empleadosdisponibles = collect();
+    if(!$cuadrante->archivado) {
         #TO DO: actualizar las lineas con las ausencias, ver si hay conflictos (por ejemplo cuando es vacaciones pero en la linea pone Vacaciones Trabaja).
-
-        $empleados = Empleado::where('centro_id',$centro_id)->pluck('id')->toArray();
+        // $empleados = Empleado::where('centro_id',$centro_id)->pluck('id')->toArray();
+        //solo los empleados de ese cuadrante
+        $empleados = $cuadrante->empleados->unique()->pluck('id')->toArray();
         $yearsemana = $cuadrante->yearsemana;
         $year = substr($yearsemana,0,4);
         $semana = substr($yearsemana,-2,2);
@@ -354,7 +369,6 @@ public function mostrarCuadrante($cuadrante_id = NULL)
                                 ]);
                             }
                         }
-
                         //TO DO: si me decanto por crear primero el array y luego hacer un loop para actualizar las lineas
                         // $arrayausencias[] =[$fecha_ausencia,$ausencia->tipo,$ausencia->empleado_id]; 
                     }
@@ -366,7 +380,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
             //TO DO: si me decanto por el $arrayausencias, actualizar la tabla de lineas con los datos del array
         }
         $empleadosdisponibles = $this->empleadosdisponibles($cuadrante);
-    }
+    } #FIN IF ARCHIVADO
 
 //TO DO: en teoría no debe ocurrir, pero cuando no hay lineas en el cuadrante, sale un error de sql
     $lineas = DB::table('lineas')

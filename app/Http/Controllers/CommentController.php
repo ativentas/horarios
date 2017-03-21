@@ -35,9 +35,12 @@ class CommentController extends Controller
 
     $nota = Comment::find($nota_id);
 
+    $visible = $request->visible?'1':0;
+    $resuelto = $request->resuelto?'1':0;
+
     $nota->update([
-      'visible'=> $request->visible,
-      'resuelto'=> $request->resuelto,
+      'visible'=> $visible,
+      'resuelto'=> $resuelto,
       'resuelto_por'=> Auth::user()->id,
       'nota_respuesta'=> $request->respuesta,
     ]);

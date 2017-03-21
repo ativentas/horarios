@@ -43,8 +43,6 @@ $('.btn_asignar').on('click', function() {
    form[0].reset();
 
 
-
-
 });
 // $('input[name="genderS"]:checked').val();
 $(function(){

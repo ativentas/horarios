@@ -25,6 +25,10 @@ class Linea extends Model
     {
     	return $this->belongsTo('App\Festivo','fecha','fecha');
     }
+    public function empleado()
+    {
+        return $this->belongsTo('App\Empleado');
+    }
     function getDiaTextoAttribute() {
         $array=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
         return $array[$this->dia];
