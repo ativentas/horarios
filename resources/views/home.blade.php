@@ -137,21 +137,31 @@
 
         <div class="panel panel-default">
             <div class="panel-heading"><h4>Otras notas sin resolver</h4></div>
-            <div class="list-group">
+            <table class="table">
                 @if(!empty($otras_notaspdtes[0]))
                 @foreach($otras_notaspdtes as $nota)
-                    <div class="list-group-item">
-                        <p>{{ $nota->body }}</p>
-                        <p></p>
-                        <p>{{$nota->author->name}} - Horario Semana: <a href="{{ url('cuadrante/'.$nota->cuadrante->id) }}" >{{ $nota->cuadrante->semana}}</a> *{{ $nota->created_at->format('d-M-Y, h:i a') }}</p>
-                    </div>
+                @if (!$comment->isSolved())
+                    <tr data-nota_id="{{$comment->id}}">
+                        <td colspan="5"><em>{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}} - ({{$comment->cuadrante->centro->nombre}}, Semana: <a href="{{ url('cuadrante/'.$nota->cuadrante->id) }}" >{{ $nota->cuadrante->semana}}):</a></em><em style="color:red"> {{$comment->body}}</em>
+                        <button type="button" class="btn_respuesta btn btn-warning btn-xs" style=""><span class="glyphicon glyphicon-share-alt"></span></button>
+                        </td>
+                    </tr>
+                    @if ($comment->nota_respuesta&&(Auth::user()->isAdmin()||$comment->visible==true))
+                    
+                    <tr data-hayrespuesta="yes" data-visible="{{$comment->visible}}">
+                        <td colspan="5"><em>{{$comment->resolvedor->name}}: {{$comment->updated_at->format('d-M-Y, h:i a')}}: </em><em class="nota_respuesta" style="color:blue">{{$comment->nota_respuesta}}</em></td>
+                    </tr>
+                    @else
+                    <tr data-hayrespuesta="no"></tr>
+                    @endif
+                    @endif
                 @endforeach
                 @else
                 <div class="list-group-item">
                     <p>No hay ninguna nota mas pendiente</p>
                 </div>
                 @endif
-            </div>
+            </table>
         </div>
 
     </div> <!-- FIN DIV IZQUIERDA -->
@@ -201,7 +211,22 @@
                 @if($ausencia->has('comments'))
                 @foreach($ausencia->comments as $comment)
                 @if (!$comment->isSolved())
+                
                 <tr data-nota_id="{{$comment->id}}">
+                    <td colspan="5"><em>{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}: </em><em style="color:red"> {{$comment->body}}</em>
+                    <button type="button" class="btn_respuesta btn btn-warning btn-xs" style=""><span class="glyphicon glyphicon-share-alt"></span></button>
+                    </td>
+                </tr>
+                @if ($comment->nota_respuesta&&(Auth::user()->isAdmin()||$comment->visible==true))
+                
+                <tr data-hayrespuesta="yes" data-visible="{{$comment->visible}}">
+                    <td colspan="5"><em>{{$comment->resolvedor->name}}: {{$comment->updated_at->format('d-M-Y, h:i a')}}: </em><em class="nota_respuesta" style="color:blue">{{$comment->nota_respuesta}}</em></td>
+                </tr>
+                @else
+                <tr data-hayrespuesta="no"></tr>
+                @endif
+
+                <!-- <tr data-nota_id="{{$comment->id}}">
                     <td colspan="4">{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}}
                     <button type="button" class="btn_respuesta btn btn-warning btn-sm" style="float: right;"><span class="glyphicon glyphicon-pencil"></span> Respuesta</button>
                     </td>
@@ -214,7 +239,7 @@
                 
                 <tr>
                     <td colspan="5"><em>{{$comment->resolvedor->name}}: {{$comment->updated_at->format('d-M-Y, h:i a')}}: </em><em style="color:blue"> {{$comment->nota_respuesta}}</em></td>
-                </tr>
+                </tr> -->
                 @endif
                 @endif
                 @endforeach
