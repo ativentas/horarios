@@ -109,5 +109,6 @@ Route::post('/archivar/{id}', [
 
  Route::get('vacaciones','VacacionesController@index')->middleware('auth');
  Route::get('compensaciones','CompensacionesController@index')->middleware('auth');
+ Route::post('compensaciones/{id}','CompensacionesController@update','asignar_compensable')->middleware('auth');
 
 

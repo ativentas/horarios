@@ -266,9 +266,12 @@ $("#check_trabaja").change(function() {
 $("#check_libre").change(function() {
     if(this.checked) {
       $('#container_horarioL').hide();
+      $('#div_check_compensar').show();
       return;
     }
       $('#container_horarioL').show();
+      $('#div_check_compensar').hide();
+
 });
 $("#check_festivo").change(function() {
     if(this.checked) {

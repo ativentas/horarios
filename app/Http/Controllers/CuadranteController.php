@@ -441,11 +441,23 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     //me parece que $empleados no se está usando. Lo he quitado también del compact
     // $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
 
+
+    $empleados_compensar = Empleado::where('centro_id',$centro_id)->whereHas('compensables',function($query){
+            $query->where('diacompensado', null)->where('pagar',false);      
+        })
+            ->with('compensables')
+            ->withCount(['compensables'])
+            ->get();
+
+
+
+
+
     $lineasconcambios = $cuadrante->lineacambios()->get();
     
     $comments = $cuadrante->comments;
 
-    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','empleadosdisponibles','anteriorId','posteriorId','comments'));
+    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','empleadosdisponibles','anteriorId','posteriorId','comments','empleados_compensar'));
 }
 
 public function mostrarNieuwCuadrante()

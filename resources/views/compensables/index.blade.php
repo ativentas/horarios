@@ -42,7 +42,7 @@
 
     <div class="col-md-10 col-md-offset-1">
         @if($empleados->count() > 0)
-        <table class="table table-striped">
+        <table class="table">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -52,8 +52,9 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+           
             @foreach($empleados as $empleado)
+            <tbody>
                 <tr data-id="{{$empleado->id}}">
                     <td><a href="{{ url('/empleados_c/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
                     <td>{{$empleado->centro->nombre}}</td>
@@ -61,19 +62,22 @@
                     <td></td>
                 </tr>
                 @foreach($empleado->compensables as $compensable)
-					
+				<td colspan=""></td>
+                <td colspan="3">	
 					<table class="table">
-					<tr data-empleado_id="{{$empleado->id}}" data-empleado_nombre="{{$empleado->alias}}">
+					<tr data-compensable_id="{{$compensable->id}}" data-empleado_nombre="{{$empleado->alias}}">
 						<td></td>
 						<td>{{$compensable->dia}}</td>
 						<td>{{$compensable->linea->situacion}}</td>
-						<td>{{$compensable->nota}}</td>
-						<td><button class="btn btn-success btn-xs btn_asignar" type="button"><span class="glyphicon glyphicon-ok-sign"></span> Asignar</button></td>
+						<td>@if($compensable->disponible)<button class="btn btn-success btn-xs btn_asignar" type="button"><span class="glyphicon glyphicon-ok-sign"></span> Asignar</button>@elseif($compensable->diacompensado){{$compensable->diacompensado}}@else PAGAR @endif</td>
 					</tr>
 					</table>
+                </td>
+                <td></td>
                 @endforeach
-            @endforeach
             </tbody>
+            @endforeach
+            
         </table>
         @else
             <h2>No hay ningún dato</h2>
@@ -81,10 +85,17 @@
 
     </div>
 
-    </div>
+    </div> <!-- FIN DEL PANEL BODY -->
+
+
+{{csrf_field()}}
+</form>
+
+
 
     <div id="dialogAsignar-form" title="">
-  	<form id = "Asignar-form" autofocus>
+  	<form id = "Asignar-form" action="{{url('compensaciones/:COMPENSABLE_ID')}}" method="POST" autofocus>
+    {{csrf_field()}}
     <fieldset>
         <div class="form-group">
             <label class="radio-inline">
@@ -94,15 +105,31 @@
               <input type="radio" name="radio_compensar" value="DL">Día Libre
             </label>
         </div>
-        <div class="form-group" id="group_pagar" style="display:none;">
-            <textarea class="form-control" required="" placeholder="Escribe un comentario aquí..." name = "nota" id="">jhlkhk</textarea> 
+<!--         <div class="form-group" id="group_pagar" style="display:none;">
+            <textarea class="form-control" required="" placeholder="Escribe un comentario aquí..." name = "nota" id=""></textarea> 
         </div>
         <div class="form-group" id="group_libre" style="display:none;">
-            <div class="col-md-8" style="">
+            <div class="col-md-8" style="margin-bottom: 10px;">
             <input type="text" name="fecha" class="form-control" id="fecha" value="" style="" placeholder="elige fecha" readonly>
             </div>
+            
             <textarea class="form-control" required="" placeholder="Escribe una comentario aquí..." name = "nota" id=""></textarea> 
-        </div>
+        </div> -->
+
+ 
+            <div class="col-md-8" id="div_fecha" style="margin-bottom: 10px;display:none;">
+            <input type="text" name="fecha" class="form-control" id="fecha" value="" style="" placeholder="elige fecha" readonly>
+            </div>
+            <div id="div_nota" style="display:none;">
+            <textarea class="form-control" required="" placeholder="Escribe un comentario aquí..." name = "nota" id=""></textarea>
+            </div>
+
+
+
+
+
+
+
     </fieldset>
   	</form>
 	</div>

@@ -34,11 +34,11 @@ $('.btn_asignar').on('click', function() {
       asignar_compensable();
    });
 
-   var empleado_id = $(this).parent().parent().data('empleado_id');
+   var compensable_id = $(this).parent().parent().data('compensable_id');
    var empleado_nombre = $(this).parent().parent().data('empleado_nombre');
    $( "#dialogAsignar-form" ).dialog({ title: 'Compensar día '+empleado_nombre });  
    dialog_asignar
-    .data( 'empleado_id', empleado_id ) 
+    .data( 'compensable_id', compensable_id ) 
     .dialog('open');
    form[0].reset();
 
@@ -52,10 +52,14 @@ $(function(){
       case 'P':
         $('#group_libre').hide();
         $('#group_pagar').show();
+        $('#div_fecha').hide();
+        $('#div_nota').show();
         break;
       case 'DL':
         $('#group_pagar').hide();        
         $('#group_libre').show();        
+        $('#div_fecha').show();        
+        $('#div_nota').show();        
         break;
       default:
         alert('Esta opción no puede salir. Revisar programa');
@@ -73,8 +77,22 @@ $(function(){
 });
 
 
-
 function asignar_compensable(){
+  var compensable_id = $(this).data('compensable_id');
+  var form = $('#Asignar-form');
+  var url = form.attr('action').replace(':COMPENSABLE_ID',compensable_id);   
+  var data = form.serialize();
+  $.post(url, data).done(function(data){
+          console.log(data);
+          alert(data);
+          location.reload();
+  }).fail(function(data){
+      console.log(data);
+      alert(data);
+  }); 
+
+
+
 }
 
 

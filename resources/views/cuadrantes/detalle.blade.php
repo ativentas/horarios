@@ -414,6 +414,17 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         <div id="div_check_libre" class="checkbox" style="display:none;">
             <label><input type="checkbox" id="check_libre" value="">Cambiar a Dia Libre</label>
         </div>
+        <div id="div_check_compensar" class="checkbox" style="display:none;">
+            <label><input type="checkbox" id="check_compensar" value="">Compensar con día Pdte</label>
+        </div>
+        <div id="div_select_dia_compensar">
+            <select class="form-control" name="" id="">
+                <option value="">Día que se compensa</option>
+                @foreach ($empleados_compensar as $key => $compensable)
+                <option data-key="{{$key}}" class="" value="">{{$compensable->fecha}}</option>
+                @endforeach                
+            </select>            
+        </div>
         <div id="div_check_vacaciones" class="checkbox" style="display:none;">
             <label><input type="checkbox" id="check_vacaciones" value="">Cambiar a Vacaciones</label>
         </div>
@@ -469,6 +480,13 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <script type="text/javascript" src="{{asset('js/cuadrante.js')}}"></script>
 <script>
 $(document).ready(function(){
+
+  var empleados_compensar = <?php echo $empleados_compensar; ?>;
+
+  console.log(empleados_compensar);
+
+  pruebas = <?php echo $empleados_compensar->first();?>;
+  console.log(pruebas);
 
   var predefinidos = <?php echo $predefinidos; ?>;
   // console.log(predefinidos);
