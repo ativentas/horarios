@@ -31,6 +31,12 @@ td input {
     padding: 0px;
 
 }
+tr:nth-child(4n){
+    background-color: gainsboro;
+}
+tr:nth-child(4n+1){
+    background-color: gainsboro;
+}
 
 </style>
 
@@ -417,7 +423,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         <div id="div_check_compensar" class="checkbox" style="display:none;">
             <label><input type="checkbox" id="check_compensar" value="">Compensar con día Pdte</label>
         </div>
-        <div id="div_select_dia_compensar">
+        <div id="div_select_dia_compensar" style="display:none;">
             <select class="form-control" name="" id="">
                 <option value="">Día que se compensa</option>
                 @foreach ($empleados_compensar as $key => $compensable)
@@ -485,8 +491,8 @@ $(document).ready(function(){
 
   console.log(empleados_compensar);
 
-  pruebas = <?php echo $empleados_compensar->first();?>;
-  console.log(pruebas);
+  // pruebas = <?php echo $empleados_compensar->first();?>;
+  // console.log(pruebas);
 
   var predefinidos = <?php echo $predefinidos; ?>;
   // console.log(predefinidos);

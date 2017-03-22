@@ -348,6 +348,8 @@ $('.wrapper').on("click", function() {
         $('#div_check_festivo').hide();
         $('#div_check_libre').hide();
         $('#div_check_vacaciones').hide();
+        $('#div_check_compensar').hide();
+
         form[ 0 ].reset();
       }  
   });
