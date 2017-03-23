@@ -126,7 +126,7 @@ class EmpleadoController extends Controller
         $query = Linea::where('empleado_id',$id)->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])->whereHas('cuadrante', function ($restrict) {
             $restrict->where('estado', '<>', NULL);})->get();
 
-        $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP'))->count();
+        $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP','PR'))->count();
         $vaclineasacum = $query->where('situacion','V')->count();
         $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
         return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','year','cuadrante','anteriorId','posteriorId','empleado_anterior','empleado_posterior'));

@@ -25,6 +25,7 @@ class AusenciaController extends Controller
       	'AN' => 'Ausencia sin justif.',
       	'B' => 'Baja Médica',
       	'AJ' => 'Ausencia justif.',
+      	'PR' => 'Permiso retrib.',
       	'BP' => 'Baja Paternidad');
    }
 

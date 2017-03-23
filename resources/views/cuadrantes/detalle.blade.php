@@ -149,7 +149,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="1" class="tg-031e" id="">
                     <input class="horariosdia_1" type="text" name="entrada1_1_{{$linea->empleado_id}}" id="entrada1_1_{{$linea->empleado_id}}" value="{{is_null($linea->ELU) ? '' : date('H:i',strtotime($linea->ELU))}}">
                     <div class="wrapper" id="wrapper-{{$linea->empleado_id}}-1">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion1,['V','B','AJ','AN','L','BP','F','PR'])? 'display:none;':''}}">{{$linea->situacion1}}</button>
                     </div>
                     <input type="hidden" name="situacion_1_{{$linea->empleado_id}}" id="situacion_1_{{$linea->empleado_id}}" value="{{$linea->situacion1}}">
                     <input type="hidden" name="nota_1_{{$linea->empleado_id}}" id="nota_1_{{$linea->empleado_id}}" value="{{$linea->nota1}}">
@@ -162,7 +162,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="2" class="tg-031e" id="">
                     <input class="horariosdia_2"  type="text" name="entrada1_2_{{$linea->empleado_id}}" id="entrada1_2_{{$linea->empleado_id}}" value="{{is_null($linea->EMA) ? '' : date('H:i',strtotime($linea->EMA))}}">
                     <div class="wrapper" id="wrapper-{{$linea->empleado_id}}-2">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion2,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion2}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion2,['V','B','AJ','AN','L','BP','F','PR'])? 'display:none;':''}}">{{$linea->situacion2}}</button>
                     </div>
                     <input type="hidden" name="situacion_2_{{$linea->empleado_id}}" id="situacion_2_{{$linea->empleado_id}}" value="{{$linea->situacion2}}">
                     <input type="hidden" name="nota_2_{{$linea->empleado_id}}" id="nota_2_{{$linea->empleado_id}}" value="{{$linea->nota2}}">
@@ -174,7 +174,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="3" class="tg-031e" id="">
                     <input class="horariosdia_3" class="" type="text" name="entrada1_3_{{$linea->empleado_id}}" id="entrada1_3_{{$linea->empleado_id}}" value="{{is_null($linea->EMI) ? '' : date('H:i',strtotime($linea->EMI))}}">
                     <div class="wrapper" id="wrapper-{{$linea->empleado_id}}-3">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion3,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion3}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion3,['V','B','AJ','AN','L','BP','F','PR'])? 'display:none;':''}}">{{$linea->situacion3}}</button>
                     </div>
                     <input type="hidden" name="situacion_3_{{$linea->empleado_id}}" id="situacion_3_{{$linea->empleado_id}}"  value="{{$linea->situacion3}}">
                     <input type="hidden" name="nota_3_{{$linea->empleado_id}}" id="nota_3_{{$linea->empleado_id}}" value="{{$linea->nota3}}">
@@ -186,7 +186,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="4" class="tg-031e" id="">
                     <input class="horariosdia_4"  type="text" name="entrada1_4_{{$linea->empleado_id}}" id="entrada1_4_{{$linea->empleado_id}}" value="{{is_null($linea->EJU) ? '' : date('H:i',strtotime($linea->EJU))}}">
                     <div class="wrapper" id="wrapper-{{$linea->empleado_id}}-4">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion4,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion4}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion4,['V','B','AJ','AN','L','BP','F','PR'])? 'display:none;':''}}">{{$linea->situacion4}}</button>
                     </div>
                     <input type="hidden" name="situacion_4_{{$linea->empleado_id}}" id="situacion_4_{{$linea->empleado_id}}"  value="{{$linea->situacion4}}">
                     <input type="hidden" name="nota_4_{{$linea->empleado_id}}" id="nota_4_{{$linea->empleado_id}}" value="{{$linea->nota4}}">
@@ -198,7 +198,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="5" class="tg-031e" id="">
                     <input class="horariosdia_5"  type="text" name="entrada1_5_{{$linea->empleado_id}}" id="entrada1_5_{{$linea->empleado_id}}" value="{{is_null($linea->EVI) ? '' : date('H:i',strtotime($linea->EVI))}}">
                     <div class="wrapper"  id="wrapper-{{$linea->empleado_id}}-5">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion5,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion5}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion5,['V','B','AJ','AN','L','BP','F','PR'])? 'display:none;':''}}">{{$linea->situacion5}}</button>
                     </div>
                     <input type="hidden" name="situacion_5_{{$linea->empleado_id}}" id="situacion_5_{{$linea->empleado_id}}" value="{{$linea->situacion5}}">
                     <input type="hidden" name="nota_5_{{$linea->empleado_id}}" id="nota_5_{{$linea->empleado_id}}" value="{{$linea->nota5}}">
@@ -210,7 +210,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="6" class="tg-031e" id="">
                     <input class="horariosdia_6"  type="text" name="entrada1_6_{{$linea->empleado_id}}" id="entrada1_6_{{$linea->empleado_id}}" value="{{is_null($linea->ESA) ? '' : date('H:i',strtotime($linea->ESA))}}">
                     <div class="wrapper" id="wrapper-{{$linea->empleado_id}}-6">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion6,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion6}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion6,['V','B','AJ','AN','L','BP','F','PR'])? 'display:none;':''}}">{{$linea->situacion6}}</button>
                     </div>
                     <input type="hidden" name="situacion_6_{{$linea->empleado_id}}" id="situacion_6_{{$linea->empleado_id}}" value="{{$linea->situacion6}}">
                     <input type="hidden" name="nota_6_{{$linea->empleado_id}}" id="nota_6_{{$linea->empleado_id}}" value="{{$linea->nota6}}">
@@ -222,7 +222,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 <td data-dia="0" class="tg-031e" id="">
                     <input class="horariosdia_0"  type="text" name="entrada1_0_{{$linea->empleado_id}}" id="entrada1_0_{{$linea->empleado_id}}" value="{{is_null($linea->EDO) ? '' : date('H:i',strtotime($linea->EDO))}}">
                     <div class="wrapper" id="wrapper-{{$linea->empleado_id}}-0">                        
-                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion0,['V','B','AJ','AN','L','BP','F'])? 'display:none;':''}}">{{$linea->situacion0}}</button>
+                        <button class="ausencia" type="button" style="{{!in_array($linea->situacion0,['V','B','AJ','AN','L','BP','F','PR'])? 'display:none;':''}}">{{$linea->situacion0}}</button>
                     </div>
                     <input type="hidden" name="situacion_0_{{$linea->empleado_id}}" id="situacion_0_{{$linea->empleado_id}}" value="{{$linea->situacion0}}">
                     <input type="hidden" name="nota_0_{{$linea->empleado_id}}" id="nota_0_{{$linea->empleado_id}}" value="{{$linea->nota0}}">
