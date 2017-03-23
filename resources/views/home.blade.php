@@ -139,16 +139,16 @@
             <table class="table">
                 @if(!empty($otras_notaspdtes[0]))
                 @foreach($otras_notaspdtes as $nota)
-                @if (!$comment->isSolved())
-                    <tr data-nota_id="{{$comment->id}}">
-                        <td colspan="5"><em>{{$comment->author->name}}: {{$comment->created_at->format('d-M-Y, h:i a')}} - ({{$comment->cuadrante->centro->nombre}}, Semana: <a href="{{ url('cuadrante/'.$nota->cuadrante->id) }}" >{{ $nota->cuadrante->semana}}):</a></em><em style="color:red"> {{$comment->body}}</em>
+                @if (!$nota->isSolved())
+                    <tr data-nota_id="{{$nota->id}}">
+                        <td colspan="5"><em>{{$nota->author->name}}: {{$nota->created_at->format('d-M-Y, h:i a')}} - ({{$nota->cuadrante->centro->nombre}}, Semana: <a href="{{ url('cuadrante/'.$nota->cuadrante->id) }}" >{{ $nota->cuadrante->semana}}):</a></em><em style="color:red"> {{$nota->body}}</em>
                         <button type="button" class="btn_respuesta btn btn-warning btn-xs" style=""><span class="glyphicon glyphicon-share-alt"></span></button>
                         </td>
                     </tr>
-                    @if ($comment->nota_respuesta&&(Auth::user()->isAdmin()||$comment->visible==true))
+                    @if ($nota->nota_respuesta&&(Auth::user()->isAdmin()||$nota->visible==true))
                     
-                    <tr data-hayrespuesta="yes" data-visible="{{$comment->visible}}">
-                        <td colspan="5"><em>{{$comment->resolvedor->name}}: {{$comment->updated_at->format('d-M-Y, h:i a')}}: </em><em class="nota_respuesta" style="color:blue">{{$comment->nota_respuesta}}</em></td>
+                    <tr data-hayrespuesta="yes" data-visible="{{$nota->visible}}">
+                        <td colspan="5"><em>{{$nota->resolvedor->name}}: {{$nota->updated_at->format('d-M-Y, h:i a')}}: </em><em class="nota_respuesta" style="color:blue">{{$nota->nota_respuesta}}</em></td>
                     </tr>
                     @else
                     <tr data-hayrespuesta="no"></tr>
