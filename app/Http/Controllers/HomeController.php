@@ -62,7 +62,7 @@ class HomeController extends Controller
                 
                 $yearsemana = $this->yearsemana(date('Y-m-d'));
                 //TO DO: PONER CUANTAS SEMANAS ATRAS PUEDE VER EL ENCARGADO EN EL ARCHIVO DE CONFIGURACION. CADA EMPRESA PUEDE TENER UN VALOR DISTINTO, TB SE PUEDE HACER UN NUEVO CAMPO EN LA BBDD DE USUARIOS
-                $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana-100)->get();
+                $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana-100)->where('estado','!=','Archivado')->get();
                 $completados = collect();
                 $ausencias = Centro::find(Auth::user()->centro_id)->ausencias()->where('estado','Pendiente')->orderBy('fecha_inicio')->get();
                 break;
