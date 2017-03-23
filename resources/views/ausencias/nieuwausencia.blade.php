@@ -106,7 +106,7 @@ $('input[name="time"]').daterangepicker({
     "showWeekNumbers": true,
     "autoApply": true,
     "locale": {
-        "format": "DD/MM/YY",
+        "format": "DD/MM/YYYY",
         "weekLabel": "S",
         "separator": " - ",
         "firstDay": 1,

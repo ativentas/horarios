@@ -9,7 +9,6 @@ var isadmin = $('#tabla_plantilla').data('isadmin');
 var cambios = $('#tabla_plantilla').data('cambios');
 
 
-
 //poner en rojo los bordes de donde haya cambios y crear los tooltips
 $.each(cambios, function(index,obj){
     var empl = obj['empleado_id'];
@@ -26,7 +25,6 @@ $.each(cambios, function(index,obj){
     $('#wrapper-'+empl+'-'+dia).tooltip({title: html, html: true});
 
 });
-
 
 
 // TO DO: según el caso, habilitar las funciones para modificar la plantilla
@@ -134,12 +132,19 @@ deferred.then(function() {
 
 deferred.resolve();
 
-
     //TO DO: lo ideal sería salir a la ruta /cuadrantes, 
     // pero el problema es que el trigger se está ejecutando todavía, 
     // creo que hay que utilizar deferred y promises
     // $(location).attr("href", '/cuadrantes');
 });
+
+$('#form_enviar_comment').submit(function(e){
+  var self = this;
+  e.preventDefault();
+  $('#btn_guardar').trigger('click');
+  self.submit();
+});
+
 
 $('#boton_aceptar').click(function(e){
     e.preventDefault();
@@ -181,6 +186,7 @@ $('#btn_añadir_empleado').click(function(e){
     // por si acaso hay que especificar mas
     // alert('Se va a añadir a '+$('#select_añadir option:selected').val());
     $.post(url, data).done(function(data){
+        $('#btn_guardar').click();
         alert(data);
     }).fail(function(data){
         alert(data);

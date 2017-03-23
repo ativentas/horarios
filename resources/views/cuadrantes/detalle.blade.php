@@ -312,7 +312,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <div class="col-md-8 col-md-offset-2">
 
     <div class="panel-body">
-      <form method="post" action="/comment/add">
+      <form method="post" id="form_enviar_comment" action="/comment/add">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <input type="hidden" name="on_cuadrante" value="{{ $cuadrante->id }}">
         <input type="hidden" name="cuadrante_id" value="{{ $cuadrante->id }}">

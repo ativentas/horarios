@@ -19,6 +19,8 @@ class CreateEmpleadosTable extends Migration
             $table->string('alias');
             $table->string('nombre_completo')->nullable();
             $table->boolean('activo')->default(1);
+            $table->date('fecha_alta')->nullable();
+            $table->date('fecha_baja')->nullable();
             $table->nullableTimestamps();
 
         });
