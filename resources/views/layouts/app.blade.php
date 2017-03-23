@@ -15,6 +15,7 @@
     <link href="/css/jquery-ui.css" rel="stylesheet">
     <link href="{{asset('css/jquery-ui.structure.css')}}" media="all" rel="stylesheet" type="text/css" />
     <link href="{{asset('css/jquery-ui.theme.css')}}" media="all" rel="stylesheet" type="text/css" />
+    @yield('css')
     
     <!-- Scripts -->
 

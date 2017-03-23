@@ -1,9 +1,11 @@
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
 @extends('layouts.app')
 
-
-
+@section('css')
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+@endsection
 @section('content')
+
 <div class="container">
 <div class="row">
 <div class="col-md-10 col-md-offset-1">
