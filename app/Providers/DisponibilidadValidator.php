@@ -106,7 +106,7 @@ class DisponibilidadValidator extends ServiceProvider
 			// dd($intervalo_yearsemanas);
 			$horarios_afectados = DB::table('cuadrantes')
 				->where('centro_id',$parameters[0])
-				->where('archivado',1)
+				->where('estado','Archivado')
 				->whereBetween('yearsemana',$intervalo_yearsemanas)
 				// ->whereIn('yearsemana',$intervalo_yearsemanas)
 				->count();
