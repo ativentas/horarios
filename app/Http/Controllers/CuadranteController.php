@@ -354,7 +354,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
 
                 while ($fecha_ausencia <= $fechafin_ausencia) {
                     if (in_array($fecha_ausencia, $diassemana)) {
-                        $arrayprueba[] = $fecha_ausencia;
+                        // $arrayprueba[] = $fecha_ausencia;
                         $linea = Linea::where('empleado_id',$ausencia->empleado_id)->where('fecha',$fecha_ausencia)->first();
                         
                         if($linea){
@@ -629,7 +629,8 @@ public function empleadosdisponibles ($cuadrante)
     return $empleadosdisponibles;
 
 }
-public function añadirempleado ($empleado_id,$cuadrante_id){
+public function añadirempleado ($empleado_id,$cuadrante_id)
+{
     //TO DO: unificar esta función con la de addlineas
     $cuadrante = Cuadrante::find($cuadrante_id);
     $yearsemana = $cuadrante->yearsemana;
@@ -649,7 +650,16 @@ public function añadirempleado ($empleado_id,$cuadrante_id){
             $linea->save();     
             $fecha_ini = $fecha_ini->addDay();
     }
-    return 'hecho';
+    return 'añadido';
+}
+
+public function eliminarempleado ($empleado_id,$cuadrante_id)
+{
+    $cuadrante = Cuadrante::find($cuadrante_id);
+    $borrarlineas = $cuadrante->lineas()->where('empleado_id',$empleado_id)->delete();
+    return 'eliminado';
+
+
 }
 
 }

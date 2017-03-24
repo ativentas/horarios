@@ -170,6 +170,20 @@ $('#boton_aceptar').click(function(e){
 
 });
 
+$('.delete_empleado').on('click', function(){
+  var form = $('#form_delete_empleado');
+  var empleado = $(this).parent().parent().data('empleado_id');
+  var tr = $(this).parents('tr');
+  var url = form.attr('action').replace(':EMPLEADO_ID',empleado)
+  $.post(url).done(function(data){
+    tr.hide();
+    tr.next().hide();
+    alert(data);
+  }).fail(function(data){
+    alert(data);
+  });
+})
+
 $('#btn_añadir_empleado').click(function(e){
     e.preventDefault();
     if(!$('#select_añadir').val()){

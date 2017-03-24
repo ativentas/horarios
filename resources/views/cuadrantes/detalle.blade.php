@@ -106,8 +106,9 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         {{csrf_field()}}
         <!-- TABLA -->
         <div class="tg-wrap">
-        <table data-cambios="{{$lineasconcambios}}" data-isadmin="{{Auth::user()->is_admin}}" data-estadocuadrante="{{$cuadrante->estado}}" class="tg" id="tabla_plantilla" style="undefined;table-layout: fixed; width: 767px">
+        <table data-cambios="{{$lineasconcambios}}" data-isadmin="{{Auth::user()->is_admin}}" data-estadocuadrante="{{$cuadrante->estado}}" class="tg" id="tabla_plantilla" style="undefined;table-layout: fixed; width: 851px">
         <colgroup>
+            <col style="width: 30px">
             <col style="width: 121px">
             <col style="width: 50px">
             <col style="width: 50px">
@@ -125,6 +126,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             <col style="width: 50px">
         </colgroup>
             <tr>
+                <th></th>
                 <th class="tg-s6z2"></th>
                 <th data-dia="1" data-estadodia="{{$cuadrante->dia_1}}" class="tg-s6z2 diasemana {{$cuadrante->dia_1}}" id="estadodia_1" colspan="2">Lunes</th>
                 <input type="hidden" name="nuevoestadodia_1" id="nuevoestadodia_1">
@@ -143,7 +145,9 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             </tr>
             @foreach($lineas as $linea)
             <tr class="datos_empleado" data-empleado_id={{$linea->empleado_id}} data-empleado_nombre={{$linea->nombre}} style="">
-                <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2"style="height:60px;"><span>{{$linea->nombre}}</span> 
+<!--                 <td class="tg-031e" rowspan="2"><button class="btn btn-danger btn-sm btn_delete" id="button_delete_{{$linea->empleado_id}}" type="button" style=""><span class="glyphicon glyphicon-remove-circle"></span></button></td> -->
+                <td class="tg-031e" rowspan="2">@if(Auth::user()->isAdmin())<span class="delete_empleado glyphicon glyphicon-remove-circle" id="icon_delete_{{$linea->empleado_id}}" style="color: red;cursor:pointer;"></span>@endif</td>
+                <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2" style="height:60px;"><span>{{$linea->nombre}}</span> 
                     <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="button" style="display: none;"><span class="glyphicon glyphicon-edit"></span></button>
                 </td>
                 <td data-dia="1" class="tg-031e" id="">
@@ -233,7 +237,6 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 
             </tr>
             <tr style="">
-
                 <td class="tg-031e" id="">
                     <input class="horariosdia_1" type="text" name="entrada2_1_{{$linea->empleado_id}}" id="entrada2_1_{{$linea->empleado_id}}" value="{{is_null($linea->E2LU)?'':date('H:i',strtotime($linea->E2LU))}}">
                 </td>
@@ -353,6 +356,10 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <form id="form_añadir_empleado" action="{{route('añadirEmpleado',array('empleado'=>':EMPLEADO_ID','cuadrante'=>$cuadrante->id))}}" method="POST"> 
 {{csrf_field()}}
 </form>
+<form id="form_delete_empleado" action="{{route('deleteEmpleado',array('empleado'=>':EMPLEADO_ID','cuadrante'=>$cuadrante->id))}}" method="POST"> 
+{{csrf_field()}}
+</form>
+
 
 
 
