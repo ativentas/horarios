@@ -289,6 +289,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             @endforeach
             @if(count($empleadosdisponibles))
             <tr>
+                <td></td>
                 <td> 
                 <!-- <div class="form-group"> -->
                   <select class="form-control" id="select_añadir">
