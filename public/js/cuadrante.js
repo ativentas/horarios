@@ -296,12 +296,7 @@ $("#check_vacaciones").change(function() {
 
 $('.wrapper').on("click", function() {
   var elemento = $(this);
-  // var situacion = $(this).children().first().html();
-  // alert('situacion wrapper html: '+situacion);
-  
-  // var numdia = $( "#dialogHorarioDia-form" ).data('dia');
-  // alert(numdia);
-  // var empleado = $( "#dialogHorarioDia-form" ).data('empleado_id');
+
   var empleado_id = $(this).parent().parent().data('empleado_id');
   var dia = $(this).parent().data('dia');
   var situacion = $("#situacion_"+dia+"_"+empleado_id).val();
@@ -337,6 +332,7 @@ $('.wrapper').on("click", function() {
         break;
     }
     $('#container_horarioL').show();
+
   } 
   dialog_horariodia = $( "#dialogHorarioDia-form" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 

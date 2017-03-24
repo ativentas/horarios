@@ -415,7 +415,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 </div> 
 
 <div id="dialogHorarioDia-form" title="">
-  <form autofocus>
+  <form>
     <fieldset>
         <div id="div_check_libre" class="checkbox" style="display:none;">
             <label><input type="checkbox" id="check_libre" value="">Cambiar a Dia Libre</label>
@@ -443,7 +443,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         </div> -->
         
         <div class="form-group">
-        <select class="predefinidos form-control" name="predefinidos" id="">
+        <select autofocus class="predefinidos form-control" name="predefinidos" id="">
             <option value=""></option>
             @foreach ($predefinidos as $key => $predefinido)
             <option data-key="{{$key}}" class="" value="">{{$predefinido->label}}</option>
