@@ -16,6 +16,7 @@ class CreateCentrosTable extends Migration
         Schema::create('centros', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre');
+            $table->string('empresa')->nullable();
             $table->integer('dia_cierre')->nullable();
             $table->boolean('abrefestivos')->default(1);
 

@@ -63,7 +63,8 @@ class EmpleadoController extends Controller
         }
         $this->validate($request, [
         'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
-        'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
+        // 'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
+        'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,
         'centro' => 'required',
         'alta' => 'required',   
         ]);
@@ -71,6 +72,7 @@ class EmpleadoController extends Controller
         $empleado = new Empleado;
         $empleado->alias = $request->alias;
         $empleado->nombre_completo = $request->nombre;
+        $empleado->apellidos = $request->apellidos;
         $empleado->centro_id = $request->centro;
         $empleado->fecha_alta = $this->change_date_format($request->alta);
         if($request->has('baja')){
@@ -165,13 +167,21 @@ class EmpleadoController extends Controller
         }else {  
             $this->validate($request, [
             'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
-            'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
-            'centro' => 'required',   
+            // 'nombre' => 'required|min:3|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,
+            'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,   
+            'centro_id' => 'required',   
             ]);
             $empleado=Empleado::find($id);
             $empleado->alias = $request->alias;
             $empleado->nombre_completo = $request->nombre;
+            $empleado->apellidos = $request->apellidos;
             $empleado->centro_id = $request->centro;
+            if($request->has('alta')){
+                $empleado->fecha_alta = $this->change_date_format($request->alta);
+            }
+            if($request->has('baja')){
+                $empleado->fecha_baja = $this->change_date_format($request->baja);
+            }
             $empleado->save();
         }
         return redirect()->route('empleados.index')->with('info','Empleado modificado');

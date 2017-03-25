@@ -26,17 +26,24 @@
 
     <div class="col-md-6"> <!-- COLUMNA IZQUIERDA -->
         <div class="form-group{{$errors->has('alias') ? ' has-error' : ''}}">
-            <label for="alias" class="control-label">Nombre</label>
+            <label for="alias" class="control-label">Alias</label>
             <input type="text" autocomplete="off" name="alias" class="form-control" id="alias" value="{{Request::old('alias') ?: ''}}">
             @if ($errors->has('alias'))
                 <span class="help-block">{{$errors->first('alias')}}</span>
             @endif
         </div>
         <div class="form-group{{$errors->has('nombre') ? ' has-error' : ''}}">
-            <label for="nombre" class="control-label">Nombre completo</label>
+            <label for="nombre" class="control-label">Nombre</label>
             <input type="text" name="nombre" class="form-control" id="nombre" value="{{Request::old('nombre') ?: ''}}">
             @if ($errors->has('nombre'))
                 <span class="help-block">{{$errors->first('nombre')}}</span>
+            @endif                  
+        </div>
+        <div class="form-group{{$errors->has('apellidos') ? ' has-error' : ''}}">
+            <label for="apellidos" class="control-label">Apellidos</label>
+            <input type="text" name="nombre" class="form-control" id="apellidos" value="{{Request::old('apellidos') ?: ''}}">
+            @if ($errors->has('apellidos'))
+                <span class="help-block">{{$errors->first('apellidos')}}</span>
             @endif                  
         </div>
         <div class="form-group{{$errors->has('centro') ? ' has-error' : ''}}">
