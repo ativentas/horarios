@@ -67,10 +67,16 @@ class AusenciaController extends Controller
 
     //TO DO: si el usuario es admin, entonces mostrar todos los empleados, o mejor, hacer que primero elija el centro
 
+
       if(Auth::user()->isAdmin()){
+      $empleados = Empleado::all();
+      $listado = $empleados->groupBy('centro_id');		
 		$data = [
-			'empleados' => Empleado::all(),
+			'empleados' => $empleados,
 			'tipos'		=> $this->tipos,
+			'centros'	=> Centro::all(),
+			'listado'	=> $listado,
+
 		];
       }else{     
 		$data = [

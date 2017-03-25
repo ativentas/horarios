@@ -27,11 +27,22 @@
             {{ csrf_field() }}
             <div class="col-md-4 row">
 
+            @if(Auth::user()->isAdmin())
+            <div class="form-group">
+                <select class="form-control" id="centro" name="centro">
+                    <option value="">Elige Dpto</option>
+                    @foreach ($centros as $centro)
+                    <option value="{{$centro->id}}" @if(old('centro')==$centro->id) selected="selected" @endif>{{$centro->nombre}}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+
             <div class="form-group @if($errors->has('empleado_id')) has-error has-feedback @endif">
                 <select class="form-control" id="empleado_id" name="empleado_id">
                     <option value="">Elige un Empleado</option>
                     @foreach($empleados as $empleado)
-                    <option value="{{$empleado->id}}" @if(old('empleado_id')==$empleado->id) selected="selected" @endif>{{$empleado->alias}}</option>
+                    <option class="todos_empleados" value="{{$empleado->id}}" @if(old('empleado_id')==$empleado->id) selected="selected" @endif>{{$empleado->alias}}</option>
                     @endforeach
                 </select>
                 @if ($errors->has('empleado_id'))
@@ -101,6 +112,39 @@
 </script>
 <script>
 $(document).ready(function(){
+
+var listado = {!!$listado!!};// console.log(JSON.stringify(listado));
+$('#centro').change(function() {
+    var centro_elegido = $('#centro option:selected').val();
+    var empleados = listado[centro_elegido];
+
+    var options = $("#empleado_id");
+    if (centro_elegido!=""){
+        $('.empleados_populated').remove();
+        $('.todos_empleados').hide();
+        $.each(empleados, function(key, value) {
+            console.log(value.alias);    
+        options.append($('<option class="empleados_populated"/>').val(value.id).text(value.alias));
+        });
+    }else{
+        $('.empleados_populated').remove();
+        $('.todos_empleados').show();
+
+    }
+
+
+})
+$('#empleado_id').change(function(){
+    var empleado_elegido = $('#empleado_id option:selected').val();
+})
+
+
+$.each(listado, function(a, b){
+    console.log(a, b);
+});
+
+
+
 
 $('input[name="time"]').daterangepicker({
     "showWeekNumbers": true,

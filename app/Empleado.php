@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Datetime;
 
 class Empleado extends Model
 {
@@ -32,4 +33,23 @@ class Empleado extends Model
     {
     	return 	$this->belongsTo('App\Centro','centro_id');
     }
+
+    public function getFechaAltaAttribute($value){
+        if(!empty($value)){
+        $value = Datetime::createFromFormat('Y-m-d',$value);
+        return $value->format('d-m-Y');}
+        return null;
+    }
+    public function getFechaBajaAttribute($value){
+        if(!empty($value)){
+        $value = Datetime::createFromFormat('Y-m-d',$value);
+        return $value->format('d-m-Y');}
+        return null;
+    }
+
+
+
+
+
+
 }

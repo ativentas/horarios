@@ -8,14 +8,13 @@
     <div class="panel-heading"><h2>Listado Empleados</h2>
         @include('layouts.alerts')
         <div class="row">
-                <ol class="breadcrumb">
-                    <li><a href="{{ url('home') }}">Salir</a></li>
-                    <li class="active">Listado</li>
-                    <li><a href="{{ url('/empleados/create') }}">Nuevo</a></li>
-                </ol>
+            <ol class="breadcrumb">
+                <li><a href="{{ url('home') }}">Salir</a></li>
+                <li class="active">Listado</li>
+                <li><a href="{{ url('/empleados/create') }}">Nuevo</a></li>
+            </ol>
         </div>
     
-
         <form method="get" action="{{url('empleados')}}" class="form-inline">
                 {{ csrf_field() }}
         
@@ -28,13 +27,10 @@
             </select>
         </div>
 
-
         <div class="form-group">
             <button type="submit" class="btn btn-default">Filtrar</button>
         </div>
         </form>
-
-
 
     </div>
 
@@ -48,6 +44,7 @@
                     <th>#</th>
                     <th>Nombre</th>
                     <th>Centro Trabajo</th>
+                    <th>Fecha alta</th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -60,6 +57,7 @@
                     <th scope="row">{{ $i++ }}</th>
                     <td><a href="{{ url('/empleados_c/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
                     <td>{{$empleado->centro->nombre}}</td>
+                    <td>{{$empleado->fecha_alta}}</td>
                     <td> 
                     <button data-activa="1" class="btn btn-success btn-xs btn-activar" type="button" value={{$empleado->id}} name="botonActivarMaquina" id="activar{{$empleado->id}}" @if($empleado->activo==1) style="display:none;" @endif></span>Reactivar
                     </button>
@@ -83,9 +81,7 @@
         {{ method_field('PUT') }}        
         </form>
 
-
     </div>
-
 
     </div>
 </div>

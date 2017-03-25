@@ -236,57 +236,25 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
                 </td>
 
             </tr>
+
             <tr style="">
+            <?php $dias = array('DO','LU','MA','MI','JU','VI','SA');?>
+            @foreach($dias as $dia)
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_1" type="text" name="entrada2_1_{{$linea->empleado_id}}" id="entrada2_1_{{$linea->empleado_id}}" value="{{is_null($linea->E2LU)?'':date('H:i',strtotime($linea->E2LU))}}">
+                    <input class="horariosdia_1" type="text" name="entrada2_1_{{$linea->empleado_id}}" id="entrada2_1_{{$linea->empleado_id}}" value="{{is_null(object_get($linea,"E2{$dia}"))?'':date('H:i',strtotime(object_get($linea,"E2{$dia}")))}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_1" type="text" name="salida2_1_{{$linea->empleado_id}}" id="salida2_1_{{$linea->empleado_id}}" value="{{is_null($linea->S2LU)?'':date('H:i',strtotime($linea->S2LU))}}">
+                    <input class="horariosdia_1" type="text" name="salida2_1_{{$linea->empleado_id}}" id="salida2_1_{{$linea->empleado_id}}" value="{{is_null(object_get($linea,"S2{$dia}"))?'':date('H:i',strtotime(object_get($linea,"S2{$dia}")))}}">
                 </td>
-
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_2" type="text" name="entrada2_2_{{$linea->empleado_id}}" id="entrada2_2_{{$linea->empleado_id}}" value="{{is_null($linea->E2MA)?'':date('H:i',strtotime($linea->E2MA))}}">
-                </td>
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_2" type="text" name="salida2_2_{{$linea->empleado_id}}" id="salida2_2_{{$linea->empleado_id}}" value="{{is_null($linea->S2MA)?'':date('H:i',strtotime($linea->S2MA))}}">
-                </td>
-
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_3" type="text" name="entrada2_3_{{$linea->empleado_id}}" id="entrada2_3_{{$linea->empleado_id}}" value="{{is_null($linea->E2MI)?'':date('H:i',strtotime($linea->E2MI))}}">
-                </td>
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_3" type="text" name="salida2_3_{{$linea->empleado_id}}" id="salida2_3_{{$linea->empleado_id}}" value="{{is_null($linea->S2MI)?'':date('H:i',strtotime($linea->S2MI))}}">
-                </td>
-
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_4" type="text" name="entrada2_4_{{$linea->empleado_id}}" id="entrada2_4_{{$linea->empleado_id}}" value="{{is_null($linea->E2JU)?'':date('H:i',strtotime($linea->E2JU))}}">
-                </td>
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_4" type="text" name="salida2_4_{{$linea->empleado_id}}" id="salida2_4_{{$linea->empleado_id}}" value="{{is_null($linea->S2JU)?'':date('H:i',strtotime($linea->S2JU))}}">
-                </td>
-
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_5" type="text" name="entrada2_5_{{$linea->empleado_id}}" id="entrada2_5_{{$linea->empleado_id}}" value="{{is_null($linea->E2VI)?'':date('H:i',strtotime($linea->E2VI))}}">
-                </td>
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_5" type="text" name="salida2_5_{{$linea->empleado_id}}" id="salida2_5_{{$linea->empleado_id}}" value="{{is_null($linea->S2VI)?'':date('H:i',strtotime($linea->S2VI))}}">
-                </td>
-
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_6" type="text" name="entrada2_6_{{$linea->empleado_id}}" id="entrada2_6_{{$linea->empleado_id}}" value="{{is_null($linea->E2SA)?'':date('H:i',strtotime($linea->E2SA))}}">
-                </td>
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_6" type="text" name="salida2_6_{{$linea->empleado_id}}" id="salida2_6_{{$linea->empleado_id}}" value="{{is_null($linea->S2SA)?'':date('H:i',strtotime($linea->S2SA))}}">
-                </td>
-
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_0" type="text" name="entrada2_0_{{$linea->empleado_id}}" id="entrada2_0_{{$linea->empleado_id}}" value="{{is_null($linea->E2DO)?'':date('H:i',strtotime($linea->E2DO))}}">
-                </td>
-                <td class="tg-031e" id="">
-                    <input class="horariosdia_0" type="text" name="salida2_0_{{$linea->empleado_id}}" id="salida2_0_{{$linea->empleado_id}}" value="{{is_null($linea->S2DO)?'':date('H:i',strtotime($linea->S2DO))}}">
-                </td>
+            @endforeach
+                
             </tr>
             @endforeach
+
+
+
+
+
             @if(count($empleadosdisponibles))
             <tr>
                 <td></td>

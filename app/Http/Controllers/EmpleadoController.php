@@ -64,14 +64,18 @@ class EmpleadoController extends Controller
         $this->validate($request, [
         'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
         'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
-        'centro' => 'required',   
+        'centro' => 'required',
+        'alta' => 'required',   
         ]);
 
         $empleado = new Empleado;
         $empleado->alias = $request->alias;
         $empleado->nombre_completo = $request->nombre;
         $empleado->centro_id = $request->centro;
-
+        $empleado->fecha_alta = $this->change_date_format($request->alta);
+        if($request->has('baja')){
+            $empleado->fecha_baja = $this->change_date_format($request->baja);
+        }
         $empleado->save();
     
         return redirect()->back()->with('info', 'Nuevo empleado registrado');
@@ -182,5 +186,12 @@ class EmpleadoController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function change_date_format($date)
+    {
+        $day = DateTime::createFromFormat('d-m-Y', $date);
+        // dd($day);
+        return $day->format('Y-m-d');
     }
 }

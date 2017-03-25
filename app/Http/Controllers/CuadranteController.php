@@ -26,7 +26,7 @@ private $situacionesconAusenciaId;
 public function __construct() { 
     $this->semanaactual = date('W');
     $this->hoy = Carbon::today();
-    $this->situacionesconAusenciaId = ['V','B','AJ','AN'];
+    $this->situacionesconAusenciaId = ['V','B','AJ','AN','BP','PR'];
 }    
 
 public function yearsemana($fecha)
@@ -195,7 +195,6 @@ public function archivarHorarios ($cuadrante_id){
     return redirect ('home');
 
 }
-
 
 
 public function aceptarHorarios ($cuadrante_id){
