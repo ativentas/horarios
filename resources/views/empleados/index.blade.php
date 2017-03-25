@@ -36,15 +36,17 @@
 
     <div class="panel-body">
 
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12">
         @if($empleados->count() > 0)
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Nombre</th>
+                    <th></th>
                     <th>Centro Trabajo</th>
                     <th>Fecha alta</th>
+                    <th>Fecha baja</th>                    
                     <th></th>
                     <th></th>
                     <th></th>
@@ -56,8 +58,10 @@
                 <tr data-id="{{$empleado->id}}">
                     <th scope="row">{{ $i++ }}</th>
                     <td><a href="{{ url('/empleados_c/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
+                    <td>{{$empleado->apellidos}}</td>
                     <td>{{$empleado->centro->nombre}}</td>
                     <td>{{$empleado->fecha_alta}}</td>
+                    <td>{{$empleado->fecha_baja}}</td>
                     <td> 
                     <button data-activa="1" class="btn btn-success btn-xs btn-activar" type="button" value={{$empleado->id}} name="botonActivarMaquina" id="activar{{$empleado->id}}" @if($empleado->activo==1) style="display:none;" @endif></span>Reactivar
                     </button>
