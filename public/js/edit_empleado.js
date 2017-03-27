@@ -97,6 +97,7 @@ function modificar_vigente(){
     var data = form.serialize();
     $.post(url, data).done(function(data){
             alert(data);
+            location.reload();
     }).fail(function(data){
         alert(data);
     }); 
@@ -109,10 +110,10 @@ function modificar_vigente(){
 function nuevo_contrato(){
     var form = $('#form_newContrato');
     var url = form.attr('action');
-    alert(url);  
     var data = form.serialize();
     $.post(url, data).done(function(data){
             alert(data);
+            location.reload();
     }).fail(function(data){
         alert(data);
     }); 

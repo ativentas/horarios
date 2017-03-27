@@ -47,8 +47,6 @@
                 @endif                  
             </div>
 
-
-
             <div class="form-group">
                 <button type="submit" class="btn btn-default">Modificar</button>
             </div>      
@@ -106,7 +104,7 @@
         <div class="col-md-6 form-group" style="padding:0px;">
             <label for="centro" class="control-label">Dpto.</label>
             <div class="input-group">
-            <input type="text" autocomplete="off" name="" class="form-control" id="centro_nombre" value="{{$contrato->centro->nombre}}" readonly>
+            <input type="text" autocomplete="off" name="" class="form-control" id="centro_nombre" value="$contrato->centro->nombre" readonly> <!-- TO DO: ARREGLAR EL VALUE -->
             <span class="input-group-addon"><button class="btn btn-info btn-xs btn_modify_{{$contrato->id}}" id="button_modify_{{$contrato->id}}" type="button" style=""><span class="glyphicon glyphicon-edit"></span></button></span>         
             </div>
         </div>
@@ -187,11 +185,12 @@ $(document).ready(function(){
 $.datepicker.setDefaults( $.datepicker.regional[ "es" ] );
 
 $( function() {
-    $( '#alta' ).datepicker({
+
+    $( '#dialog_new_alta' ).datepicker({
         dateFormat: "dd-mm-yy",
         showWeek: true,
     });
-    $( '#baja' ).datepicker({
+    $( '#dialog_new_baja' ).datepicker({
         dateFormat: "dd-mm-yy",
         showWeek: true,
     });
