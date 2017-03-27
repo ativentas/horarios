@@ -17,16 +17,26 @@ class CompensacionesController extends Controller
 			$centro_id = Auth::user()->centro_id;
 		}
         //TO DO: ver bien para obtener los empleados que tengan compensables de este año o pendientes en general
-        $empleados = Empleado::whereHas('compensables',function($query){
-                //aqui podría poner algun where       
-            })  ->when($centro_id, function($query) use($centro_id){
+        // $empleados = Empleado::whereHas('compensables',function($query){
+        //         //aqui podría poner algun where       
+        //     })  ->when($centro_id, function($query) use($centro_id){
+        //             return $query->where('empleados.centro_id',$centro_id);
+        //     })
+        //         ->with('compensables')
+        //         ->withCount(['compensables'=> function ($query) {
+        //             $query->where('diacompensado', null)->where('pagar',false);
+        //         }])
+        //         ->get();
+        $empleados = Empleado::has('centro')
+              ->when($centro_id, function($query) use($centro_id){
                     return $query->where('empleados.centro_id',$centro_id);
             })
-                ->with('compensables')
+                ->with('compensables','centro')
                 ->withCount(['compensables'=> function ($query) {
                     $query->where('diacompensado', null)->where('pagar',false);
                 }])
                 ->get();
+                // dd($empleados[0]->centro[0]->nombre);
         $centros = Centro::all();
         return view('compensables.index',compact('empleados','centros'));
    }

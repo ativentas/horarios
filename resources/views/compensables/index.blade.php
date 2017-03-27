@@ -57,7 +57,7 @@
             <tbody>
                 <tr data-id="{{$empleado->id}}">
                     <td><a href="{{ url('/empleados_c/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
-                    <td>{{$empleado->centro->nombre}}</td>
+                    <td>{{$empleado->centro[0]->nombre}}</td>
                     <td>{{$empleado->compensables_count}}</td>
                     <td></td>
                 </tr>
