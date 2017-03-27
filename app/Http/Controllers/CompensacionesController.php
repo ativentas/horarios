@@ -27,9 +27,20 @@ class CompensacionesController extends Controller
         //             $query->where('diacompensado', null)->where('pagar',false);
         //         }])
         //         ->get();
+        // $empleados = Empleado::has('centro')
+        //       ->when($centro_id, function($query) use($centro_id){
+        //             return $query->where('empleados.centro_id',$centro_id);
+        //     })
+        //         ->with('compensables','centro')
+        //         ->withCount(['compensables'=> function ($query) {
+        //             $query->where('diacompensado', null)->where('pagar',false);
+        //         }])
+        //         ->get();
         $empleados = Empleado::has('centro')
-              ->when($centro_id, function($query) use($centro_id){
-                    return $query->where('empleados.centro_id',$centro_id);
+                ->when($centro_id, function($query) use($centro_id){
+                        return $query->whereHas('centros',function($query) use($centro_id){
+                            $query->where('centros.id',$centro_id);
+                        });
             })
                 ->with('compensables','centro')
                 ->withCount(['compensables'=> function ($query) {
@@ -37,6 +48,7 @@ class CompensacionesController extends Controller
                 }])
                 ->get();
                 // dd($empleados[0]->centro[0]->nombre);
+                // dd($empleados);
         $centros = Centro::all();
         return view('compensables.index',compact('empleados','centros'));
    }
@@ -57,7 +69,7 @@ class CompensacionesController extends Controller
             case 'DL':
                 $compensable->diacompensado = $request->fecha;
                 $yearsemana = $this->yearsemana($request->fecha);
-                $centro_id = $compensable->linea->empleado->centro_id;
+                $centro_id = $compensable->linea->cuadrante->centro_id;
                 $cuadrante = Compensable::where('yearsemana',$yearsemana)->where('centro_id',$centro_id)->first();
                 if($cuadrante){
                     if($cuadrante->estado=='Archivado'){
