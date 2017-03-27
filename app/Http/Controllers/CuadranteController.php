@@ -571,8 +571,7 @@ public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
     if(!$empleados){
         // TO DO: lanzar excepción para que no cree nada
         dd('no hay ningún empleado, no se puede crear un horario vacío');
-    }
-    //TO DO: ver si conviene prerrellenar las lineas con la plantilla anterior. De momento decido que no, 
+    } 
     //TO DO: prerrellenar las Ausencias. De momento no hace falta porque en cuanto muestre el cuadrante ya se modifican las lineas
     while ($fecha_ini <= $fecha_fin) {
 

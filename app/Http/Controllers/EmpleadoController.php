@@ -90,7 +90,7 @@ class EmpleadoController extends Controller
         'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id',
         // 'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
         // 'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,
-        'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre,
+        'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre
         ]);
 
         $empleado = new Empleado;
@@ -205,7 +205,7 @@ class EmpleadoController extends Controller
             'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id',
             // 'nombre' => 'required|min:3|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,
             // 'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,
-            'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.,   
+            'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre   
             ]);
             $empleado=Empleado::find($id);
             $empleado->alias = $request->alias;
