@@ -173,12 +173,13 @@ class EmpleadoController extends Controller
         $empleado = Empleado::find($id);
         $centros = Centro::all();
         $contrato_actual = $empleado->contrato_actual->first();
-        // $contratos_anteriores = $empleado->contratos->where('fecha_baja','!=','')->where('fecha_baja','<',$this->hoy);
-// DB::raw("DATE_FORMAT(date, '%Y-%m-%d')"), '>=', '2016-11-03')
         $contratos_anteriores = DB::table('contratos')
+            ->leftjoin('centros','centros.id','=','contratos.centro_id')
             ->where('empleado_id','=',$id)
             ->where('fecha_baja','!=','')
-            ->where('fecha_baja','<',$this->hoy)->get();
+            ->where('fecha_baja','<',$this->hoy)
+            ->select('contratos.*','centros.nombre as centro_nombre')
+            ->get();
         // dd($contratos_anteriores);
         return view('empleados.edit',compact('empleado','centros','contrato_actual','contratos_anteriores')); 
     }
