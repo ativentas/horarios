@@ -46,7 +46,10 @@
                 <span class="help-block">{{$errors->first('apellidos')}}</span>
             @endif                  
         </div>
-        <div class="form-group{{$errors->has('centro') ? ' has-error' : ''}}">
+        <div class="col-md-offset-1 form-group">
+            <button type="submit" class="btn btn-default">Registrar</button>
+        </div>  
+        <!-- <div class="form-group{{$errors->has('centro') ? ' has-error' : ''}}">
             <label for="centro" class="control-label"></label>
             <select class="form-control" id="centro" name="centro">
                 <option {{Request::old('centro')==''?' selected':''}} value="">Elige un Centro</option>
@@ -57,9 +60,10 @@
             @if ($errors->has('centro'))
                 <span class="help-block">{{$errors->first('centro')}}</span>
             @endif  
-        </div>        
+        </div>         -->
     </div>
-    <div class="col-md-6"> <!-- COLUMNA DERECHA -->
+                                <!-- COLUMNA DERECHA -->
+<!--     <div class="col-md-6"> 
         <div class="col-md-6 form-group{{$errors->has('alta') ? ' has-error' : ''}}">
             <label for="alta" class="control-label">F.Alta</label>
             <input type="date" autocomplete="off" name="alta" class="form-control" id="alta" value="{{Request::old('alta') ?: ''}}">
@@ -77,7 +81,7 @@
         <div class="col-md-offset-1 form-group">
             <button type="submit" class="btn btn-default">Registrar</button>
         </div>      
-    </div>
+    </div> -->
     </div>
 
 

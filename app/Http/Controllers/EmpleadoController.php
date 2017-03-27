@@ -86,22 +86,18 @@ class EmpleadoController extends Controller
             $id = 'NULL';
         }
         $this->validate($request, [
-        'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
+        // 'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
+        'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id',
         // 'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
-        'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,
-        'centro' => 'required',
-        'alta' => 'required',   
+        // 'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,
+        'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre,
         ]);
 
         $empleado = new Empleado;
         $empleado->alias = $request->alias;
         $empleado->nombre_completo = $request->nombre;
         $empleado->apellidos = $request->apellidos;
-        $empleado->centro_id = $request->centro;
-        // $empleado->fecha_alta = $this->change_date_format($request->alta);
-        // if($request->has('baja')){
-        //     $empleado->fecha_baja = $this->change_date_format($request->baja);
-        // }
+
         $empleado->save();
     
         return redirect()->back()->with('info', 'Nuevo empleado registrado');
@@ -116,11 +112,17 @@ class EmpleadoController extends Controller
     public function show($id,$cuadrante_id=NULL)
     {
         $empleado = Empleado::findOrFail($id);
-        $empleado_anterior = Empleado::where('centro_id', $empleado->centro_id)->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
+        $centro_id = $empleado->centro[0]->id;
+        $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
+            $query->where('centros.id',$centro_id);
+            })->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
         if($empleado_anterior){
             $empleado_anterior = $empleado_anterior->id;
         }
-        $empleado_posterior = Empleado::where('centro_id', $empleado->centro_id)->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
+        $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
+            $query->where('centros.id',$centro_id);
+            })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
+
         if($empleado_posterior){
             $empleado_posterior = $empleado_posterior->id;
         }
@@ -129,7 +131,7 @@ class EmpleadoController extends Controller
             $date = new DateTime();
             $yearsemana = $date->format("YW");
             //buscar el cuadrante actual
-            $cuadrante = Cuadrante::where('estado','<>',null)->where('yearsemana','<=',$yearsemana)->where('centro_id',$empleado->centro_id)->orderBy('yearsemana','desc')->first();
+            $cuadrante = Cuadrante::where('estado','<>',null)->where('yearsemana','<=',$yearsemana)->where('centro_id',$centro_id)->orderBy('yearsemana','desc')->first();
         }
         //para que cuando no hay nigún cuadrante, tengamos un valor de yearsemana para calcular el resto de variables
         $cuadrante_id = NULL;
@@ -137,11 +139,11 @@ class EmpleadoController extends Controller
             $yearsemana = $cuadrante->yearsemana;
             $cuadrante_id = $cuadrante->id;
         }
-        $anteriorId = Cuadrante::where('centro_id',$empleado->centro_id)->orderBy('yearsemana','desc')->where('yearsemana','<',$yearsemana)->first();
+        $anteriorId = Cuadrante::where('centro_id',$centro_id)->orderBy('yearsemana','desc')->where('yearsemana','<',$yearsemana)->first();
         if($anteriorId){
             $anteriorId = $anteriorId->id;
         }
-        $posteriorId = Cuadrante::where('centro_id',$empleado->centro_id)->orderBy('yearsemana','asc')->where('yearsemana','>',$yearsemana)->first();
+        $posteriorId = Cuadrante::where('centro_id',$centro_id)->orderBy('yearsemana','asc')->where('yearsemana','>',$yearsemana)->first();
         if($posteriorId){
             $posteriorId = $posteriorId->id;
         }
@@ -199,22 +201,17 @@ class EmpleadoController extends Controller
             $empleado->save();
         }else {  
             $this->validate($request, [
-            'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
+            // 'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
+            'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id',
             // 'nombre' => 'required|min:3|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,
-            'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,   
-            'centro_id' => 'required',   
+            // 'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,
+            'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.,   
             ]);
             $empleado=Empleado::find($id);
             $empleado->alias = $request->alias;
             $empleado->nombre_completo = $request->nombre;
             $empleado->apellidos = $request->apellidos;
-            $empleado->centro_id = $request->centro;
-            // if($request->has('alta')){
-            //     $empleado->fecha_alta = $this->change_date_format($request->alta);
-            // }
-            // if($request->has('baja')){
-            //     $empleado->fecha_baja = $this->change_date_format($request->baja);
-            // }
+
             $empleado->save();
         }
         return redirect()->route('empleados.index')->with('info','Empleado modificado');
