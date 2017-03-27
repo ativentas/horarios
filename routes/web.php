@@ -26,6 +26,7 @@ Route::post('/nieuwcuadrante/', 'CuadranteController@crearNieuwCuadrante')->midd
 
 Route::get('/empleados_c/{empleado_id}/{cuadrante_id?}', 'EmpleadoController@show')->middleware('auth');
 Route::resource('empleados', 'EmpleadoController');
+Route::resource('contratos', 'ContratoController');
 
 
 /**

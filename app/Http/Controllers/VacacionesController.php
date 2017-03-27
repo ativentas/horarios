@@ -25,13 +25,21 @@ class VacacionesController extends Controller
      					->where('ausencias.tipo','V')
      					->where('ausencias.estado','Confirmado');
      		})
-     		->Join('centros', function($join) use($centro_id){
-     			$join->on('empleados.centro_id','=','centros.id')
+            // ->Join('centros', function($join) use($centro_id){
+            //     $join->on('empleados.centro_id','=','centros.id')
+            //         // ->where('centros.id',$centro_id);
+            //         ->when($centro_id, function($query) use($centro_id){
+            //                 return $query->where('centros.id',$centro_id);
+            //         });
+            //     })
+     		->join('contratos', function($join) use($centro_id){
+     			$join->on('contratos.empleado_id','=','empleados.id')
      				// ->where('centros.id',$centro_id);
      				->when($centro_id, function($query) use($centro_id){
-     						return $query->where('centros.id',$centro_id);
+     						return $query->where('contratos.centro_id',$centro_id);
      				});
      			})
+            ->join('centros','centros.id','=','contratos.centro_id')
      		->leftJoin('saldos',function($join) use($year){
      			$join->on('empleados.id','=','saldos.empleado_id')
      				->where('saldos.year',$year);
@@ -45,7 +53,7 @@ class VacacionesController extends Controller
      			DB::raw("sum(ausencias.dias) AS 'confirmadas'"),
      			DB::raw("sum(saldos.dias) AS 'saldoanterior'")
      			)
-     		->groupBy ('empleados.id','empleados.alias','centros.nombre')
+     		->groupBy ('empleados.id','empleados.alias','contratos.centro_id')
         	->get();
 
 

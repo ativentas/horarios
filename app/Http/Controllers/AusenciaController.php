@@ -11,6 +11,7 @@ use App\Comment;
 use DateTime;
 use Carbon\Carbon;
 use Auth;
+use DB;
 
 class AusenciaController extends Controller
 {
@@ -65,12 +66,13 @@ class AusenciaController extends Controller
     public function create()
     { 
 
-    //TO DO: si el usuario es admin, entonces mostrar todos los empleados, o mejor, hacer que primero elija el centro
-
-
       if(Auth::user()->isAdmin()){
       $empleados = Empleado::all();
-      $listado = $empleados->groupBy('centro_id');		
+      $listado = DB::table('contratos')
+      	->join('empleados','empleados.id','=','contratos.empleado_id')
+      	->select('contratos.centro_id','contratos.empleado_id','empleados.alias')
+			->get()->groupBy('centro_id');	
+
 		$data = [
 			'empleados' => $empleados,
 			'tipos'		=> $this->tipos,
@@ -80,7 +82,9 @@ class AusenciaController extends Controller
 		];
       }else{     
 		$data = [
-			'empleados' => Empleado::where('centro_id',Auth::user()->centro_id)->get(),
+			'empleados' => Empleado::whereHas('contratos', function($query){
+					$query->where('centro_id',Auth::user()->centro_id);
+			})->get(),
 			'tipos'		=> $this->tipos,
 		];
 		}
@@ -95,10 +99,12 @@ class AusenciaController extends Controller
      */
     public function store(Request $request)
     {
-		if(isset($request->body)){
-			
-		}
-		$centro_id = Auth::user()->centro_id;
+		
+		$empleado_id = $request->input('empleado_id');
+		$empleado = Empleado::where('id',$empleado_id)->first();
+		//TO DO: habría que coger el centro->id dependiendo del contrato a la fecha de comienzo de la ausencia
+		$centro_id = $empleado->centro->id;
+		dd($centro_id);
 		$this->validate($request, [
 			'empleado_id'	=> 'required',
 			'tipo' => 'required',
@@ -107,8 +113,7 @@ class AusenciaController extends Controller
 		]);
 		
 		$time = explode(" - ", $request->input('time'));
-		$empleado_id = $request->input('empleado_id');
-		$empleado = Empleado::where('id',$empleado_id)->first();
+
 
 		$ausencia 					= new Ausencia;
 		$ausencia->empleado_id	= $empleado->id;

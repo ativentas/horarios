@@ -59,7 +59,7 @@
                     <th scope="row">{{ $i++ }}</th>
                     <td><a href="{{ url('/empleados_c/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
                     <td>{{$empleado->apellidos}}</td>
-                    <td>{{$empleado->centro->nombre}}</td>
+                    <td>{{$empleado->centro_nombre}}</td>
                     <td>{{$empleado->fecha_alta}}</td>
                     <td>{{$empleado->fecha_baja}}</td>
                     <td> 

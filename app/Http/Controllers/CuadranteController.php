@@ -441,14 +441,21 @@ public function mostrarCuadrante($cuadrante_id = NULL)
     // $empleados = DB::table('empleados')->where('centro_id',$centro_id)->pluck('alias','id');
 
 
-    $empleados_compensar = Empleado::where('centro_id',$centro_id)->whereHas('compensables',function($query){
-            $query->where('diacompensado', null)->where('pagar',false);      
-        })
+    // $empleados_compensar = Empleado::where('centro_id',$centro_id)->whereHas('compensables',function($query){
+    //         $query->where('diacompensado', null)->where('pagar',false);      
+    //     })
+    //         ->with('compensables')
+    //         ->withCount(['compensables'])
+    //         ->get();
+    $empleados_compensar = Empleado::whereHas('contratos',function($query) use($centro_id){
+                $query->where('centro_id','=',$centro_id);
+            })
+            ->whereHas('compensables',function($query){
+                $query->where('diacompensado', null)->where('pagar',false);      
+            })
             ->with('compensables')
             ->withCount(['compensables'])
             ->get();
-
-
 
 
 
@@ -617,14 +624,23 @@ public function generateDateRangeWeek($yearsemana)
 }
 public function empleadosdisponibles ($cuadrante)
 {
+    $centro_id = $cuadrante->centro_id;
 #empleados activos del centro perteneciente a ese cuadrante pero que no están en ese cuadrante
     $empleadosdisponibles = Empleado::activo()
-        ->where('centro_id',$cuadrante->centro_id)
-        ->whereNotIn('id', function($q) use($cuadrante){
+        ->whereHas('centro', function($query) use($centro_id){
+            $query->where('centros.id','=',$centro_id);
+        })->whereNotIn('id', function($q) use($cuadrante){
             $q->select('empleado_id')
                 ->from('lineas')
                 ->where('cuadrante_id',$cuadrante->id);
         })->get();
+        // $empleadosdisponibles = Empleado::activo()
+        // ->where('centro_id',$cuadrante->centro_id)
+        // ->whereNotIn('id', function($q) use($cuadrante){
+        //     $q->select('empleado_id')
+        //         ->from('lineas')
+        //         ->where('cuadrante_id',$cuadrante->id);
+        // })->get();
     return $empleadosdisponibles;
 
 }

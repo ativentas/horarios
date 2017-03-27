@@ -238,13 +238,14 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             </tr>
 
             <tr style="">
-            <?php $dias = array('DO','LU','MA','MI','JU','VI','SA');?>
-            @foreach($dias as $dia)
+            <?php   $dias = array('DO','LU','MA','MI','JU','VI','SA');
+                    $numericos = array('1','2','3','4','5','6','0');?>
+            @foreach(array_combine($dias, $numericos) as $dia=>$num)
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_1" type="text" name="entrada2_1_{{$linea->empleado_id}}" id="entrada2_1_{{$linea->empleado_id}}" value="{{is_null(object_get($linea,"E2{$dia}"))?'':date('H:i',strtotime(object_get($linea,"E2{$dia}")))}}">
+                    <input class="horariosdia_{{$num}}" type="text" name="entrada2_{{$num}}_{{$linea->empleado_id}}" id="entrada2_{{$num}}_{{$linea->empleado_id}}" value="{{is_null(object_get($linea,"E2{$dia}"))?'':date('H:i',strtotime(object_get($linea,"E2{$dia}")))}}">
                 </td>
                 <td class="tg-031e" id="">
-                    <input class="horariosdia_1" type="text" name="salida2_1_{{$linea->empleado_id}}" id="salida2_1_{{$linea->empleado_id}}" value="{{is_null(object_get($linea,"S2{$dia}"))?'':date('H:i',strtotime(object_get($linea,"S2{$dia}")))}}">
+                    <input class="horariosdia_{{$num}}" type="text" name="salida2_{{$num}}_{{$linea->empleado_id}}" id="salida2_{{$num}}_{{$linea->empleado_id}}" value="{{is_null(object_get($linea,"S2{$dia}"))?'':date('H:i',strtotime(object_get($linea,"S2{$dia}")))}}">
                 </td>
             @endforeach
                 
@@ -436,7 +437,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
         </div>
         </div>
         <div id="div_notaWrapper" style="display:none;"">
-          <textarea class="form-control" required="" placeholder="Escribe una nota aquí..." name = "nota" id="">jhlkhk</textarea>        
+          <textarea class="form-control" required="" placeholder="Escribe una nota aquí..." name = "nota" id=""></textarea>        
         </div>
     </fieldset>
   </form>

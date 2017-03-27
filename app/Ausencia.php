@@ -32,12 +32,16 @@ class Ausencia extends Model
     // returns all comments on that post
     public function comments()
     {
-    return $this->  hasMany('App\Comment','on_ausencia');
+        return $this->  hasMany('App\Comment','on_ausencia');
     }
     // returns the instance of the user who is author of that post
     public function author()
     {
-    return $this->belongsTo('App\User','author_id');
+        return $this->belongsTo('App\User','author_id');
+    }
+    public function centro()
+    {
+        return $this->belongsTo('App\Centro','centro_id');
     }
 
 

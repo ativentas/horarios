@@ -15,13 +15,16 @@ class CreateEmpleadosTable extends Migration
     {
         Schema::create('empleados', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('centro_id')->unsigned();
+            $table->integer('contrato_id')->unsigned();
+            //TO DO: BORRARLA DE LA BASE DE DATOS Y DE AQUÍ CUANDO TODO FUNCIONE
+            // $table->integer('centro_id')->unsigned();
             $table->string('alias');
             $table->string('nombre_completo')->nullable();
             $table->string('apellidos')->nullable();
             $table->boolean('activo')->default(1);
-            $table->date('fecha_alta')->nullable();
-            $table->date('fecha_baja')->nullable();
+            //TO DO: BORRARLA DE LA BASE DE DATOS, CDO FUNCIONE BIEN TODO
+            // $table->date('fecha_alta')->nullable();
+            // $table->date('fecha_baja')->nullable();
             $table->nullableTimestamps();
 
         });

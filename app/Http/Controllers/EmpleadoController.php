@@ -30,13 +30,37 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        $query = Empleado::orderBy('centro_id')->orderBy('alias');
-        $query = \Request::has('centro') ? $query->where('centro_id',\Request::input('centro')) : $query;
+        $hoy = new Datetime();
+        $hoy = $hoy->format('Y-m-d');
 
-        $empleados = $query->get(); 
+        // $query = Empleado::orderBy('centro_id')->orderBy('alias');
+        // $query = \Request::has('centro') ? $query->where('centro_id',\Request::input('centro')) : $query;
 
+        // $empleados = $query->with('centro','contrato_actual')->get();
         $centros = Centro::all();
+
+        $query = DB::table('empleados')
+            ->leftjoin('contratos', function($join) use ($hoy){
+                $join->on('empleados.id','=','contratos.empleado_id')
+                    ->where([
+                        ['fecha_baja',NULL],
+                        ['fecha_alta','<=',$hoy],])
+                    ->orWhere('fecha_baja','>=',$hoy);
+            })->leftjoin('centros','contratos.centro_id','=','centros.id')
+            ->select('empleados.*','centros.id AS centro_id','centros.nombre AS centro_nombre',
+                DB::RAW("DATE_FORMAT(contratos.fecha_alta,'%d-%m-%Y') AS 'fecha_alta'"),
+                DB::RAW("DATE_FORMAT(contratos.fecha_baja,'%d-%m-%Y') AS 'fecha_baja'")
+                )->orderBy('centros.nombre','desc')->orderBy('alias','asc');
+            
+        $query = \Request::has('centro') ? $query->where('centro_id',\Request::input('centro')) : $query;  
+        $empleados = $query->get();
+
+
+
+            // dd($empleados);
         return view('empleados.index',compact('empleados','centros'));
+
+
     }
 
     /**
@@ -74,10 +98,10 @@ class EmpleadoController extends Controller
         $empleado->nombre_completo = $request->nombre;
         $empleado->apellidos = $request->apellidos;
         $empleado->centro_id = $request->centro;
-        $empleado->fecha_alta = $this->change_date_format($request->alta);
-        if($request->has('baja')){
-            $empleado->fecha_baja = $this->change_date_format($request->baja);
-        }
+        // $empleado->fecha_alta = $this->change_date_format($request->alta);
+        // if($request->has('baja')){
+        //     $empleado->fecha_baja = $this->change_date_format($request->baja);
+        // }
         $empleado->save();
     
         return redirect()->back()->with('info', 'Nuevo empleado registrado');
@@ -147,8 +171,10 @@ class EmpleadoController extends Controller
     public function edit($id)
     {
         $empleado = Empleado::find($id);
-        $centros=Centro::all();
-        return view('empleados.edit',compact('empleado','centros')); 
+        $centros = Centro::all();
+        $contrato_actual = $empleado->contrato_actual->first();
+        $contratos_anteriores = $empleado->contratos->where('fecha_baja','!=','')->where('fecha_baja','<',$this->hoy);
+        return view('empleados.edit',compact('empleado','centros','contrato_actual','contratos_anteriores')); 
     }
 
     /**
@@ -176,12 +202,12 @@ class EmpleadoController extends Controller
             $empleado->nombre_completo = $request->nombre;
             $empleado->apellidos = $request->apellidos;
             $empleado->centro_id = $request->centro;
-            if($request->has('alta')){
-                $empleado->fecha_alta = $this->change_date_format($request->alta);
-            }
-            if($request->has('baja')){
-                $empleado->fecha_baja = $this->change_date_format($request->baja);
-            }
+            // if($request->has('alta')){
+            //     $empleado->fecha_alta = $this->change_date_format($request->alta);
+            // }
+            // if($request->has('baja')){
+            //     $empleado->fecha_baja = $this->change_date_format($request->baja);
+            // }
             $empleado->save();
         }
         return redirect()->route('empleados.index')->with('info','Empleado modificado');

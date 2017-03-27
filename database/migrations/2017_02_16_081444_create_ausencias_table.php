@@ -16,6 +16,7 @@ class CreateAusenciasTable extends Migration
         Schema::create('ausencias', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('empleado_id')->unsigned();
+            $table->integer('centro_id')->unsigned();
             $table->integer('owner')->unsigned();
             $table->string('alias');
             $table->enum('tipo',['V','B','AJ','AN','BP'])->nullable();      
