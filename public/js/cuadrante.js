@@ -102,7 +102,7 @@ $('#btn_guardar').on("click", function(e){
             alert(data);
             location.reload();
     }).fail(function(data){
-        console.log(data);
+        console.log('fallo:'+data);
         alert(data);
     });    
 });
