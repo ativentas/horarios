@@ -577,7 +577,7 @@ public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
                         ['fecha_alta','<=',$fecha_fin],
                         ]);
             })->where('contratos.centro_id',$centro_id)->get();
-    dd($empleados);
+    // dd($empleados);
 
     // $empleados = Empleado::activo()->where('centro_id',$centro_id)->get();
     if(!$empleados){
