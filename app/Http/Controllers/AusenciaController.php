@@ -99,11 +99,10 @@ class AusenciaController extends Controller
      */
     public function store(Request $request)
     {
-		
 		$empleado_id = $request->input('empleado_id');
 		$empleado = Empleado::where('id',$empleado_id)->first();
 		//TO DO: habría que coger el centro->id dependiendo del contrato a la fecha de comienzo de la ausencia
-		$centro_id = $empleado->centro->id;
+		$centro_id = $empleado->centro[0]->id;
 		dd($centro_id);
 		$this->validate($request, [
 			'empleado_id'	=> 'required',

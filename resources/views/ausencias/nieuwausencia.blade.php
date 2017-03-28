@@ -110,7 +110,8 @@
 <script>
 $(document).ready(function(){
 
-var listado = {!!$listado!!};// console.log(JSON.stringify(listado));
+var listado = {!!$listado!!};// 
+// console.log(JSON.stringify(listado));
 $('#centro').change(function() {
     var centro_elegido = $('#centro option:selected').val();
     var empleados = listado[centro_elegido];
@@ -120,8 +121,8 @@ $('#centro').change(function() {
         $('.empleados_populated').remove();
         $('.todos_empleados').hide();
         $.each(empleados, function(key, value) {
-            console.log(value.alias);    
-        options.append($('<option class="empleados_populated"/>').val(value.id).text(value.alias));
+            // console.log(value.alias);    
+        options.append($('<option class="empleados_populated"/>').val(value.empleado_id).text(value.alias));
         });
     }else{
         $('.empleados_populated').remove();
