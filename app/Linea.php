@@ -11,7 +11,7 @@ class Linea extends Model
 
     protected $guarded = ['id','updated_at','created_at'];
     
-    protected $appends = ['dia_texto','horasdiarias'];
+    protected $appends = ['dia_texto','horasdiarias','fecha'];
 
     public function cuadrante()
     {
@@ -78,7 +78,10 @@ class Linea extends Model
 
     }
     public function getFechaAttribute($value){
-        $value = Carbon::createFromFormat('Y-m-d',$value);
-        return $value->format('d-m-Y');
+        return Carbon::parse($value)->format('Y-m-d');
     }
+
+
+
+
 }

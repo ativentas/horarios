@@ -282,6 +282,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
 
     $centro_id = $cuadrante->centro_id;
     $empleadosdisponibles = collect();
+
     if(!$cuadrante->archivado) {
         #TO DO: actualizar las lineas con las ausencias, ver si hay conflictos (por ejemplo cuando es vacaciones pero en la linea pone Vacaciones Trabaja).
         // $empleados = Empleado::where('centro_id',$centro_id)->pluck('id')->toArray();
@@ -457,13 +458,41 @@ public function mostrarCuadrante($cuadrante_id = NULL)
             ->withCount(['compensables'])
             ->get();
 
-
-
     $lineasconcambios = $cuadrante->lineacambios()->get();
-    
-    $comments = $cuadrante->comments;
 
-    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','empleadosdisponibles','anteriorId','posteriorId','comments','empleados_compensar'));
+
+// Employee::select('firstname', 'lastname', 'employee_job_id')->where('firstname', 'like', "%$word%")->orWhere('lastname', 'like', "%$word%")->with(['job' => function($query) {
+//     $query->select('id', 'name');
+// }])->get()
+
+
+    // $lineasconausencias = $cuadrante->lineas()
+    //     ->select('empleado_id','dia')
+    //     ->where('ausencia_id','>',0)
+    //     ->with(['ausencia' => function($query){
+    //         $query->select('id','fecha_inicio','finalDay','nota');
+    //     }])
+    //     ->get();
+    // $lineasconausencias = Linea::select('empleado_id','dia','ausencia_id','cuadrante_id')
+    //     ->where('cuadrante_id',$cuadrante->id)
+    //     ->where('ausencia_id','>',0)
+    //     ->with(['ausencia' => function($query){
+    //         $query->select('id','fecha_inicio','finalDay','nota');
+    //     }])
+    //     ->get()->toArray();
+
+    $lineasconausencias = DB::table('lineas')
+        ->where('cuadrante_id',$cuadrante->id)
+        ->where('ausencia_id','>',0)
+        ->join('ausencias',function($join){
+            $join->on('ausencias.id','lineas.ausencia_id');
+        })
+        ->select('lineas.empleado_id','lineas.dia','ausencias.fecha_inicio','ausencias.finalDay','ausencias.nota')
+        ->get();
+// dd($lineasconausencias);
+       $comments = $cuadrante->comments;
+
+    return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','lineasconausencias','empleadosdisponibles','anteriorId','posteriorId','comments','empleados_compensar'));
 }
 
 public function mostrarNieuwCuadrante()
@@ -513,9 +542,11 @@ public function crearNieuwCuadrante(Request $request)
         $diassemana = $this->generateDateRangeWeek($cuadrante->yearsemana);
         $festivos_thisweek = [];
         foreach ($festivos as $festivo) {
-            if(in_array($festivo,$diassemana))
+            if(in_array($festivo,$diassemana)){
                 $festivos_thisweek [] = $festivo;
+            }
         }
+
         if(!empty($festivos_thisweek)){
             foreach ($festivos_thisweek as $festivo) {
                 $diafestivo = DateTime::createFromFormat('Y-m-d', $festivo);
@@ -538,8 +569,8 @@ public function crearNieuwCuadrante(Request $request)
      
         //TO DO: creo que sería mejor que addLineas, en vez de fecha_ini y fecha_fin, se le pasara un array con las fechas. La idea es pasarle el array $diassemana
         $this->addLineas($cuadrante->id,Auth::user()->centro_id,$fecha_ini,$fecha_fin);
+
         /*incluir dia de cierre como libres y dias festivos*/
-        // dd('he llegado');
         if (!is_null($diacierre)){
             
             $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('dia',$diacierre)->get();
@@ -661,6 +692,10 @@ public function empleadosdisponibles ($cuadrante)
 public function añadirempleado ($empleado_id,$cuadrante_id)
 {
     //TO DO: unificar esta función con la de addlineas
+
+// try {
+//     $exception = DB::transaction(function() use ($empleado_id,$cuadrante_id) {
+
     $cuadrante = Cuadrante::find($cuadrante_id);
     $yearsemana = $cuadrante->yearsemana;
     $year = substr($yearsemana,0,4);
@@ -670,16 +705,46 @@ public function añadirempleado ($empleado_id,$cuadrante_id)
     $fecha_ini = new Carbon($date->startOfWeek()); 
     $fecha_fin = new Carbon($date->endOfWeek());
     
+    $lineas = collect();
     while ($fecha_ini <= $fecha_fin) {
             $linea = new Linea;
             $linea->cuadrante_id = $cuadrante_id;
-            $linea->fecha = $fecha_ini;
+            $linea->fecha = $fecha_ini->format('Y-m-d');
             $linea->dia = $fecha_ini->dayOfWeek;
             $linea->empleado_id = $empleado_id;          
-            $linea->save();     
+            $linea->save();
+            $lineas->push($linea);     
             $fecha_ini = $fecha_ini->addDay();
     }
-    return 'añadido';
+    $festivos = DB::table('festivos')->pluck('fecha')->toArray();
+    $diassemana = $this->generateDateRangeWeek($cuadrante->yearsemana);
+    $festivos_thisweek = [];
+    foreach ($festivos as $festivo) {
+        if(in_array($festivo,$diassemana)){
+            $festivos_thisweek [] = $festivo;
+        }
+    }
+
+            // $lineas = Linea::where('cuadrante_id',$cuadrante->id)->whereIn('fecha',$festivos_thisweek)->get();
+
+    if (!is_null($festivos_thisweek)){
+        $lineas = $lineas->whereIn('fecha',$festivos_thisweek)->all();
+        foreach ($lineas as $linea) {
+            $linea->situacion ='F';
+            $linea->save();
+        }
+    }
+
+    // }); #FIN $exception
+    
+    // return is_null($exception) ? 'Añadido' : $exception;
+    
+// } catch(Exception $e) {
+//         // return $e;
+//         return "Error: no se ha podido añadir el empleado".$e;
+// }
+
+
 }
 
 public function eliminarempleado ($empleado_id,$cuadrante_id)

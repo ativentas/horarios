@@ -7,6 +7,8 @@ $.ajaxSetup({
 var estadocuadrante = $('#tabla_plantilla').data('estadocuadrante');
 var isadmin = $('#tabla_plantilla').data('isadmin');
 var cambios = $('#tabla_plantilla').data('cambios');
+var ausencias = $('#tabla_plantilla').data('ausencias');
+console.log(ausencias);
 
 
 //poner en rojo los bordes de donde haya cambios y crear los tooltips
@@ -23,6 +25,16 @@ $.each(cambios, function(index,obj){
     $('#wrapper-'+empl+'-'+dia).css({"border-style":"solid","border-color":"red"});
 
     $('#wrapper-'+empl+'-'+dia).tooltip({title: html, html: true});
+
+});
+//tooltips para las ausencias
+$.each(ausencias, function(index,obj){
+    var empl = obj['empleado_id'];
+    var dia = obj['dia'];
+    var html = obj['fecha_inicio']+' '+obj['finalDay']+'</br>'+
+          obj['nota']; 
+          alert(html); 
+    $('#ausencia_'+dia+'_'+empl).tooltip({title: html, html: true});
 
 });
 
