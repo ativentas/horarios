@@ -539,6 +539,7 @@ public function crearNieuwCuadrante(Request $request)
         //TO DO: creo que sería mejor que addLineas, en vez de fecha_ini y fecha_fin, se le pasara un array con las fechas. La idea es pasarle el array $diassemana
         $this->addLineas($cuadrante->id,Auth::user()->centro_id,$fecha_ini,$fecha_fin);
         /*incluir dia de cierre como libres y dias festivos*/
+        // dd('he llegado');
         if (!is_null($diacierre)){
             
             $lineas = Linea::where('cuadrante_id',$cuadrante->id)->where('dia',$diacierre)->get();
@@ -568,15 +569,17 @@ public function crearNieuwCuadrante(Request $request)
 
 public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
     //TO DO: seleccionar los empleados que en el intervalo entre $fecha_ini y $fecha_fin tienen algún contrato
+    // dd($cuadrante_id);
     $empleados = DB::table('empleados')
         ->join('contratos',function($join) use($fecha_ini,$fecha_fin){
-            $join->on('contratos.empleado_id','empleados.id')
+            $join->on('empleados.id','contratos.empleado_id')
                 ->where('fecha_baja',NULL)
                 ->orwhere([
                         ['fecha_baja','>=',$fecha_ini],
                         ['fecha_alta','<=',$fecha_fin],
                         ]);
-            })->where('contratos.centro_id',$centro_id)->get();
+            })->where('contratos.centro_id',$centro_id)
+        ->select('empleados.*','contratos.centro_id AS centro_id')->get();
     // dd($empleados);
 
     // $empleados = Empleado::activo()->where('centro_id',$centro_id)->get();
@@ -586,14 +589,14 @@ public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
     } 
     //TO DO: prerrellenar las Ausencias. De momento no hace falta porque en cuanto muestre el cuadrante ya se modifican las lineas
     while ($fecha_ini <= $fecha_fin) {
-
         foreach ($empleados as $empleado) {
             $linea = new Linea;
             $linea->cuadrante_id = $cuadrante_id;
             $linea->fecha = $fecha_ini;
             $linea->dia = $fecha_ini->dayOfWeek;
             $linea->empleado_id = $empleado->id;          
-            $linea->save();     
+            $linea->save();   
+            // dd($linea);  
         }
         //borro esta linea porque date convierte a string y entonces no le puedo aplicar dayOfWeek
         // $fecha_ini = date ("Y-m-d", strtotime("+1 day", strtotime($fecha_ini)));
