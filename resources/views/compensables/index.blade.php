@@ -67,7 +67,7 @@
 					<table class="table">
 					<tr data-compensable_id="{{$compensable->id}}" data-empleado_nombre="{{$empleado->alias}}">
 						<td></td>
-						<td>{{$compensable->dia}}</td>
+						<td>{{date("d-m-Y",strtotime($compensable->dia))}}</td>
 						<td>{{$compensable->linea->situacion}}</td>
 						<td>@if($compensable->disponible)<button class="btn btn-success btn-xs btn_asignar" type="button"><span class="glyphicon glyphicon-ok-sign"></span> Asignar</button>@elseif($compensable->diacompensado){{$compensable->diacompensado}}@else PAGAR @endif</td>
 					</tr>

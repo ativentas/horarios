@@ -52,9 +52,13 @@ switch(estadocuadrante) {
     if(isadmin){
       $('#div_aceptar').show();
     }
-    $('.btn_modify').show();
-    $('.diasemana').css({pointerEvents: "auto"});
-    $('#btn_guardar').show();
+    if(!isadmin){
+      $('.btn_modify').show();
+      $('#btn_guardar').show();
+          $('.diasemana').css({pointerEvents: "auto"});
+
+    }
+
     break;
   case 'Aceptado':
     if(!isadmin){

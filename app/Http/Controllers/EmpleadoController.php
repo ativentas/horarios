@@ -102,8 +102,34 @@ class EmpleadoController extends Controller
     
         return redirect()->back()->with('info', 'Nuevo empleado registrado');
     }
-
     /**
+     * TO DO: ESTA FUNCION SUSTITUIRA A LA ORIGINAL DE SHOW, VOY A IMPLEMENTAR QUE EN LA FICHA DEL EMPLEADO MUESTRE LAS LINEAS POR SEMANAS, EMPEZANDO POR LA SEMANA ACTUAL, Y PUDIENDO IR PARA ATRAS O DELANTE, COMO SI FUERA UN CALENDARIO (INCLUSO ESTUDIAR SI CONVIENE UN CALENDARIO PARA MOSTRAR ESTO)
+     */
+    public function show2 ($id)
+    {
+        $empleado = Empleado::findOrFail($id);
+        if($empleado->centro){
+            $centro_id = $empleado->centro[0]->id;
+            $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
+                $query->where('centros.id',$centro_id);
+                })->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
+            $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
+                $query->where('centros.id',$centro_id);
+                })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
+        }
+        if($empleado_anterior){
+            $empleado_anterior = $empleado_anterior->id;
+        }
+
+        if($empleado_posterior){
+            $empleado_posterior = $empleado_posterior->id;
+        }
+
+
+
+    }
+
+    /** TO DO: VOY A REHACER DE NUEVO ESTA FUNCION, LE LLAMARE SHOW2 Y CUANDO FUNCIONE, BORRAR ESTA.
      * Display the specified resource.
      * Aqui se muestra 
      * @param  int  $id
@@ -112,28 +138,35 @@ class EmpleadoController extends Controller
     public function show($id,$cuadrante_id=NULL)
     {
         $empleado = Empleado::findOrFail($id);
-        $centro_id = $empleado->centro[0]->id;
-        $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
-            $query->where('centros.id',$centro_id);
-            })->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
+    $centro_id = 0; //TO DO: BORRAR ESTA LINEA PORQUE NO TIENE SENTIDO        
+        if(count($empleado->centro)){
+            $centro_id = $empleado->centro[0]->id;
+            $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
+                $query->where('centros.id',$centro_id);
+                })->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
+            $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
+                $query->where('centros.id',$centro_id);
+                })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
+        }
+        $empleado_anterior = NULL;
+        $empleado_posterior = NULL;
         if($empleado_anterior){
             $empleado_anterior = $empleado_anterior->id;
         }
-        $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
-            $query->where('centros.id',$centro_id);
-            })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
 
         if($empleado_posterior){
             $empleado_posterior = $empleado_posterior->id;
         }
+       
         $cuadrante=Cuadrante::find($cuadrante_id);
+        //para que cuando no hay nigún cuadrante, tengamos un valor de yearsemana para calcular el resto de variables
         if(!$cuadrante){
             $date = new DateTime();
             $yearsemana = $date->format("YW");
             //buscar el cuadrante actual
             $cuadrante = Cuadrante::where('estado','<>',null)->where('yearsemana','<=',$yearsemana)->where('centro_id',$centro_id)->orderBy('yearsemana','desc')->first();
         }
-        //para que cuando no hay nigún cuadrante, tengamos un valor de yearsemana para calcular el resto de variables
+
         $cuadrante_id = NULL;
         if($cuadrante){
             $yearsemana = $cuadrante->yearsemana;

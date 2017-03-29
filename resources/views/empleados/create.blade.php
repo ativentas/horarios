@@ -41,7 +41,7 @@
         </div>
         <div class="form-group{{$errors->has('apellidos') ? ' has-error' : ''}}">
             <label for="apellidos" class="control-label">Apellidos</label>
-            <input type="text" name="nombre" class="form-control" id="apellidos" value="{{Request::old('apellidos') ?: ''}}">
+            <input type="text" name="apellidos" class="form-control" id="apellidos" value="{{Request::old('apellidos') ?: ''}}">
             @if ($errors->has('apellidos'))
                 <span class="help-block">{{$errors->first('apellidos')}}</span>
             @endif                  
