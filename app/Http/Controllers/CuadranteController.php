@@ -460,26 +460,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
 
     $lineasconcambios = $cuadrante->lineacambios()->get();
 
-
-// Employee::select('firstname', 'lastname', 'employee_job_id')->where('firstname', 'like', "%$word%")->orWhere('lastname', 'like', "%$word%")->with(['job' => function($query) {
-//     $query->select('id', 'name');
-// }])->get()
-
-
-    // $lineasconausencias = $cuadrante->lineas()
-    //     ->select('empleado_id','dia')
-    //     ->where('ausencia_id','>',0)
-    //     ->with(['ausencia' => function($query){
-    //         $query->select('id','fecha_inicio','finalDay','nota');
-    //     }])
-    //     ->get();
-    // $lineasconausencias = Linea::select('empleado_id','dia','ausencia_id','cuadrante_id')
-    //     ->where('cuadrante_id',$cuadrante->id)
-    //     ->where('ausencia_id','>',0)
-    //     ->with(['ausencia' => function($query){
-    //         $query->select('id','fecha_inicio','finalDay','nota');
-    //     }])
-    //     ->get()->toArray();
+  ->get()->toArray();
 
     $lineasconausencias = DB::table('lineas')
         ->where('cuadrante_id',$cuadrante->id)
@@ -487,9 +468,8 @@ public function mostrarCuadrante($cuadrante_id = NULL)
         ->join('ausencias',function($join){
             $join->on('ausencias.id','lineas.ausencia_id');
         })
-        ->select('lineas.empleado_id','lineas.dia','ausencias.fecha_inicio','ausencias.finalDay','ausencias.nota')
+        ->select('lineas.empleado_id','lineas.dia',DB::raw("DATE_FORMAT(ausencias.fecha_inicio, '%d-%m-%Y') as fecha_inicio"),DB::raw("DATE_FORMAT(ausencias.finalDay,'%d-%m-%Y') AS finalDay"),'ausencias.nota')
         ->get();
-// dd($lineasconausencias);
        $comments = $cuadrante->comments;
 
     return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','lineasconausencias','empleadosdisponibles','anteriorId','posteriorId','comments','empleados_compensar'));
