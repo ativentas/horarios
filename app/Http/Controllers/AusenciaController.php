@@ -245,7 +245,8 @@ class AusenciaController extends Controller
 		$ausencia = Ausencia::findOrFail($id);
 		$ausencia->estado = 'Confirmado';
 		$ausencia->save();
-		return redirect('ausencias');
+		// return redirect('ausencias');
+		return redirect()->back();
     }
 
     /**
@@ -258,9 +259,11 @@ class AusenciaController extends Controller
     {        
       $ausencia = Ausencia::find($id);
 		$ausencia->delete();
+		//TO DO:yo creo que el if siguiente no se usa
 		if (isset($_POST['solicitudEmpleado'])){
 			return redirect('ausencias/listadoVacaciones');}
-		return redirect('ausencias');
+		// return redirect('ausencias');
+		return redirect()->back();
     }
 	
 	public function change_date_format($date)

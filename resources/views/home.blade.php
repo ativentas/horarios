@@ -187,8 +187,9 @@
                     <td>{{$ausencia->alias}}</td>
                     <td>{{$ausencia->abarca}}</td>
                     <td>
+
                         @if($ausencia->owner == Auth::user()->id||Auth::user()->isAdmin())
-                        <button class="btn btn-primary btn-xs" href="{{ url('ausencias/' . $ausencia->id . '/edit')}}"><span class="glyphicon glyphicon-edit"></span> Edit</button> 
+                        <a class="btn btn-primary btn-xs" href="{{ url('ausencias/' . $ausencia->id . '/edit')}}"><span class="glyphicon glyphicon-edit"></span> Edit</a> 
                         @endif
                         @if(Auth::user()->isAdmin())
                         <form action="{{ route('confirmarVacaciones',$ausencia->id) }}" style="display:inline;" method="POST">
@@ -201,7 +202,7 @@
                         <form action="{{ url('ausencias/' . $ausencia->id) }}" style="display:inline;" method="POST">
                             {{ csrf_field() }}
                             <input type="hidden" name="_method" value="DELETE" />
-                            <button class="btn btn-danger btn-xs" type="submit"><span class="glyphicon glyphicon-trash"></span> Eliminar</button>
+                            <button class="btn btn-danger btn-xs" type="submit"><span class="glyphicon glyphicon-trash"></span> Elim.</button>
                         </form>
                         @endif
                     </td>

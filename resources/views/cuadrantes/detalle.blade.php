@@ -31,6 +31,8 @@ td input {
     padding: 0px;
 
 }
+
+
 tr:nth-child(4n){
     background-color: gainsboro;
 }

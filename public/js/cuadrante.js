@@ -189,10 +189,17 @@ $('.delete_empleado').on('click', function(){
   var form = $('#form_delete_empleado');
   var empleado = $(this).parent().parent().data('empleado_id');
   var tr = $(this).parents('tr');
+  var tr_next = tr.next();
   var url = form.attr('action').replace(':EMPLEADO_ID',empleado)
   $.post(url).done(function(data){
-    tr.hide();
-    tr.next().hide();
+    tr.remove();
+    tr_next.remove();
+    $('tr:nth-child(4n)').css({
+        'background-color': 'gainsboro'
+    });
+    $('tr:nth-child(4n+1)').css({
+        'background-color': 'gainsboro'
+    });
     alert(data);
   }).fail(function(data){
     alert(data);

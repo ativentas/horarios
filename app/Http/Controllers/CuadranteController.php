@@ -582,8 +582,7 @@ public function crearNieuwCuadrante(Request $request)
 }
 
 public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
-    //TO DO: seleccionar los empleados que en el intervalo entre $fecha_ini y $fecha_fin tienen algún contrato
-    // dd($cuadrante_id);
+    //seleccionar los empleados que en el intervalo entre $fecha_ini y $fecha_fin tienen algún contrato
     $empleados = DB::table('empleados')
         ->join('contratos',function($join) use($fecha_ini,$fecha_fin){
             $join->on('empleados.id','contratos.empleado_id')
@@ -652,16 +651,46 @@ public function generateDateRangeWeek($yearsemana)
 }
 public function empleadosdisponibles ($cuadrante)
 {
+    //TO DO: EN VEZ DE ACTIVOS, COGER LOS QUE TIENEN CONTRATO VIGENTE EN ESA SEMANA
+
+    $yearsemana = $cuadrante->yearsemana;
+    $year = substr($yearsemana,0,4);
+    $semana = substr($yearsemana,-2,2);
+    $date = new Carbon();
+    $date->setISODate($year,$semana);
+    $fecha_ini = new Carbon($date->startOfWeek()); 
+    $fecha_fin = new Carbon($date->endOfWeek());
     $centro_id = $cuadrante->centro_id;
-#empleados activos del centro perteneciente a ese cuadrante pero que no están en ese cuadrante
-    $empleadosdisponibles = Empleado::activo()
-        ->whereHas('centro', function($query) use($centro_id){
-            $query->where('centros.id','=',$centro_id);
-        })->whereNotIn('id', function($q) use($cuadrante){
-            $q->select('empleado_id')
-                ->from('lineas')
-                ->where('cuadrante_id',$cuadrante->id);
-        })->get();
+
+    $empleadosdisponibles = DB::table('empleados')
+        ->join('contratos',function($join) use($fecha_ini,$fecha_fin){
+            $join->on('empleados.id','contratos.empleado_id')
+                ->where('fecha_baja',NULL)
+                ->orwhere([
+                        ['fecha_baja','>=',$fecha_ini],
+                        ['fecha_alta','<=',$fecha_fin],
+                        ]);
+            })
+        ->where('contratos.centro_id',$centro_id)
+        ->whereNotIn('empleados.id', function($q) use($cuadrante){
+                $q->select('empleado_id')
+                    ->from('lineas')
+                    ->where('cuadrante_id',$cuadrante->id);
+            })
+        ->select('empleados.*','contratos.centro_id AS centro_id')->get();
+
+// dd($empleados);
+
+
+// #empleados activos del centro perteneciente a ese cuadrante pero que no están en ese cuadrante
+//     $empleadosdisponibles = Empleado::activo()
+//         ->whereHas('centro', function($query) use($centro_id){
+//             $query->where('centros.id','=',$centro_id);
+//         })->whereNotIn('id', function($q) use($cuadrante){
+//             $q->select('empleado_id')
+//                 ->from('lineas')
+//                 ->where('cuadrante_id',$cuadrante->id);
+//         })->get();
         // $empleadosdisponibles = Empleado::activo()
         // ->where('centro_id',$cuadrante->centro_id)
         // ->whereNotIn('id', function($q) use($cuadrante){
@@ -676,8 +705,8 @@ public function añadirempleado ($empleado_id,$cuadrante_id)
 {
     //TO DO: unificar esta función con la de addlineas
 
-// try {
-//     $exception = DB::transaction(function() use ($empleado_id,$cuadrante_id) {
+try {
+    $exception = DB::transaction(function() use ($empleado_id,$cuadrante_id) {
 
     $cuadrante = Cuadrante::find($cuadrante_id);
     $yearsemana = $cuadrante->yearsemana;
@@ -721,14 +750,14 @@ public function añadirempleado ($empleado_id,$cuadrante_id)
 
     }
     // dd($lineas);
-    // }); #FIN $exception
+    }); #FIN $exception
     
-    // return is_null($exception) ? 'Añadido' : $exception;
+    return is_null($exception) ? 'Añadido' : $exception;
     
-// } catch(Exception $e) {
-//         // return $e;
-//         return "Error: no se ha podido añadir el empleado".$e;
-// }
+} catch(Exception $e) {
+        // return $e;
+        return "Error: no se ha podido añadir el empleado".$e;
+}
 
 
 }

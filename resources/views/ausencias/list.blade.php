@@ -45,20 +45,24 @@
                     <td>{{ date("j M Y", strtotime($ausencia->finalDay)) }}</td>
                     <td>{{ $ausencia->estado }}</td>
                     <td>
+                        @if(Auth::user()->isAdmin()||$ausencia->owner == Auth::user()->id)
+
                         <a class="btn btn-primary btn-xs" href="{{ url('ausencias/' . $ausencia->id . '/edit')}}">
                             <span class="glyphicon glyphicon-edit"></span> Edit</a> 
-                        @if($ausencia->estado=='Pendiente')
+                        @if($ausencia->estado=='Pendiente' && Auth::user()->isAdmin())
                         <form action="{{ route('confirmarVacaciones',$ausencia->id) }}" style="display:inline" method="POST">
                             {{ csrf_field() }}
                             <input type="hidden" name="accion" value="REQUERIR" />
                             <button class="btn btn-success btn-xs" type="submit"><span class="glyphicon glyphicon-ok-sign"></span> Confirmar</button>
-                        </form>                     
+                        </form>
+                        @endif                     
+                        @if(Auth::user()->isAdmin()||$ausencia->owner == Auth::user()->id)
                         <form action="{{ url('ausencias/' . $ausencia->id) }}" style="display:inline" method="POST">
                             <input type="hidden" name="_method" value="DELETE" />
                             {{ csrf_field() }}
                             <button class="btn btn-danger btn-xs" type="submit"><span class="glyphicon glyphicon-trash"></span> Eliminar</button>
                         </form>
-
+                        @endif
                         @endif
                     </td>
                 </tr>
