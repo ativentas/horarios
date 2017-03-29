@@ -33,7 +33,6 @@ $.each(ausencias, function(index,obj){
     var dia = obj['dia'];
     var html = obj['fecha_inicio']+' '+obj['finalDay']+'</br>'+
           obj['nota']; 
-          alert(html); 
     $('#ausencia_'+dia+'_'+empl).tooltip({title: html, html: true});
 
 });
