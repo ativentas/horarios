@@ -55,17 +55,24 @@ Route::resource('contratos', 'ContratoController');
 		if(!Auth::user()->isAdmin()){
 			$centro = Auth::user()->centro_id;
 		}
+		// $ausencias = DB::table('ausencias')
+		// 	->join('empleados', function($join) use($centro){
+		// 		$join->on('ausencias.empleado_id', '=', 'empleados.id')
+		// 		->when($centro, function($query) use($centro){
+		// 			return $query->where('empleados.centro_id',$centro);
+		// 		});  
+		// 	})
+		// 	->select('empleados.centro_id','ausencias.id', 'ausencias.empleado_id', 'ausencias.tipo', 'ausencias.fecha_inicio as start', 'ausencias.fecha_fin as end','ausencias.finalDay','ausencias.allDay')
+		// 	// ->where('empleados.centro_id','=',$centro)
+		// 	->get();
 		$ausencias = DB::table('ausencias')
-			->join('empleados', function($join) use($centro){
-				$join->on('ausencias.empleado_id', '=', 'empleados.id')
-				->when($centro, function($query) use($centro){
-					return $query->where('empleados.centro_id',$centro);
-				});  
+			->when($centro, function($query) use($centro){
+				return $query->where('ausencias.centro_id',$centro);
 			})
-			->select('empleados.centro_id','ausencias.id', 'ausencias.empleado_id', 'ausencias.tipo', 'ausencias.fecha_inicio as start', 'ausencias.fecha_fin as end','ausencias.finalDay','ausencias.allDay')
+			->select('ausencias.centro_id','ausencias.id', 'ausencias.empleado_id', 'ausencias.tipo', 'ausencias.fecha_inicio as start', 'ausencias.fecha_fin as end','ausencias.finalDay','ausencias.allDay')
 			// ->where('empleados.centro_id','=',$centro)
 			->get();
-		$tiposAusencia = ['V' => 'vacaciones', 'B' => 'baja', 'AJ' => 'ausencia justif.','AN' => 'ausencia no justif.','BP' => 'Baja Paternidad'];
+		$tiposAusencia = ['V' => 'vacaciones', 'B' => 'baja', 'AJ' => 'ausencia justif.','AN' => 'ausencia no justif.','BP' => 'Baja Paternidad','PR' => 'Permiso Retribuido'];
     	$empleados = DB::table('empleados')->pluck('alias','id');
 
 		foreach($ausencias as $ausencia){
