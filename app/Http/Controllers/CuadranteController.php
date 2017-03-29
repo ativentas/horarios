@@ -710,9 +710,12 @@ public function añadirempleado ($empleado_id,$cuadrante_id)
         foreach ($lineas as $linea) {
             $linea->situacion ='F';
             $linea->save();
-        }
-    }
 
+
+        }
+
+    }
+    // dd($lineas);
     // }); #FIN $exception
     
     // return is_null($exception) ? 'Añadido' : $exception;

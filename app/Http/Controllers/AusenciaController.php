@@ -71,7 +71,8 @@ class AusenciaController extends Controller
       $listado = DB::table('contratos')
       	->join('empleados','empleados.id','=','contratos.empleado_id')
       	->select('contratos.centro_id','contratos.empleado_id','empleados.alias')
-			->get()->groupBy('centro_id');	
+			->get()->groupBy('centro_id');
+			// dd($listado);	
 
 		$data = [
 			'empleados' => $empleados,
@@ -81,11 +82,13 @@ class AusenciaController extends Controller
 
 		];
       }else{     
+		$listado = collect();
 		$data = [
 			'empleados' => Empleado::whereHas('contratos', function($query){
 					$query->where('centro_id',Auth::user()->centro_id);
 			})->get(),
 			'tipos'		=> $this->tipos,
+			'listado'	=> $listado,
 		];
 		}
 		return view('ausencias/nieuwausencia', $data);
@@ -103,7 +106,7 @@ class AusenciaController extends Controller
 		$empleado = Empleado::where('id',$empleado_id)->first();
 		//TO DO: habría que coger el centro->id dependiendo del contrato a la fecha de comienzo de la ausencia
 		$centro_id = $empleado->centro[0]->id;
-		dd($centro_id);
+		// dd($centro_id);
 		$this->validate($request, [
 			'empleado_id'	=> 'required',
 			'tipo' => 'required',
@@ -116,6 +119,7 @@ class AusenciaController extends Controller
 
 		$ausencia 					= new Ausencia;
 		$ausencia->empleado_id	= $empleado->id;
+		$ausencia->centro_id		= $centro_id;
 		$ausencia->owner			= Auth::user()->id;
 		$ausencia->alias 			= $empleado->alias;
 		$ausencia->tipo 			= $request->input('tipo');
