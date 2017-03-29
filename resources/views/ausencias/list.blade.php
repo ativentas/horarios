@@ -40,7 +40,7 @@
                     <th scope="row">{{ $i++ }}</th>
                     <td>{{ $ausencia->tipo }}</td>
                     <!-- <td><a href="{{ url('ausencias/' . $ausencia->id) }}">{{ $ausencia->tipo }}</a></td> -->
-                    <td><a href="{{ url('/usuarios/modificar/' . $ausencia->empleado_id) }}">{{ $ausencia->alias }}</a></td>
+                    <td><a href="{{ url('/empleados_c/' . $ausencia->empleado_id) }}">{{ $ausencia->alias }}</a></td>
                     <td>{{ date("j M Y", strtotime($ausencia->fecha_inicio)) }}</td>
                     <td>{{ date("j M Y", strtotime($ausencia->finalDay)) }}</td>
                     <td>{{ $ausencia->estado }}</td>
