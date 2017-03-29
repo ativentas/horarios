@@ -214,12 +214,27 @@ $('#btn_añadir_empleado').click(function(e){
 
     // por si acaso hay que especificar mas
     // alert('Se va a añadir a '+$('#select_añadir option:selected').val());
+
+
+// $.ajax({
+//   url: "test.html",
+//   async: false
+// }).done(function(data) {
+//    // Todo something..
+// }).fail(function(xhr)  {
+//    // Todo something..
+// });
+    
+// jQuery.ajaxSetup({async:false});
+
     $.post(url, data).done(function(data){
+        // alert(data);
         $('#btn_guardar').click();
-        alert(data);
     }).fail(function(data){
         alert(data);
-    });   
+    });
+
+   
 
 });
 

@@ -94,6 +94,11 @@ public function guardarHorarios(Request $request, $cuadrante_id){
             $dia = $linea->dia;
             $empleado_id = $linea->empleado_id;
             $situacion = $request->{'situacion_'.$dia.'_'.$empleado_id};
+            //esto lo hago pq cuando añado un empleado a una plantilla, el programa no lo dibuja y entonces al guardar los datos machaca la situación a null
+            if(!isset($request->{'situacion_'.$dia.'_'.$empleado_id}))
+            {
+                $situacion = $linea->situacion;
+            }
             $entrada1 = $request->{'entrada1_'.$dia.'_'.$empleado_id};
             $entrada2 = $request->{'entrada2_'.$dia.'_'.$empleado_id};
             $salida1 = $request->{'salida1_'.$dia.'_'.$empleado_id};
