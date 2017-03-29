@@ -460,18 +460,16 @@ public function mostrarCuadrante($cuadrante_id = NULL)
 
     $lineasconcambios = $cuadrante->lineacambios()->get();
 
-  ->get()->toArray();
-
     $lineasconausencias = DB::table('lineas')
         ->where('cuadrante_id',$cuadrante->id)
         ->where('ausencia_id','>',0)
         ->join('ausencias',function($join){
             $join->on('ausencias.id','lineas.ausencia_id');
         })
-        ->select('lineas.empleado_id','lineas.dia',DB::raw("DATE_FORMAT(ausencias.fecha_inicio, '%d-%m-%Y') as fecha_inicio"),DB::raw("DATE_FORMAT(ausencias.finalDay,'%d-%m-%Y') AS finalDay"),'ausencias.nota')
+        ->select('lineas.empleado_id','lineas.dia',DB::raw("DATE_FORMAT(ausencias.fecha_inicio, '%d-%m-%Y') as fecha_inicio"),DB::raw("DATE_FORMAT(ausencias.finalDay,'%d-%m-%Y') AS finalDay"),DB::raw("CASE WHEN ausencias.nota IS NULL THEN '' ELSE ausencias.nota END AS 'nota'"))
         ->get();
        $comments = $cuadrante->comments;
-
+// DB::raw("CASE WHEN tipo = 'Cobro' THEN importe ELSE NULL END AS 'Cobro'"),
     return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','lineasconausencias','empleadosdisponibles','anteriorId','posteriorId','comments','empleados_compensar'));
 }
 
