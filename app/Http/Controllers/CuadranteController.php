@@ -583,16 +583,35 @@ public function crearNieuwCuadrante(Request $request)
 
 public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
     //seleccionar los empleados que en el intervalo entre $fecha_ini y $fecha_fin tienen algún contrato
+    $fecha_ini_format= $fecha_ini->format('Y-m-d');
+    $fecha_fin_format = $fecha_fin->format('Y-m-d');
+    // dd($fecha_fin);
     $empleados = DB::table('empleados')
-        ->join('contratos',function($join) use($fecha_ini,$fecha_fin){
-            $join->on('empleados.id','contratos.empleado_id')
-                ->where('fecha_baja',NULL)
-                ->orwhere([
-                        ['fecha_baja','>=',$fecha_ini],
-                        ['fecha_alta','<=',$fecha_fin],
-                        ]);
-            })->where('contratos.centro_id',$centro_id)
-        ->select('empleados.*','contratos.centro_id AS centro_id')->get();
+        ->join('contratos',function($join) use($fecha_ini_format,$fecha_fin_format){
+            $join->on('empleados.id','contratos.empleado_id');
+                // ->where([
+                //         ['fecha_baja','=',''],
+                //         ['fecha_alta','<=',$fecha_fin],
+                //         ])
+                // ->orwhere([
+                //         ['fecha_baja','>=',$fecha_ini],
+                //         ['fecha_alta','<=',$fecha_fin],
+                //         ]);
+            // })->where('contratos.centro_id',$centro_id)
+            })//->where('contratos.centro_id',$centro_id)
+            ->where([
+                    ['contratos.centro_id','=',$centro_id],
+                    ['contratos.fecha_baja','=',NULL],
+                    ['contratos.fecha_alta','<=',$fecha_fin],
+                    ])
+            ->orwhere([
+                        ['contratos.centro_id','=',$centro_id],
+                        ['contratos.fecha_baja','>=',$fecha_ini_format],
+                        ['contratos.fecha_alta','<=',$fecha_fin_format],
+                        ])
+
+        ->select('empleados.*','contratos.centro_id AS centro_id','contratos.fecha_baja AS fecha_baja','contratos.fecha_alta AS fecha_alta')
+        ->get();
     // dd($empleados);
 
     // $empleados = Empleado::activo()->where('centro_id',$centro_id)->get();
@@ -679,7 +698,7 @@ public function empleadosdisponibles ($cuadrante)
             })
         ->select('empleados.*','contratos.centro_id AS centro_id')->get();
 
-// dd($empleados);
+// dd($empleadosdisponibles);
 
 
 // #empleados activos del centro perteneciente a ese cuadrante pero que no están en ese cuadrante

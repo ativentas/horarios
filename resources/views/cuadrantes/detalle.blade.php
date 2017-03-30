@@ -146,7 +146,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             @foreach($lineas as $linea)
             <tr class="datos_empleado" data-empleado_id={{$linea->empleado_id}} data-empleado_nombre={{$linea->nombre}} style="">
 <!--                 <td class="tg-031e" rowspan="2"><button class="btn btn-danger btn-sm btn_delete" id="button_delete_{{$linea->empleado_id}}" type="button" style=""><span class="glyphicon glyphicon-remove-circle"></span></button></td> -->
-                <td class="tg-031e" rowspan="2">@if(Auth::user()->isAdmin())<span class="delete_empleado glyphicon glyphicon-remove-circle" id="icon_delete_{{$linea->empleado_id}}" style="color: red;cursor:pointer;"></span>@endif</td>
+                <td class="tg-031e" rowspan="2">@if(Auth::user()->isAdmin()&&$cuadrante->archivado == '0')<span class="delete_empleado glyphicon glyphicon-remove-circle" id="icon_delete_{{$linea->empleado_id}}" style="color: red;cursor:pointer;"></span>@endif</td>
                 <td data-empleado_id="{{$linea->empleado_id}}" class="tg-031e" rowspan="2" style="height:60px;"><span>{{$linea->nombre}}</span> 
                     <button class="btn btn-info btn-xs btn_modify" id="button_modify_{{$linea->empleado_id}}" type="button" style="display: none;"><span class="glyphicon glyphicon-edit"></span></button>
                 </td>
