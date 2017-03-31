@@ -586,19 +586,12 @@ public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
     $fecha_ini_format= $fecha_ini->format('Y-m-d');
     $fecha_fin_format = $fecha_fin->format('Y-m-d');
     // dd($fecha_fin);
+    
+    //TO DO: JUNTAR ESTO CON LA FUNCION EMPLEADOSDISPONIBLES
     $empleados = DB::table('empleados')
         ->join('contratos',function($join) use($fecha_ini_format,$fecha_fin_format){
             $join->on('empleados.id','contratos.empleado_id');
-                // ->where([
-                //         ['fecha_baja','=',''],
-                //         ['fecha_alta','<=',$fecha_fin],
-                //         ])
-                // ->orwhere([
-                //         ['fecha_baja','>=',$fecha_ini],
-                //         ['fecha_alta','<=',$fecha_fin],
-                //         ]);
-            // })->where('contratos.centro_id',$centro_id)
-            })//->where('contratos.centro_id',$centro_id)
+            })
             ->where([
                     ['contratos.centro_id','=',$centro_id],
                     ['contratos.fecha_baja','=',NULL],
@@ -679,44 +672,56 @@ public function empleadosdisponibles ($cuadrante)
     $date->setISODate($year,$semana);
     $fecha_ini = new Carbon($date->startOfWeek()); 
     $fecha_fin = new Carbon($date->endOfWeek());
+    $fecha_ini_format = $fecha_ini->format('Y-m-d');
+    $fecha_fin_format = $fecha_fin->format('Y-m-d');
     $centro_id = $cuadrante->centro_id;
 
     $empleadosdisponibles = DB::table('empleados')
-        ->join('contratos',function($join) use($fecha_ini,$fecha_fin){
-            $join->on('empleados.id','contratos.empleado_id')
-                ->where('fecha_baja',NULL)
-                ->orwhere([
-                        ['fecha_baja','>=',$fecha_ini],
-                        ['fecha_alta','<=',$fecha_fin],
-                        ]);
-            })
-        ->where('contratos.centro_id',$centro_id)
+        ->join('contratos',function($join) use($fecha_ini_format,$fecha_fin_format,$centro_id){
+            $join->on('empleados.id','=','contratos.empleado_id')
+                ->where('contratos.centro_id','=',$centro_id);
+            })            
+        ->where(function($query) use ($fecha_fin_format,$fecha_ini_format){
+            $query->where([
+            ['contratos.fecha_baja','=',NULL],
+            ['contratos.fecha_alta','<=',$fecha_fin_format],
+            ]);
+            $query->orwhere([
+            ['contratos.fecha_baja','>=',$fecha_ini_format],
+            ['contratos.fecha_alta','<=',$fecha_fin_format],
+            ]);
+
+        })
+           
         ->whereNotIn('empleados.id', function($q) use($cuadrante){
                 $q->select('empleado_id')
                     ->from('lineas')
                     ->where('cuadrante_id',$cuadrante->id);
-            })
-        ->select('empleados.*','contratos.centro_id AS centro_id')->get();
+            }) 
+        ->get();
+
+
+
+    // $empleadosdisponibles = DB::table('empleados')
+    //     ->join('contratos',function($join) use($fecha_ini,$fecha_fin){
+    //         $join->on('empleados.id','contratos.empleado_id')
+    //             ->where('fecha_baja',NULL)
+    //             ->orwhere([
+    //                     ['fecha_baja','>=',$fecha_ini],
+    //                     ['fecha_alta','<=',$fecha_fin],
+    //                     ]);
+    //         })
+    //     ->where('contratos.centro_id',$centro_id)
+    //     ->whereNotIn('empleados.id', function($q) use($cuadrante){
+    //             $q->select('empleado_id')
+    //                 ->from('lineas')
+    //                 ->where('cuadrante_id',$cuadrante->id);
+    //         })
+    //     ->select('empleados.*','contratos.centro_id AS centro_id')->get();
 
 // dd($empleadosdisponibles);
 
 
-// #empleados activos del centro perteneciente a ese cuadrante pero que no están en ese cuadrante
-//     $empleadosdisponibles = Empleado::activo()
-//         ->whereHas('centro', function($query) use($centro_id){
-//             $query->where('centros.id','=',$centro_id);
-//         })->whereNotIn('id', function($q) use($cuadrante){
-//             $q->select('empleado_id')
-//                 ->from('lineas')
-//                 ->where('cuadrante_id',$cuadrante->id);
-//         })->get();
-        // $empleadosdisponibles = Empleado::activo()
-        // ->where('centro_id',$cuadrante->centro_id)
-        // ->whereNotIn('id', function($q) use($cuadrante){
-        //     $q->select('empleado_id')
-        //         ->from('lineas')
-        //         ->where('cuadrante_id',$cuadrante->id);
-        // })->get();
     return $empleadosdisponibles;
 
 }
