@@ -53,7 +53,8 @@ class VacacionesController extends Controller
      			DB::raw("sum(ausencias.dias) AS 'confirmadas'"),
      			DB::raw("sum(saldos.dias) AS 'saldoanterior'")
      			)
-     		->groupBy ('empleados.id','empleados.alias','contratos.centro_id')
+            // ->groupBy ('empleados.id','empleados.alias','contratos.centro_id')
+     		->groupBy ('empleados.id','empleados.alias','centro')
         	->get();
 
 
