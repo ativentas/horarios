@@ -46,6 +46,13 @@
                     <span class="help-block">{{$errors->first('apellidos')}}</span>
                 @endif                  
             </div>
+            <div class="form-group{{$errors->has('telefono') ? ' has-error' : ''}}">
+                <label for="telefono" class="control-label">Telefono</label>
+                <input type="text" name="telefono" class="form-control" id="telefono" value="{{Request::old('telefono') ?: $empleado->telefono}}">
+                @if ($errors->has('telefono'))
+                    <span class="help-block">{{$errors->first('telefono')}}</span>
+                @endif                  
+            </div>
 
             <div class="form-group">
                 <button type="submit" class="btn btn-default">Modificar</button>

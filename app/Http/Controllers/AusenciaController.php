@@ -8,6 +8,7 @@ use App\Ausencia;
 use App\Empleado;
 use App\Centro;
 use App\Comment;
+use App\Contrato;
 use DateTime;
 use Carbon\Carbon;
 use Auth;
@@ -94,36 +95,82 @@ class AusenciaController extends Controller
 		return view('ausencias/nieuwausencia', $data);
     }
 
+
+	public function centro_fecha($empleado_id, $fecha){
+     	$fecha = DateTime::createFromFormat('d/m/Y', $fecha);
+     	$fecha = $fecha->format('Y-m-d');
+     	
+     	$contrato = Contrato::where('empleado_id',$empleado_id)
+       	->where(function($query) use ($fecha){   	
+	        	$query->where([
+	            ['fecha_baja',NULL],
+	            ['fecha_alta','<=',$fecha],
+	            ]);
+	        	$query->orWhere([
+	        		['fecha_baja','>=',$fecha],
+	        		['fecha_alta','<=',$fecha],
+	        		]);
+	        })
+        	->get();
+     	if(count($contrato)==1){
+        	return $contrato[0]->centro_id;
+     	}elseif(count($contrato)>1){
+     		return 'Solapados';
+      }
+      return false;
+	}
+
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
-		$empleado_id = $request->input('empleado_id');
-		$empleado = Empleado::where('id',$empleado_id)->first();
-		//TO DO: habría que coger el centro->id dependiendo del contrato a la fecha de comienzo de la ausencia
-		$centro_id = $empleado->centro[0]->id;
-		// dd($centro_id);
+
 		$this->validate($request, [
+			'centro'	=> 'required',
 			'empleado_id'	=> 'required',
 			'tipo' => 'required',
-			'time'	=> "required|duration|available:$request->empleado_id|horarios_cerrados:$centro_id"
+			'time'	=> "required|duration|available:$request->empleado_id|horarios_cerrados:$request"
 
 		]);
-		
-		$time = explode(" - ", $request->input('time'));
 
+		$empleado_id = $request->input('empleado_id');
+		$empleado = Empleado::where('id',$empleado_id)->first();
+
+		$time = explode(" - ", $request->input('time'));
+		$fecha = $time[0];
+		$centro_id = $this->centro_fecha($empleado_id,$fecha);
+		$request_centro = $request->centro;
+		if ($centro_id != $request_centro){
+			return redirect()->back()->with('info','Error: el empleado no estaba con contrato vigente en la fecha de inicio de la ausencia');
+		}
+		switch ($centro_id) {
+			case 'Solapados':
+				#
+				return redirect()->back()->with('info','Error: hay 2 contratos vigentes en la fecha de inicio para ese empleado. Revisa los contratos'); 
+				break;
+			case false:
+				# code...
+				return redirect()->back()->with('info','Error: no hay ningún contrato vigente en la fecha de inicio');
+				break;
+			
+			default:
+				#
+				break;
+		}
 
 		$ausencia 					= new Ausencia;
 		$ausencia->empleado_id	= $empleado->id;
-		$ausencia->centro_id		= $centro_id;
+		$ausencia->centro_id		= $request_centro;
 		$ausencia->owner			= Auth::user()->id;
 		$ausencia->alias 			= $empleado->alias;
 		$ausencia->tipo 			= $request->input('tipo');
-		$ausencia->fecha_inicio		= $this->change_date_format($time[0]);
+		$ausencia->fecha_inicio	= $this->change_date_format($time[0]);
 		$ausencia->finalDay 		= $this->change_date_format($time[1]);
 		$format = 'd/m/Y';
 		$finalDay = Carbon::createFromFormat($format,$time[1])->startOfDay()->addDay()->format($format);

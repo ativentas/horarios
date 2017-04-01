@@ -87,7 +87,8 @@ class EmpleadoController extends Controller
         }
         $this->validate($request, [
         // 'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
-        'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id',
+        // 'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id',
+        'alias' => 'required|min:3|max:15',
         // 'nombre' => 'required|min:8|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,   
         // 'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,
         'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre
@@ -97,6 +98,7 @@ class EmpleadoController extends Controller
         $empleado->alias = $request->alias;
         $empleado->nombre_completo = $request->nombre;
         $empleado->apellidos = $request->apellidos;
+        $empleado->telefono = $request->telefono;
 
         $empleado->save();
     
@@ -138,7 +140,7 @@ class EmpleadoController extends Controller
     public function show($id,$cuadrante_id=NULL)
     {
         $empleado = Empleado::findOrFail($id);
-    $centro_id = 0; //TO DO: BORRAR ESTA LINEA PORQUE NO TIENE SENTIDO        
+        $centro_id = 0; //TO DO: BORRAR ESTA LINEA PORQUE NO TIENE SENTIDO        
         if(count($empleado->centro)){
             $centro_id = $empleado->centro[0]->id;
             $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
@@ -148,8 +150,8 @@ class EmpleadoController extends Controller
                 $query->where('centros.id',$centro_id);
                 })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
         }
-        $empleado_anterior = NULL;
-        $empleado_posterior = NULL;
+        // $empleado_anterior = NULL;
+        // $empleado_posterior = NULL;
         if($empleado_anterior){
             $empleado_anterior = $empleado_anterior->id;
         }
@@ -184,12 +186,21 @@ class EmpleadoController extends Controller
         $year = substr($yearsemana,0,4);
         $beginyear = $year.'-01-01';
         $endyear = $year.'-12-31';
-        $lineas = Linea::where('cuadrante_id',$cuadrante_id)->where('empleado_id',$id)->whereHas('cuadrante', function ($query) {
-            $query->where('estado', '<>', NULL);
-            })->get();
+        $lineas = Linea::where('cuadrante_id',$cuadrante_id)
+                    ->where('empleado_id',$id)
+                    ->whereHas('cuadrante', function ($query) {
+                        $query->where('estado', '<>', NULL);
+                    })
+                    ->select('lineas.*',
+                        DB::RAW("DATE_FORMAT(lineas.fecha,'%d-%m-%Y') AS 'fecha_format'"))
+                    ->get();
 
-        $query = Linea::where('empleado_id',$id)->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])->whereHas('cuadrante', function ($restrict) {
-            $restrict->where('estado', '<>', NULL);})->get();
+        $query = Linea::where('empleado_id',$id)
+                ->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])
+                ->whereHas('cuadrante', function ($restrict) {
+                        $restrict->where('estado', '<>', NULL);})
+                ->get();
+
 
         $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP','PR'))->count();
         $vaclineasacum = $query->where('situacion','V')->count();
@@ -213,7 +224,10 @@ class EmpleadoController extends Controller
             ->where('empleado_id','=',$id)
             ->where('fecha_baja','!=','')
             ->where('fecha_baja','<',$this->hoy)
-            ->select('contratos.*','centros.nombre as centro_nombre')
+            ->select('contratos.*','centros.nombre as centro_nombre',
+                DB::RAW("DATE_FORMAT(contratos.fecha_alta,'%d-%m-%Y') AS 'fecha_alta'"),
+                DB::RAW("DATE_FORMAT(contratos.fecha_baja,'%d-%m-%Y') AS 'fecha_baja'")
+                )
             ->get();
         // dd($contratos_anteriores);
         return view('empleados.edit',compact('empleado','centros','contrato_actual','contratos_anteriores')); 
@@ -235,7 +249,8 @@ class EmpleadoController extends Controller
         }else {  
             $this->validate($request, [
             // 'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id,centro_id,'.$request->centro,
-            'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id',
+            // 'alias' => 'required|min:3|max:15|unique:empleados,alias,'.$id.',id',
+            'alias' => 'required|min:3|max:15',
             // 'nombre' => 'required|min:3|unique:empleados,nombre_completo,'.$id.',id,centro_id,'.$request->centro,
             // 'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre.',centro_id,'.$request->centro,
             'apellidos' => 'unique:empleados,apellidos,'.$id.',id,nombre_completo,'.$request->nombre   
@@ -244,6 +259,7 @@ class EmpleadoController extends Controller
             $empleado->alias = $request->alias;
             $empleado->nombre_completo = $request->nombre;
             $empleado->apellidos = $request->apellidos;
+            $empleado->telefono = $request->telefono;
 
             $empleado->save();
         }

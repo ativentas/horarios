@@ -54,6 +54,42 @@ class Empleado extends Model
         return $centro;}
         return false;
     }
+    // public function centro_fecha($fecha)
+    // {
+    //     $fecha = DateTime::createFromFormat('d/m/Y', $fecha);
+    //     $fecha = $fecha->format('Y-m-d');
+    //     $centro = $this->belongsToMany('App\Centro','contratos')->where([
+    //         ['fecha_baja',NULL],
+    //         ['fecha_alta','<=',$fecha],
+    //         ])->orWhere('fecha_baja','>=',$fecha);
+
+    //     // ->orWherePivot('fecha_baja','>=',$hoy)
+    //     if($centro){
+    //     return $centro;}
+    //     return false;
+    // }
+
+    // public static function scopeCentro_fecha($centro, $fecha)
+    // {
+    //     $fecha = DateTime::createFromFormat('d/m/Y', $fecha);
+    //     $fecha = $fecha->format('Y-m-d');
+
+    //     return $centro->whereHas('contratos', function($q) use($fecha){
+    //         $q->where([
+    //             ['fecha_baja',NULL],
+    //             ['fecha_alta','<=',$fecha],
+    //             ])->orWhere('fecha_baja','>=',$fecha);
+    //     });
+        // $centro = $this->belongsToMany('App\Centro','contratos')->where([
+        //     ['fecha_baja',NULL],
+        //     ['fecha_alta','<=',$fecha],
+        //     ])->orWhere('fecha_baja','>=',$fecha);
+
+        // // ->orWherePivot('fecha_baja','>=',$hoy)
+        // if($centro){
+        // return $centro;}
+        // return false;
+    // }
 
     public function contratos()
     {

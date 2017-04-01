@@ -30,7 +30,7 @@ class CreateLineasTable extends Migration
             // $table->date('fecha_fin')->nullable();
             $table->timestamps();
 
-            $table->unique(['fecha', 'empleado_id']);
+            $table->unique(['fecha', 'empleado_id','cuadrante_id']);
 
             $table->foreign('cuadrante_id')
                     ->references('id')->on('cuadrantes')

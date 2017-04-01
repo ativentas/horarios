@@ -28,7 +28,7 @@ class CreateLineacambiosTable extends Migration
             $table->time('salida2')->nullable();
             $table->timestamps();
 
-            $table->unique(['fecha', 'empleado_id']);
+            $table->unique(['dia', 'empleado_id', 'cuadrante_id']);
 
             $table->foreign('cuadrante_id')
                     ->references('id')->on('cuadrantes')

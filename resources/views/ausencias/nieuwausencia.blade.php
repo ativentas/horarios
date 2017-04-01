@@ -28,16 +28,23 @@
             <div class="col-md-4 row">
 
             @if(Auth::user()->isAdmin())
-            <div class="form-group">
+            <div class="form-group @if($errors->has('centro')) has-error has-feedback @endif">
                 <select class="form-control" id="centro" name="centro">
                     <option value="">Elige Dpto</option>
                     @foreach ($centros as $centro)
                     <option value="{{$centro->id}}" @if(old('centro')==$centro->id) selected="selected" @endif>{{$centro->nombre}}</option>
                     @endforeach
                 </select>
+                @if ($errors->has('centro'))
+                    <p class="help-block"><span class="glyphicon glyphicon-exclamation-sign"></span> 
+                    {{ $errors->first('centro') }}
+                    </p>
+                @endif 
             </div>
             @endif
-
+            @if(!Auth::user()->isAdmin())
+            <input type="hidden" name="centro" value="{{Auth::user()->centro_id}}">
+            @endif
             <div class="form-group @if($errors->has('empleado_id')) has-error has-feedback @endif">
                 <select class="form-control" id="empleado_id" name="empleado_id">
                     <option value="">Elige un Empleado</option>
@@ -113,10 +120,10 @@ var listado = {!!$listado!!};//
 $('#centro').change(function() {
     var centro_elegido = $('#centro option:selected').val();
     var empleados = listado[centro_elegido];
-
     var options = $("#empleado_id");
     if (centro_elegido!=""){
         $('.empleados_populated').remove();
+        //TO DO: PARECE SER QUE LA OPCION DE HIDE() NO FUNCIONA BIEN EN SAFARI. habría que hacerlo con remove y despues append.
         $('.todos_empleados').hide();
         $.each(empleados, function(key, value) {
             // console.log(value.alias);    

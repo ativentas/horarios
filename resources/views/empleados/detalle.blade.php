@@ -70,7 +70,7 @@
             <?php $i = 1;?>
             @foreach($lineas as $linea)
                 <tr>
-                    <th>{{ $linea->fecha }}</th>
+                    <th>{{ $linea->fecha_format }}</th>
                     <td>{{ $linea->dia_texto }}</td>
                     <td>{{ $linea->situacion }}</td>
                     <td>{{ $linea->entrada1 }}</td>
