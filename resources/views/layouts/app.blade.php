@@ -27,7 +27,7 @@
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="{{asset('js/jquery-ui.js')}}"></script>
     <script src="{{asset('js/datepicker-es.js')}}"></script>  
-
+    @yield('scripts')
   
     <script>
         window.Laravel = {!! json_encode([

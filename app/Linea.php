@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use \Znck\Eloquent\Traits\BelongsToThrough;
 
 class Linea extends Model
 {
@@ -28,6 +29,10 @@ class Linea extends Model
     public function empleado()
     {
         return $this->belongsTo('App\Empleado');
+    }
+    public function centro()
+    {
+        return $this->BelongsToThrough('App\Centro','App\Cuadrante');
     }
     function getDiaTextoAttribute() {
         $array=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];

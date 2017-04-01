@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DateTime;
 use DB;
+use Auth;
 use App\Empleado;
 use App\Ausencia;
 use App\Cuadrante;
@@ -109,6 +110,7 @@ class EmpleadoController extends Controller
      */
     public function show2 ($id)
     {
+
         $empleado = Empleado::findOrFail($id);
         if($empleado->centro){
             $centro_id = $empleado->centro[0]->id;
@@ -127,7 +129,25 @@ class EmpleadoController extends Controller
             $empleado_posterior = $empleado_posterior->id;
         }
 
+        
+        // $lineas_calendario = Linea::where('empleado_id',$id)->get();
 
+        $year = new DateTime();
+        $year = $year->format("Y");
+        $beginyear = $year.'-01-01';
+        $endyear = $year.'-12-31';
+
+        $query = Linea::where('empleado_id',$id)
+                ->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])
+                ->whereHas('cuadrante', function ($restrict) {
+                        $restrict->where('estado', '<>', NULL);})
+                ->get();
+
+
+        $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP','PR'))->count();
+        $vaclineasacum = $query->where('situacion','V')->count();
+        $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
+        return view('empleados.detalle2', compact('year','lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','empleado_anterior','empleado_posterior'));
 
     }
 
@@ -265,6 +285,33 @@ class EmpleadoController extends Controller
         }
         return redirect()->route('empleados.index')->with('info','Empleado modificado');
     }
+
+public function datos_calendario($empleado_id){
+    $centro_user='';
+    if(!Auth::user()->isAdmin()){
+      $centro_user = Auth::user()->centro_id;
+    }
+
+    $lineas_calendario = DB::table('lineas')
+        ->where('lineas.empleado_id',$empleado_id)
+        ->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
+        ->join('centros','centros.id','cuadrantes.centro_id')
+        ->select('lineas.id','centros.nombre as title','lineas.fecha as fecha_inicio','lineas.fecha as fecha_fin','lineas.entrada1','lineas.salida1')
+        ->get();
+   $empleados = DB::table('empleados')->pluck('alias','id');
+
+    foreach($lineas_calendario as $linea){
+        // $linea->title = $linea->entrada1 . ' - ' . $linea->salida1 . ' (' . $linea->nombre . ') ';
+        $linea->allDay = false;
+        $linea->start = $linea->fecha_inicio.'T'.$linea->entrada1;
+        $linea->end = $linea->fecha_fin.'T'.$linea->salida1;
+
+    }
+
+   return $lineas_calendario;
+}
+
+
 
     /**
      * Remove the specified resource from storage.
