@@ -234,8 +234,9 @@ $('#btn_añadir_empleado').click(function(e){
     
 // jQuery.ajaxSetup({async:false});
 
+    // alert(url);
     $.post(url, data).done(function(data){
-        // alert(data);
+        alert(data);
         $('#btn_guardar').click();
     }).fail(function(data){
         alert(data);

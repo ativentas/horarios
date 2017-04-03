@@ -691,13 +691,13 @@ public function empleadosdisponibles ($cuadrante)
             ['contratos.fecha_alta','<=',$fecha_fin_format],
             ]);
 
-        })
-           
+        })          
         ->whereNotIn('empleados.id', function($q) use($cuadrante){
                 $q->select('empleado_id')
                     ->from('lineas')
                     ->where('cuadrante_id',$cuadrante->id);
-            }) 
+            })
+        ->select('empleados.id','empleados.alias') 
         ->get();
 
 
@@ -728,7 +728,6 @@ public function empleadosdisponibles ($cuadrante)
 public function añadirempleado ($empleado_id,$cuadrante_id)
 {
     //TO DO: unificar esta función con la de addlineas
-
 try {
     $exception = DB::transaction(function() use ($empleado_id,$cuadrante_id) {
 
