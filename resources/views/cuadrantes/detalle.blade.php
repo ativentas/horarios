@@ -238,7 +238,7 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
             </tr>
 
             <tr style="">
-            <?php   $dias = array('DO','LU','MA','MI','JU','VI','SA');
+            <?php   $dias = array('LU','MA','MI','JU','VI','SA','DO');
                     $numericos = array('1','2','3','4','5','6','0');?>
             @foreach(array_combine($dias, $numericos) as $dia=>$num)
                 <td class="tg-031e" id="">
