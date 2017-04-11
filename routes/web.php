@@ -26,7 +26,6 @@ Route::post('/nieuwcuadrante/', 'CuadranteController@crearNieuwCuadrante')->midd
 
 Route::get('/empleados_c/{empleado_id}/{cuadrante_id?}', 'EmpleadoController@show')->middleware('auth');
 // Route::get('/empleados_c2/{empleado_id}', 'EmpleadoController@show2')->middleware('auth');
-Route::get('/empleados_c2/{empleado_id}', 'EmpleadoController@show2')->middleware('auth');
 Route::resource('empleados', 'EmpleadoController');
 Route::resource('contratos', 'ContratoController');
 
@@ -49,8 +48,6 @@ Route::resource('contratos', 'ContratoController');
 		]);
 	
 	Route::resource('ausencias', 'AusenciaController');
-
-
 
 
 Route::post('/validar/{id}', [
@@ -127,29 +124,73 @@ Route::get('/api2/{empleado_id}', function ($empleado_id) {
   	if(!Auth::user()->isAdmin()){
       $centro_user = Auth::user()->centro_id;
   	}
-
-    $lineas_calendario = DB::table('lineas')
-        ->where('lineas.empleado_id',$empleado_id)
-        ->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
-        ->join('centros','centros.id','cuadrantes.centro_id')
-      ->select('lineas.id','centros.nombre as title','lineas.fecha as fecha_inicio','lineas.fecha as fecha_fin','lineas.entrada1','lineas.salida1')
-      ->get();
+  	$conhorarios = ['FT','VT',''];
+   $conausencias =['V','AJ','AN','BP','PR'];
    $empleados = DB::table('empleados')->pluck('alias','id');
+	$lineas_calendario_1 = DB::table('lineas')
+	->where(function($query) use($empleado_id) {
+		$query->where('lineas.empleado_id',$empleado_id)
+		->where('situacion', null);
+	})
+	->orWhere(function($query) use($empleado_id,$conhorarios){
+		$query->where('lineas.empleado_id',$empleado_id)
+		->whereIn('situacion',$conhorarios);
+	})
+	->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
+	->join('centros','centros.id','cuadrantes.centro_id')
+	->select('lineas.id','lineas.situacion','centros.nombre as centro','lineas.fecha as fecha_inicio','lineas.fecha as fecha_fin','lineas.entrada1 as entrada','lineas.salida1 as salida')
+	->get();
+	
+	$lineas_calendario_2 = DB::table('lineas')
+	->where('lineas.empleado_id',$empleado_id)
+	->where('lineas.salida2','<>',null)
+	->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
+	->join('centros','centros.id','cuadrantes.centro_id')
+	->select('lineas.id','lineas.situacion','centros.nombre as centro','lineas.fecha as fecha_inicio','lineas.fecha as fecha_fin','lineas.entrada2 as entrada','lineas.salida2 as salida')
+	->get();
 
-    foreach($lineas_calendario as $linea){
-        // $linea->title = $linea->entrada1 . ' - ' . $linea->salida1 . ' (' . $linea->nombre . ') ';
+	// $lineas_ausencias = DB::table('lineas')
+	// ->where('lineas.empleado_id',$empleado_id)
+	// ->whereIn('situacion',$conausencias)
+	// ->join('cuadrantes','lineas.cuadrante_id','cuadrantes.id')
+	// ->join('centros','centros.id','cuadrantes.centro_id')
+	// ->select('lineas.id','lineas.situacion','centros.nombre as centro','lineas.fecha as fecha_inicio','lineas.fecha as fecha_fin','lineas.entrada2 as entrada','lineas.salida2 as salida')
+	// ->get();
+
+	$ausencias = DB::table('ausencias')
+	->where('ausencias.empleado_id',$empleado_id)
+	->select('ausencias.centro_id','ausencias.id', 'ausencias.tipo', 'ausencias.fecha_inicio as start', 'ausencias.fecha_fin as end','ausencias.finalDay','ausencias.allDay')
+	->get();
+	$tiposAusencia = ['V' => 'vacaciones', 'B' => 'baja', 'AJ' => 'ausencia justif.','AN' => 'ausencia no justif.','BP' => 'Baja Paternidad','PR' => 'Permiso Retribuido'];
+
+	foreach($ausencias as $ausencia){
+		$start = date('d/m',strtotime($ausencia->start));
+		$end = date('d/m',strtotime($ausencia->finalDay));
+		$ausencia->title = $tiposAusencia[$ausencia->tipo] .  ' (' .$start. ' A '.$end.')';
+		if($ausencia->allDay==0){
+				$ausencia->allDay = false;
+			}else{$ausencia->allDay = true;}
+	}
+
+
+$lineas_calendarioH = $lineas_calendario_1->merge($lineas_calendario_2);
+
+    foreach($lineas_calendarioH as $linea){
+        $linea->title = $linea->situacion.' '.$linea->centro;
         // $linea->allDay = false;
-        $linea->start = $linea->fecha_inicio.'T'.$linea->entrada1;
+        $linea->start = $linea->fecha_inicio.'T'.$linea->entrada.'Z';
         // $linea->end = $linea->fecha_fin.'T'.$linea->salida1;
-        if($linea->salida1 == '00:00:00'){
+        if($linea->salida == '00:00:00'){
         		$fecha = DateTime::createFromFormat('Y-m-d', $linea->fecha_fin);
 				$fecha->add(new DateInterval('P1D'));
 				$fecha = $fecha->format('Y-m-d');
-				$linea->end = $fecha.'T'.$linea->salida1;
+				$linea->end = $fecha.'T'.$linea->salida;
         	}else{
-        		$linea->end = $linea->fecha_fin.'T'.$linea->salida1;
+        		$linea->end = $linea->fecha_fin.'T'.$linea->salida.'Z';
      		}
     }
+
+$lineas_calendario = $lineas_calendarioH->merge($ausencias);
 
    return $lineas_calendario;
 })->middleware('auth');

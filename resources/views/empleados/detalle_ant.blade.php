@@ -6,19 +6,8 @@
 @media screen and (max-width: 767px) {.tg {width: auto !important;}.tg col {width: auto !important;}.tg-wrap {overflow-x: auto;-webkit-overflow-scrolling: touch;margin: auto 0px;}}</style>
 @extends('layouts.app')
 
-@section('css')
-<link href="{{asset('fullcalendar/fullcalendar.min.css')}}" media="all" rel="stylesheet" type="text/css" />
-<link href="{{asset('fullcalendar/fullcalendar.print.css')}}" media="print" rel="stylesheet" type="text/css" />
-@endsection
-
-@section('scripts')
-<script src="{{asset('fullcalendar/fullcalendar.min.js')}}"></script>
-<script src="{{asset('fullcalendar/locale/es.js')}}"></script>
-
-@endsection
-
 @section('content')
-<div class="container" id="container" data-id="{{$empleado->id}}">
+<div class="container">
 <div class="row">
 <!-- <div class="col-md-10 col-md-offset-1"> -->
 <div class="col-md-12">
@@ -48,7 +37,55 @@
     <div class="panel-body">
 
     <div class="col-md-7">
-            <div id='calendar'></div>
+            <ul class="pager">
+            @if($anteriorId)
+            <li><a href="{{ url('empleados_c/'.$empleado->id.'/'.$anteriorId) }}">Ant.</a></li>
+            @endif
+            @if($cuadrante)
+            <span style="background-color: #800000; color: #ffffff; display: inline-block; margin:0px 5px 7px 5px ;padding: 3px 10px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;font-size:18px">Semana {{$cuadrante->semana}} ({{$cuadrante->year}}) - {{$cuadrante->abarca}}</span>
+            @endif
+            @if($posteriorId)
+            <li><a href="{{ url('empleados_c/'.$empleado->id.'/'.$posteriorId) }}">Prox.</a></li>
+            @endif
+          </ul>
+
+
+
+
+        @if($lineas->count() > 0)
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Dia</th>
+                    <th>Situacion</th>
+                    <th>Entr.</th>
+                    <th>Salida</th>
+                    <th>Entr.</th>
+                    <th>Salida</th>
+                    <th>Horas</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php $i = 1;?>
+            @foreach($lineas as $linea)
+                <tr>
+                    <th>{{ $linea->fecha_format }}</th>
+                    <td>{{ $linea->dia_texto }}</td>
+                    <td>{{ $linea->situacion }}</td>
+                    <td>{{ $linea->entrada1 }}</td>
+                    <td>{{ $linea->salida1 }}</td>
+                    <td>{{ $linea->entrada2 }}</td>
+                    <td>{{ $linea->salida2 }}</td>
+                    <td>{{ $linea->horasdiarias }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+        @else
+            <h2>No hay ningún dato</h2>
+        @endif
+    </div>
     <div class="col-md-5">
 
         <div class="well">
@@ -123,50 +160,6 @@
 <script>
 $(document).ready(function(){
 //TODO SUMAR LAS HORAS DE LAS LINEAS
-
-    var base_url = '{{ url('/') }}';
-    var empleado = $('#container').data('id');
-    var url = base_url +'/api2/'+empleado;
-    $('#calendar').fullCalendar({
-        weekends: true,
-        lang: 'es',
-        header: {
-            left: 'today prev,next',
-            center: 'title',
-            // right: 'basicDay,month,basicWeek',
-            right: 'listDay,listWeek,month',
-
-        },
-
-        // customize the button names,
-        // otherwise they'd all just say "list"
-        views: {
-            listDay: { buttonText: 'día' },
-            listWeek: { buttonText: 'semana' },
-            month: { displayEventTime: true}
-        },
-        defaultView: 'listWeek',
-        slotEventOverlap: false,
-        nextDayThreshold: '03:00:00', // 9am
-        editable: false,
-        eventLimit: true, // allow "more" link when too many events
-        events: {
-            url: base_url + '/api2/' + empleado,
-            error: function() {
-                alert("cannot load json");
-            }
-        }
-
-    });
-
-    views: {
-        month: { // name of view
-            titleFormat: 'YYYY, MM, DD'
-            // other view-specific options here
-        }
-    }
-
-
 });
 </script>
 

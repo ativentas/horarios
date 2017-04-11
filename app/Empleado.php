@@ -40,20 +40,40 @@ class Empleado extends Model
     {
         return $this->belongsToMany('App\Centro','contratos');
     }
+    
     public function centro()
     {
         $hoy = new Datetime();
         $hoy = $hoy->format('Y-m-d');
-        $centro = $this->belongsToMany('App\Centro','contratos')->where([
+        $centro = $this->belongsToMany('App\Centro','contratos')
+            ->where([
             ['fecha_baja',NULL],
             ['fecha_alta','<=',$hoy],
-            ])->orWhere('fecha_baja','>=',$hoy);
+            ])
+            ->orWhere([
+            ['fecha_baja','>=',$hoy],
+            ['fecha_alta','<=',$hoy],
+            ]);
 
         // ->orWherePivot('fecha_baja','>=',$hoy)
         if($centro){
         return $centro;}
         return false;
     }
+
+    public function ultimo_centro()
+    {
+        $hoy = new Datetime();
+        $hoy = $hoy->format('Y-m-d');
+        $centros = $this->belongsToMany('App\Centro','contratos')
+            ->where('fecha_alta','<=',$hoy)->orderBy('fecha_alta','desc');
+
+        if($centros){
+            return $centros;
+        }
+        return false;
+    }
+
     // public function centro_fecha($fecha)
     // {
     //     $fecha = DateTime::createFromFormat('d/m/Y', $fecha);

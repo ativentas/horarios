@@ -473,7 +473,7 @@ public function mostrarCuadrante($cuadrante_id = NULL)
         })
         ->select('lineas.empleado_id','lineas.dia',DB::raw("DATE_FORMAT(ausencias.fecha_inicio, '%d-%m-%Y') as fecha_inicio"),DB::raw("DATE_FORMAT(ausencias.finalDay,'%d-%m-%Y') AS finalDay"),DB::raw("CASE WHEN ausencias.nota IS NULL THEN '' ELSE ausencias.nota END AS 'nota'"))
         ->get();
-       $comments = $cuadrante->comments;
+    $comments = $cuadrante->comments;
 // DB::raw("CASE WHEN tipo = 'Cobro' THEN importe ELSE NULL END AS 'Cobro'"),
     return view('cuadrantes.detalle',compact('lineas','cuadrante','predefinidos','lineasconcambios','lineasconausencias','empleadosdisponibles','anteriorId','posteriorId','comments','empleados_compensar'));
 }
@@ -595,7 +595,7 @@ public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
             ->where([
                     ['contratos.centro_id','=',$centro_id],
                     ['contratos.fecha_baja','=',NULL],
-                    ['contratos.fecha_alta','<=',$fecha_fin],
+                    ['contratos.fecha_alta','<=',$fecha_fin_format],
                     ])
             ->orwhere([
                         ['contratos.centro_id','=',$centro_id],
@@ -605,9 +605,7 @@ public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
 
         ->select('empleados.*','contratos.centro_id AS centro_id','contratos.fecha_baja AS fecha_baja','contratos.fecha_alta AS fecha_alta')
         ->get();
-    // dd($empleados);
 
-    // $empleados = Empleado::activo()->where('centro_id',$centro_id)->get();
     if(!$empleados){
         // TO DO: lanzar excepción para que no cree nada
         dd('no hay ningún empleado, no se puede crear un horario vacío');
@@ -626,6 +624,83 @@ public function addLineas ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
         //borro esta linea porque date convierte a string y entonces no le puedo aplicar dayOfWeek
         // $fecha_ini = date ("Y-m-d", strtotime("+1 day", strtotime($fecha_ini)));
         $fecha_ini = $fecha_ini->addDay();
+    }
+}
+public function addLineas2 ($cuadrante_id, $centro_id, $fecha_ini, $fecha_fin){
+    //seleccionar los empleados que en el intervalo entre $fecha_ini y $fecha_fin tienen algún contrato
+    $fecha_ini_format= $fecha_ini->format('Y-m-d');
+    $fecha_fin_format = $fecha_fin->format('Y-m-d');
+    // dd($fecha_fin);
+    
+    //TO DO: JUNTAR ESTO CON LA FUNCION EMPLEADOSDISPONIBLES
+    $empleados = DB::table('empleados')
+        ->join('contratos',function($join) use($fecha_ini_format,$fecha_fin_format){
+            $join->on('empleados.id','contratos.empleado_id');
+            })
+            ->where([
+                    ['contratos.centro_id','=',$centro_id],
+                    ['contratos.fecha_baja','=',NULL],
+                    ['contratos.fecha_alta','<=',$fecha_fin_format],
+                    ])
+            ->orwhere([
+                        ['contratos.centro_id','=',$centro_id],
+                        ['contratos.fecha_baja','>=',$fecha_ini_format],
+                        ['contratos.fecha_alta','<=',$fecha_fin_format],
+                        ])
+
+
+
+        // ->select('empleados.*','contratos.centro_id AS centro_id','contratos.fecha_baja AS fecha_baja','contratos.fecha_alta AS fecha_alta')
+        ->select('empleados.*','contratos.centro_id AS centro_id',
+            DB::raw("CASE WHEN contratos.fecha_baja <  ? THEN contratos.fecha_baja ELSE ? END AS 'fecha_fin'"),
+            DB::raw("CASE WHEN contratos.fecha_alta >  ? THEN contratos.fecha_alta ELSE ? END AS 'fecha_ini'"),
+            'contratos.fecha_alta AS fecha_alta')
+        ->setBindings([$fecha_fin_format, $fecha_fin_format, $fecha_ini_format, $fecha_ini_format])
+        ->get();
+    // dd($empleados);
+    // $empleados_parciales = $empleados->where('fecha_alta','>','fecha_ini_format')->orwhere('fecha_baja','<','fecha_fin_format')->get();
+    
+// TO DO: DESARROLLAR LO SIGUIENTE. LA IDEA ES QUE LAS LINEAS CUANDO NO HAY CONTRATO TODAVIA, NO SEAN RELLENABLES, POR EJEMPLO QUE SE LES PONGA UNA X
+    // if($empleados_parciales){
+    //     throw new exception ('hay empleados parciales');
+    // }
+    // throw new exception ('no hay empleados parciales');
+
+    // $empleados = Empleado::activo()->where('centro_id',$centro_id)->get();
+    if(!$empleados){
+        // TO DO: lanzar excepción para que no cree nada
+        dd('no hay ningún empleado, no se puede crear un horario vacío');
+    } 
+    //TO DO: prerrellenar las Ausencias. De momento no hace falta porque en cuanto muestre el cuadrante ya se modifican las lineas
+    // while ($fecha_ini <= $fecha_fin) {
+    //     foreach ($empleados as $empleado) {
+    //         $linea = new Linea;
+    //         $linea->cuadrante_id = $cuadrante_id;
+    //         $linea->fecha = $fecha_ini;
+    //         $linea->dia = $fecha_ini->dayOfWeek;
+    //         $linea->empleado_id = $empleado->id;          
+    //         $linea->save();   
+    //         // dd($linea);  
+    //     }
+    //     //borro esta linea porque date convierte a string y entonces no le puedo aplicar dayOfWeek
+    //     // $fecha_ini = date ("Y-m-d", strtotime("+1 day", strtotime($fecha_ini)));
+    //     $fecha_ini = $fecha_ini->addDay();
+    // }
+
+
+    foreach ($empleados as $empleado) {
+        while ($empleado->fecha_ini <= $empleado->fecha_fin) {
+            $linea = new Linea;
+            $linea->cuadrante_id = $cuadrante_id;
+            $linea->fecha = $fecha_ini;
+            $linea->dia = $fecha_ini->dayOfWeek;
+            $linea->empleado_id = $empleado->id;          
+            $linea->save();   
+            $fecha_ini = $fecha_ini->addDay();  
+        }
+        //borro esta linea porque date convierte a string y entonces no le puedo aplicar dayOfWeek
+        // $fecha_ini = date ("Y-m-d", strtotime("+1 day", strtotime($fecha_ini)));
+        
     }
 }
 
@@ -725,11 +800,29 @@ public function empleadosdisponibles ($cuadrante)
     return $empleadosdisponibles;
 
 }
+
+/**
+ * TO DO: unificar esta función con la de addlineas
+ */
 public function añadirempleado ($empleado_id,$cuadrante_id)
 {
-    //TO DO: unificar esta función con la de addlineas
+    
 try {
     $exception = DB::transaction(function() use ($empleado_id,$cuadrante_id) {
+
+
+    
+// TO DO: DESARROLLAR LO SIGUIENTE. LA IDEA ES QUE LAS LINEAS CUANDO NO HAY CONTRATO TODAVIA, NO SEAN RELLENABLES, POR EJEMPLO QUE SE LES PONGA UNA X. PARA UNIFICAR, HABRA QUE PREVIAMENTE UNIFICAR AÑADIREMPLEADO CON ADDLINEAS...SI SE PUEDE
+    // $empleado_parcial = Empleado::find($empleado_id)
+    //     ->whereHas('contratos', function ($query){
+    //         $query->where()
+    //         'fecha_alta','>','fecha_ini_format')->orwhere('fecha_baja','<','fecha_fin_format')->get();
+    // }
+    // if($empleados_parciales){
+    //     throw new exception ('hay empleados parciales');
+    // }
+    // throw new exception ('no hay empleados parciales');
+
 
     $cuadrante = Cuadrante::find($cuadrante_id);
     $yearsemana = $cuadrante->yearsemana;

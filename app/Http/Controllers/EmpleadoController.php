@@ -108,19 +108,28 @@ class EmpleadoController extends Controller
     /**
      * TO DO: ESTA FUNCION SUSTITUIRA A LA ORIGINAL DE SHOW, VOY A IMPLEMENTAR QUE EN LA FICHA DEL EMPLEADO MUESTRE LAS LINEAS POR SEMANAS, EMPEZANDO POR LA SEMANA ACTUAL, Y PUDIENDO IR PARA ATRAS O DELANTE, COMO SI FUERA UN CALENDARIO (INCLUSO ESTUDIAR SI CONVIENE UN CALENDARIO PARA MOSTRAR ESTO)
      */
-    public function show2 ($id)
+    public function show ($id)
     {
-
         $empleado = Empleado::findOrFail($id);
-        if($empleado->centro){
+        // dd($empleado->centro);
+        if(count($empleado->centro)){
             $centro_id = $empleado->centro[0]->id;
+
+        }elseif(count($empleado->ultimo_centro)){
+            $centro_id = $empleado->ultimo_centro[0]->id;
+        }else
+            return redirect()->back()->with('info','Este empleado no ha tenido ningún contrato hasta la fecha');
+        // if(count($empleado->centro)){
+            
+
+            // $centro_id = $empleado->centro[0]->id;
             $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
                 $query->where('centros.id',$centro_id);
                 })->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
             $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
                 $query->where('centros.id',$centro_id);
                 })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
-        }
+        // }
         if($empleado_anterior){
             $empleado_anterior = $empleado_anterior->id;
         }
@@ -147,7 +156,7 @@ class EmpleadoController extends Controller
         $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP','PR'))->count();
         $vaclineasacum = $query->where('situacion','V')->count();
         $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
-        return view('empleados.detalle2', compact('year','lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','empleado_anterior','empleado_posterior'));
+        return view('empleados.detalle', compact('year','lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','empleado_anterior','empleado_posterior'));
 
     }
 
@@ -157,76 +166,76 @@ class EmpleadoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id,$cuadrante_id=NULL)
-    {
-        $empleado = Empleado::findOrFail($id);
-        $centro_id = 0; //TO DO: BORRAR ESTA LINEA PORQUE NO TIENE SENTIDO        
-        if(count($empleado->centro)){
-            $centro_id = $empleado->centro[0]->id;
-            $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
-                $query->where('centros.id',$centro_id);
-                })->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
-            $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
-                $query->where('centros.id',$centro_id);
-                })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
-        }
-        // $empleado_anterior = NULL;
-        // $empleado_posterior = NULL;
-        if($empleado_anterior){
-            $empleado_anterior = $empleado_anterior->id;
-        }
+    // public function show_ant($id,$cuadrante_id=NULL)
+    // {
+    //     $empleado = Empleado::findOrFail($id);
+    //     $centro_id = 0; //TO DO: BORRAR ESTA LINEA PORQUE NO TIENE SENTIDO        
+    //     if(count($empleado->centro)){
+    //         $centro_id = $empleado->centro[0]->id;
+    //         $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
+    //             $query->where('centros.id',$centro_id);
+    //             })->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
+    //         $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
+    //             $query->where('centros.id',$centro_id);
+    //             })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
+    //     }
+    //     // $empleado_anterior = NULL;
+    //     // $empleado_posterior = NULL;
+    //     if($empleado_anterior){
+    //         $empleado_anterior = $empleado_anterior->id;
+    //     }
 
-        if($empleado_posterior){
-            $empleado_posterior = $empleado_posterior->id;
-        }
+    //     if($empleado_posterior){
+    //         $empleado_posterior = $empleado_posterior->id;
+    //     }
        
-        $cuadrante=Cuadrante::find($cuadrante_id);
-        //para que cuando no hay nigún cuadrante, tengamos un valor de yearsemana para calcular el resto de variables
-        if(!$cuadrante){
-            $date = new DateTime();
-            $yearsemana = $date->format("YW");
-            //buscar el cuadrante actual
-            $cuadrante = Cuadrante::where('estado','<>',null)->where('yearsemana','<=',$yearsemana)->where('centro_id',$centro_id)->orderBy('yearsemana','desc')->first();
-        }
+    //     $cuadrante=Cuadrante::find($cuadrante_id);
+    //     //para que cuando no hay nigún cuadrante, tengamos un valor de yearsemana para calcular el resto de variables
+    //     if(!$cuadrante){
+    //         $date = new DateTime();
+    //         $yearsemana = $date->format("YW");
+    //         //buscar el cuadrante actual
+    //         $cuadrante = Cuadrante::where('estado','<>',null)->where('yearsemana','<=',$yearsemana)->where('centro_id',$centro_id)->orderBy('yearsemana','desc')->first();
+    //     }
 
-        $cuadrante_id = NULL;
-        if($cuadrante){
-            $yearsemana = $cuadrante->yearsemana;
-            $cuadrante_id = $cuadrante->id;
-        }
-        $anteriorId = Cuadrante::where('centro_id',$centro_id)->orderBy('yearsemana','desc')->where('yearsemana','<',$yearsemana)->first();
-        if($anteriorId){
-            $anteriorId = $anteriorId->id;
-        }
-        $posteriorId = Cuadrante::where('centro_id',$centro_id)->orderBy('yearsemana','asc')->where('yearsemana','>',$yearsemana)->first();
-        if($posteriorId){
-            $posteriorId = $posteriorId->id;
-        }
+    //     $cuadrante_id = NULL;
+    //     if($cuadrante){
+    //         $yearsemana = $cuadrante->yearsemana;
+    //         $cuadrante_id = $cuadrante->id;
+    //     }
+    //     $anteriorId = Cuadrante::where('centro_id',$centro_id)->orderBy('yearsemana','desc')->where('yearsemana','<',$yearsemana)->first();
+    //     if($anteriorId){
+    //         $anteriorId = $anteriorId->id;
+    //     }
+    //     $posteriorId = Cuadrante::where('centro_id',$centro_id)->orderBy('yearsemana','asc')->where('yearsemana','>',$yearsemana)->first();
+    //     if($posteriorId){
+    //         $posteriorId = $posteriorId->id;
+    //     }
 
-        $year = substr($yearsemana,0,4);
-        $beginyear = $year.'-01-01';
-        $endyear = $year.'-12-31';
-        $lineas = Linea::where('cuadrante_id',$cuadrante_id)
-                    ->where('empleado_id',$id)
-                    ->whereHas('cuadrante', function ($query) {
-                        $query->where('estado', '<>', NULL);
-                    })
-                    ->select('lineas.*',
-                        DB::RAW("DATE_FORMAT(lineas.fecha,'%d-%m-%Y') AS 'fecha_format'"))
-                    ->get();
+    //     $year = substr($yearsemana,0,4);
+    //     $beginyear = $year.'-01-01';
+    //     $endyear = $year.'-12-31';
+    //     $lineas = Linea::where('cuadrante_id',$cuadrante_id)
+    //                 ->where('empleado_id',$id)
+    //                 ->whereHas('cuadrante', function ($query) {
+    //                     $query->where('estado', '<>', NULL);
+    //                 })
+    //                 ->select('lineas.*',
+    //                     DB::RAW("DATE_FORMAT(lineas.fecha,'%d-%m-%Y') AS 'fecha_format'"))
+    //                 ->get();
 
-        $query = Linea::where('empleado_id',$id)
-                ->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])
-                ->whereHas('cuadrante', function ($restrict) {
-                        $restrict->where('estado', '<>', NULL);})
-                ->get();
+    //     $query = Linea::where('empleado_id',$id)
+    //             ->whereBetween('fecha',[$beginyear,min($endyear,$this->hoy)])
+    //             ->whereHas('cuadrante', function ($restrict) {
+    //                     $restrict->where('estado', '<>', NULL);})
+    //             ->get();
 
 
-        $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP','PR'))->count();
-        $vaclineasacum = $query->where('situacion','V')->count();
-        $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
-        return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','year','cuadrante','anteriorId','posteriorId','empleado_anterior','empleado_posterior'));
-    }
+    //     $otraslineasacum = $query->whereIn('situacion',array('AN','AJ','B','BP','PR'))->count();
+    //     $vaclineasacum = $query->where('situacion','V')->count();
+    //     $ausenciasyear = Ausencia::where('empleado_id',$id)->where('finalDay','>=',$beginyear)->where('fecha_inicio','<=',$endyear)->get();
+    //     return view('empleados.detalle', compact('lineas','empleado','ausenciasyear','vaclineasacum','otraslineasacum','year','cuadrante','anteriorId','posteriorId','empleado_anterior','empleado_posterior'));
+    // }
 
     /**
      * Show the form for editing the specified resource.
