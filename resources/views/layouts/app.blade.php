@@ -96,6 +96,7 @@
                                             {{ csrf_field() }}
                                         </form>
                                     </li>
+                                    <li><a href="{{ url('/users') }}">Admin. Users</a></li>
                                 </ul>
                             </li>
                         @endif

@@ -41,7 +41,6 @@ class User extends Authenticatable
     {
         return $this->activo;
     }
-
     public function isOnline()
     {
         return Cache::has('user-is-online-' . $this->id);
@@ -55,6 +54,12 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Cuadrante','author_id');
     }
+    
+    public function centro()
+    {
+        return $this->belongsTo('App\Centro','centro_id');
+    }
+
     // user has many comments
     public function comments()
     {
@@ -63,6 +68,10 @@ class User extends Authenticatable
     public function respuestas()
     {
         return $this->hasMany('App\Comment','resuelto_por');
+    }
+    public function scopeNormal($query)
+    {
+        return $query->where('is_admin',0);
     }
     // public function can_post()
     // {

@@ -24,10 +24,13 @@ Route::get('/nieuwcuadrante/', 'CuadranteController@mostrarNieuwCuadrante')->mid
 Route::post('/nieuwcuadrante/', 'CuadranteController@crearNieuwCuadrante')->middleware('auth');
 
 
+
+
 Route::get('/empleados_c/{empleado_id}/{cuadrante_id?}', 'EmpleadoController@show')->middleware('auth');
 // Route::get('/empleados_c2/{empleado_id}', 'EmpleadoController@show2')->middleware('auth');
 Route::resource('empleados', 'EmpleadoController');
 Route::resource('contratos', 'ContratoController');
+Route::resource('users', 'UserController');
 
 
 /**
