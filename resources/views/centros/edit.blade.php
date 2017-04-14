@@ -48,7 +48,6 @@
                     <option value="">No Cierra</option>
                     @foreach ($dias as $num=>$texto)
                     <option {{Request::old('dia_cierre')===$num ? ' selected' : $centro->dia_cierre===$num ? ' selected':''}} value={{$num}}>{{$texto}}</option>
-<!--                     <option {{Request::old('dia_cierre')==$num ? ' selected' : $centro->dia_cierre==$num ? 'selected':''}} value={{$num}}>{{$texto}}</option> -->
                     @endforeach
                 </select>
 
@@ -60,10 +59,9 @@
             </div>
             <div class="form-group">
             <div class="checkbox">
-                <label><input type="checkbox" value="1" name="abrefestivos" @if(old('abrefestivos')==1) checked @endif>Abre Festivos</label>
+                <label><input type="checkbox" value="1" name="abrefestivos"  {{ old('abrefestivos', $centro->abrefestivos) === 1 ? 'checked' : '' }}>Abre Festivos</label>
             </div>
             </div>
-
 
             <div class="form-group">
                 <button type="submit" class="btn btn-default">Modificar</button>

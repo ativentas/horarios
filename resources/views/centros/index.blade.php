@@ -55,7 +55,7 @@
             <h2>No hay ningún dato</h2>
         @endif
 
-        <form id="form_modificarEstadoUser" action="{{route('users.update',[':USER_ID'])}}" method="POST">
+        <form id="form_modificarEstadoCentro" action="{{route('centros.update',[':CENTRO_ID'])}}" method="POST">
         <input id="estado" name="estado" type="text" value="" class="hidden">
         {{csrf_field()}}
         {{ method_field('PUT') }}        
@@ -76,8 +76,8 @@ $(document).ready(function() {
 
         var fila = $(this).parents('tr');
         var id = fila.data('id');
-        var form = $('#form_modificarEstadoUser');
-        var url = form.attr('action').replace(':USER_ID', id);
+        var form = $('#form_modificarEstadoCentro');
+        var url = form.attr('action').replace(':CENTRO_ID', id);
         $('#estado').val(1);
 
         var data = form.serialize();
@@ -92,8 +92,8 @@ $(document).ready(function() {
         e.preventDefault();
         var fila = $(this).parents('tr');
         var id = fila.data('id');
-        var form = $('#form_modificarEstadoUser');
-        var url = form.attr('action').replace(':USER_ID', id);
+        var form = $('#form_modificarEstadoCentro');
+        var url = form.attr('action').replace(':CENTRO_ID', id);
         $('#estado').val(0);
 
         var data = form.serialize();

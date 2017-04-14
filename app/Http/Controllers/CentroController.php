@@ -93,7 +93,6 @@ class CentroController extends Controller
     public function update(Request $request, $id)
     {
         $centro = Centro::find($id);
-
         if ($request->has('estado')) {
             $centro->activo=$request->estado;
             $centro->save();
