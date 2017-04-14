@@ -27,7 +27,6 @@
                     <th>Festivos</th>
                     <th></th>
                     <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -38,8 +37,7 @@
                     <td>{{$centro->nombre}}</td>
                     <td>{{$centro->empresa}}</td>
                     <td>{{$centro->dia}}</td>
-                    <td>{{$centro->abrefestivos}}</td>
-                    <td>Predefinidos</td>
+                    <td>{{$centro->abrefestivos ? 'Sí' : 'No'}}</td>
                     <td> 
                     <button data-activa="1" class="btn btn-success btn-xs btn-activar" type="button" value={{$centro->id}} name="botonActivar" id="activar{{$centro->id}}" @if($centro->activo==1) style="display:none;" @endif></span>Reactivar
                     </button>

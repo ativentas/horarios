@@ -30,7 +30,7 @@ class CentroController extends Controller
      */
     public function create()
     {
-        //
+        return view('centros.create');
     }
 
     /**
@@ -41,7 +41,19 @@ class CentroController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+        'nombre' => 'required|min:3|max:25',
+        ]);
+
+        $centro = new Centro;
+        $centro->nombre = $request->nombre;
+        $centro->dia_cierre = $request->dia_cierre;
+        $centro->abrefestivos = $request->abrefestivos;
+        $centro->empresa = $request->empresa;
+
+        $centro->save();
+    
+        return redirect()->back()->with('info', 'Nuevo Departamento creado');
     }
 
     /**
@@ -63,7 +75,9 @@ class CentroController extends Controller
      */
     public function edit($id)
     {
-        //
+        $centro = Centro::find($id);
+        $predefinidos = $centro->predefinidos()->get();
+        return view('centros.edit',compact('predefinidos'));
     }
 
     /**
@@ -75,7 +89,23 @@ class CentroController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $centro = Centro::find($id);
+
+        if ($request->has('estado')) {
+            $centro->activo=$request->estado;
+            $centro->save();
+        }else {  
+            $this->validate($request, [
+            'nombre' => 'required|min:3|max:25', 
+            ]);
+            $centro->nombre = $request->nombre;
+            $centro->empresa = $request->empresa;
+            $centro->dia_cierre = $request->dia_cierre;
+            $centro->abrefestivos = $request->abrefestivos;
+
+            $centro->save();
+        }
+        return redirect()->route('centros.index')->with('info','Departamento modificado');
     }
 
     /**

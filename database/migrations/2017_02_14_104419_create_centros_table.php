@@ -18,7 +18,7 @@ class CreateCentrosTable extends Migration
             $table->string('nombre');
             $table->string('empresa')->nullable();
             $table->tinyInteger('dia_cierre')->nullable();
-            $table->boolean('abrefestivos')->default(1);
+            $table->boolean('abrefestivos')->default(0);
             $table->boolean('activo')->default(1);
 
         });

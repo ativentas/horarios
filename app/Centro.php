@@ -28,6 +28,11 @@ class Centro extends Model
         return $this->hasMany('App\Contrato','centro_id');
     }
 
+    public function predefinidos()
+    {
+        return $this->hasMany('App\Predefinido','centro_id');
+    }
+
     public function empleados()
     {
         return $this->belongsToMany('App\Empleado','contratos');
