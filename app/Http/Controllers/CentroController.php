@@ -30,7 +30,8 @@ class CentroController extends Controller
      */
     public function create()
     {
-        return view('centros.create');
+        $dias = [1=>'Lunes',2=>'Martes',3=>'Miércoles',4=>'Jueves',5=>'Viernes',6=>'Sábado',0=>'Domingo'];
+        return view('centros.create',compact('dias'));
     }
 
     /**
@@ -48,7 +49,7 @@ class CentroController extends Controller
         $centro = new Centro;
         $centro->nombre = $request->nombre;
         $centro->dia_cierre = $request->dia_cierre;
-        $centro->abrefestivos = $request->abrefestivos;
+        $centro->abrefestivos = $request->abrefestivos?:'0';
         $centro->empresa = $request->empresa;
 
         $centro->save();
@@ -75,9 +76,11 @@ class CentroController extends Controller
      */
     public function edit($id)
     {
+        $dias = [1=>'Lunes',2=>'Martes',3=>'Miércoles',4=>'Jueves',5=>'Viernes',6=>'Sábado',0=>'Domingo'];
+
         $centro = Centro::find($id);
         $predefinidos = $centro->predefinidos()->get();
-        return view('centros.edit',compact('predefinidos'));
+        return view('centros.edit',compact('centro','predefinidos','dias'));
     }
 
     /**
@@ -101,7 +104,7 @@ class CentroController extends Controller
             $centro->nombre = $request->nombre;
             $centro->empresa = $request->empresa;
             $centro->dia_cierre = $request->dia_cierre;
-            $centro->abrefestivos = $request->abrefestivos;
+            $centro->abrefestivos = $request->abrefestivos?:0;
 
             $centro->save();
         }
