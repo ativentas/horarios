@@ -8,6 +8,8 @@ class Centro extends Model
 {
     protected $table = 'centros';
 
+    protected $appends = ['dia'];
+
     public $timestamps = false;
     
     public function cuadrantes()
@@ -34,6 +36,14 @@ class Centro extends Model
     public function ausencias()
     {
         return $this->hasMany('App\Ausencia','centro_id');
+    }
+    public function getDiaAttribute()
+    {
+        $dowMap = array('Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab');
+        if(!is_null($this->dia_cierre)){
+            $dia = $dowMap[$this->dia_cierre];
+            return $dia;
+        }return false;
     }
 
 }

@@ -97,6 +97,7 @@
                                         </form>
                                     </li>
                                     <li><a href="{{ url('/users') }}">Admin. Users</a></li>
+                                    <li><a href="{{ url('/centros') }}">Admin. Dptos.</a></li>
                                 </ul>
                             </li>
                         @endif

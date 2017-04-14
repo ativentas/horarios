@@ -8,6 +8,13 @@ use App\Centro;
 
 class UserController extends Controller
 {
+    
+    public function __construct()
+    {
+        $this->middleware(['auth','isAdmin']);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +33,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $centros = Centro::all();
+        return view('users.create',compact('centros'));
     }
 
     /**
@@ -37,7 +45,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+        'nombre' => 'required|min:3|max:15',
+        'email' => 'required|email|unique:users,email'
+        ]);
+
+        $user = new User;
+        $user->name = $request->nombre;
+        $user->email = $request->email;
+        $user->password = bcrypt(uniqid());
+        $user->centro_id = $request->centro;
+
+        $user->save();
+    
+        return redirect()->back()->with('info', 'Nuevo Usuario registrado. El nuevo usuario debe solicitar "recuperar contraseña" para crear su contraseña');
     }
 
     /**
@@ -80,7 +101,7 @@ class UserController extends Controller
         }else {  
             $this->validate($request, [
             'nombre' => 'required|min:3|max:15',
-            'email' => 'required' 
+            'email' => 'required|unique:users,email,'.$id, 
             ]);
             $user = User::find($id);
             $user->name = $request->nombre;

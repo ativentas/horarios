@@ -4,46 +4,50 @@
 <div class="row">
 <div class="col-md-10 col-md-offset-1">
 <div class="panel panel-default">
-    <div class="panel-heading"><h2>Listado Usuarios</h2>
+    <div class="panel-heading"><h2>Listado Departamentos</h2>
         @include('layouts.alerts')
         <div class="row">
             <ol class="breadcrumb">
                 <li><a href="{{ url('home') }}">Salir</a></li>
                 <li class="active">Listado</li>
-                <li><a href="{{ url('/users/create') }}">Nuevo</a></li>           
+                <li><a href="{{ url('/centros/create') }}">Nuevo</a></li>           
             </ol>
         </div>
     </div>
     <div class="panel-body">
     <div class="col-md-12">
-        @if($users->count() > 0)
+        @if($centros->count() > 0)
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Centro</th>
+                    <th>Empresa</th>
+                    <th>Cierra</th>
+                    <th>Festivos</th>
+                    <th></th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
             <?php $i = 1;?>
-            @foreach($users as $user)
-                <tr data-id="{{$user->id}}">
+            @foreach($centros as $centro)
+                <tr data-id="{{$centro->id}}">
                     <th scope="row">{{ $i++ }}</th>
-                    <td>{{$user->name}}</td>
-                    <td>{{$user->email}}</td>
-                    <td>{{$user->centro->nombre or 'Nada'}}</td>
+                    <td>{{$centro->nombre}}</td>
+                    <td>{{$centro->empresa}}</td>
+                    <td>{{$centro->dia}}</td>
+                    <td>{{$centro->abrefestivos}}</td>
+                    <td>Predefinidos</td>
                     <td> 
-                    <button data-activa="1" class="btn btn-success btn-xs btn-activar" type="button" value={{$user->id}} name="botonActivar" id="activar{{$user->id}}" @if($user->activo==1) style="display:none;" @endif></span>Reactivar
+                    <button data-activa="1" class="btn btn-success btn-xs btn-activar" type="button" value={{$centro->id}} name="botonActivar" id="activar{{$centro->id}}" @if($centro->activo==1) style="display:none;" @endif></span>Reactivar
                     </button>
-                    <button data-activa="0" class="btn btn-danger btn-xs btn-baja" type="button" value={{$user->id}} name="botonBaja" id="baja{{$user->id}}" @if($user->activo == 0) style="display:none;" @endif></span>Dar de baja
+                    <button data-activa="0" class="btn btn-danger btn-xs btn-baja" type="button" value={{$centro->id}} name="botonBaja" id="baja{{$centro->id}}" @if($centro->activo == 0) style="display:none;" @endif></span>Dar de baja
                     </button>                   
                     </td>
                     <td>
-                    <a class="btn btn-info btn-xs btn-modificar" href="{{ route('users.edit',$user->id) }}">Modificar</a>
+                    <a class="btn btn-info btn-xs btn-modificar" href="{{ route('centros.edit',$centro->id) }}">Modificar</a>
                     </td>
                 </tr>
             @endforeach

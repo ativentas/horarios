@@ -31,6 +31,7 @@ Route::get('/empleados_c/{empleado_id}/{cuadrante_id?}', 'EmpleadoController@sho
 Route::resource('empleados', 'EmpleadoController');
 Route::resource('contratos', 'ContratoController');
 Route::resource('users', 'UserController');
+Route::resource('centros', 'CentroController');
 
 
 /**
