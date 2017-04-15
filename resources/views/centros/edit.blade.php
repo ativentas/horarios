@@ -24,7 +24,7 @@
     {{ csrf_field() }}
     {{ method_field('PUT') }}
 
-    <div class="col-md-6"> <!-- COLUMNA IZQUIERDA -->
+    <div class="col-md-5"> <!-- COLUMNA IZQUIERDA -->
 
             <div class="form-group{{$errors->has('nombre') ? ' has-error' : ''}}">
                 <label for="nombre" class="control-label">Nombre</label>
@@ -70,12 +70,90 @@
     </form>    
 
 
+    <div class="col-md-7"> <!-- COLUMNA DERECHA -->
+
+    <div class="panel panel-default">
+    <div class="panel-heading"><h4>Alta Nuevo Predefinido</h4></div>
+    <div class="panel-body">
+        <div class="form-group">
+            <button type="submit" class="btn btn-default" id="button_new_predefinido">Nuevo Predefinido</button>
+        </div>  
+    </div>
+    </div>
+
+    @if(count($predefinidos))
+    <div class="panel panel-default">
+    <div class="panel-heading"><h4>Predefinidos</h4></div>
+    <div class="panel-body">
+    @foreach($predefinidos as $predefinido)
+    <div class="form-inline">
+        <div class="col-md-4 form-group" style="padding:0px;">
+            <label for="nombre" class="control-label">Nombre</label>
+            <div class="input-group">
+            <input type="text" autocomplete="off" name="" class="form-control" id="predefinido_nombre" value="{{$predefinido->nombre}}" readonly>
+            <span class="input-group-addon"><button class="btn btn-info btn-xs btn_modify_{{$predefinido->id}}" id="button_modify_{{$predefinido->id}}" type="button" style=""><span class="glyphicon glyphicon-edit"></span></button></span>         
+            </div>
+        </div>
+        <div class="col-md-2 form-group" style="padding:0px;">
+            <label for="actual_alta" class="control-label">Entrada</label>
+            <input type="" autocomplete="off" name="entrada1" class="form-control" id="" value="{{$predefinido->entrada1}}" style="max-width: 100%;" readonly>
+        </div>
+        <div class="col-md-2 form-group" style="padding:0px;">
+            <label for="actual_baja" class="control-label">Salida</label>
+            <input type="" autocomplete="off" name="salida1" class="form-control" id="" value="{{$predefinido->salida1}}" style="max-width: 100%;" readonly>
+        </div>
+        <div class="col-md-2 form-group" style="padding:0px;">
+            <label for="actual_alta" class="control-label">Entrada</label>
+            <input type="" autocomplete="off" name="entrada1" class="form-control" id="" value="{{$predefinido->entrada2}}" style="max-width: 100%;" readonly>
+        </div>
+        <div class="col-md-2 form-group" style="padding:0px;">
+            <label for="actual_baja" class="control-label">Salida</label>
+            <input type="" autocomplete="off" name="salida1" class="form-control" id="" value="{{$predefinido->salida2}}" style="max-width: 100%;" readonly>
+        </div>
+
+    </div>
+    @endforeach
+    </div>
+    </div>
+    @endif
+    
+    </div> <!-- FIN COLUMNA DERECHA -->
+
+
+    <div id="dialogPredefinido" title="">
+        <form autofocus autocomplete="off" class="form-vertical" id="form_predefinido" role="form" method="post" action="{{route('predefinidos.update',$predefinido->id)}}">
+        {{ csrf_field() }}
+        {{ method_field('PUT') }}
+
+        </form>
+    </div> 
+
+
+    <div id="dialog_newPredefinido" title="">
+        <form autofocus autocomplete="off" class="form-vertical" id="form_newPredefinido" role="form" method="post" action="{{route('predefinidos.store')}}">
+        {{ csrf_field() }}
+         <input type="hidden" name="centro_id" value={{$centro->id}}>
+
+        </form>
+    </div> 
+
+
+
+
+
+
+
+
+
+
+
     </div>
     </div> <!-- FIN PANEL BODY -->
 </div>
 </div>
 </div>
 </div>
+<script type="text/javascript" src="{{asset('js/edit_centro.js')}}"></script>
 
 <script>
 $(document).ready(function(){

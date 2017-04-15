@@ -102,17 +102,17 @@
     <div class="form-inline">
         <div class="col-md-3 form-group" style="padding:0px;">
             <label for="actual_alta" class="control-label">F.Alta</label>
-            <input type="" autocomplete="off" name="actual_alta" class="form-control" id="actual_alta" value="{{$contrato->fecha_alta}}" style="max-width: 100%;" readonly>
+            <input type="" autocomplete="off" name="actual_alta" class="form-control" id="alta_{{$contrato->id}}" value="{{$contrato->fecha_alta}}" style="max-width: 100%;" readonly>
         </div>
         <div class="col-md-3 form-group" style="padding:0px;">
             <label for="actual_baja" class="control-label">F.Baja</label>
-            <input type="" autocomplete="off" name="actual_baja" class="form-control" id="actual_baja" value="{{$contrato->fecha_baja}}" style="max-width: 100%;" readonly>
+            <input type="" autocomplete="off" name="actual_baja" class="form-control" id="baja_{{$contrato->id}}" value="{{$contrato->fecha_baja}}" style="max-width: 100%;" readonly>
         </div>
         <div class="col-md-6 form-group" style="padding:0px;">
             <label for="centro" class="control-label">Dpto.</label>
             <div class="input-group">
-            <input type="text" autocomplete="off" name="" class="form-control" id="centro_nombre" value="{{$contrato->centro_nombre}}" readonly>
-            <span class="input-group-addon"><button class="btn btn-info btn-xs btn_modify_{{$contrato->id}}" id="button_modify_{{$contrato->id}}" type="button" style=""><span class="glyphicon glyphicon-edit"></span></button></span>         
+            <input type="text" autocomplete="off" name="" class="form-control" id="centro_nombre_{{$contrato->id}}" value="{{$contrato->centro_nombre}}" readonly>
+            <span class="input-group-addon"><button data-id="{{$contrato->id}}" data-centro_id={{$contrato->centro_id}} class="btn btn-info btn-xs btn_modify_contrato" id="button_modify_{{$contrato->id}}" type="button" style=""><span class="glyphicon glyphicon-edit"></span></button></span>         
             </div>
         </div>
     </div>
@@ -149,6 +149,33 @@
         </form>
     </div> 
     @endif
+
+    <div id="dialogContrato2" title="">
+        <form autofocus autocomplete="off" class="form-vertical" id="form_contrato2" role="form" method="post" action="{{route('contratos.update',[':CONTRATO_ID'])}}">
+        {{ csrf_field() }}
+        {{ method_field('PUT') }}
+         <div class="form-inline">
+            <div class="col-md-6 form-group">
+            <label for="alta" class="control-label">F.Alta</label>
+            <input type="" name="alta" id="dialog_alta2" class="form-control contrato_alta" value="" style="max-width: 100%">
+            </div>
+            <div class="col-md-6 form-group">
+            <label for="baja" class="control-label">F.Baja</label>
+            <input type="" name="baja" id="dialog_baja2" class="form-control contrato_baja" value="" style="max-width: 100%">
+            </div>
+         </div>
+         <div class="col-md-10 form-group" style="margin-top: 1em">
+            <select class="form-control" id="dialog_centro" name="centro">
+                @foreach ($centros as $centro)
+                <option value={{$centro->id}}>{{$centro->nombre}}</option>
+                @endforeach
+            </select>
+         </div>
+        </form>
+    </div> 
+
+
+
 
     <div id="dialog_newContrato" title="">
         <form autofocus autocomplete="off" class="form-vertical" id="form_newContrato" role="form" method="post" action="{{route('contratos.store')}}">

@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Contrato;
-use DateTime;
 
-class ContratoController extends Controller
+class PredefinidoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,20 +34,7 @@ class ContratoController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'alta' => 'required',
-            'centro' => 'required'
-        ]);
-        $contrato = new Contrato;
-        $contrato->empleado_id = $request->empleado_id;
-        $contrato->fecha_alta = $this->change_date_format($request->alta);
-        if($request->has('baja')){
-            $contrato->fecha_baja = $this->change_date_format($request->baja);
-        }
-        $contrato->centro_id = $request->centro;
-        $contrato->save();
-        return 'contrato creado ';
-
+        //
     }
 
     /**
@@ -82,21 +67,8 @@ class ContratoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {  
-        $this->validate($request, [
-        'alta' => 'required', 
-        'centro' => 'required',   
-        ]);
-        $contrato = Contrato::find($id);
-        $contrato->fecha_alta = $this->change_date_format($request->alta);
-        if($request->has('baja')){
-            $contrato->fecha_baja = $this->change_date_format($request->baja);
-        }else{
-            $contrato->fecha_baja = Null;
-        }
-        $contrato->centro_id = $request->centro;
-        $contrato->save();
-        return 'contrato modificado';
+    {
+        //
     }
 
     /**
@@ -109,13 +81,4 @@ class ContratoController extends Controller
     {
         //
     }
-
-    public function change_date_format($date)
-    {
-        $day = DateTime::createFromFormat('d-m-Y', $date);
-        // dd($day);
-        return $day->format('Y-m-d');
-    }
-
-
 }
