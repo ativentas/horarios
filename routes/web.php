@@ -32,6 +32,7 @@ Route::resource('empleados', 'EmpleadoController');
 Route::resource('contratos', 'ContratoController');
 Route::resource('users', 'UserController');
 Route::resource('centros', 'CentroController');
+Route::resource('predefinidos', 'PredefinidoController');
 
 
 /**

@@ -91,7 +91,7 @@
             <label for="nombre" class="control-label">Nombre</label>
             <div class="input-group">
             <input type="text" autocomplete="off" name="" class="form-control" id="predefinido_nombre" value="{{$predefinido->nombre}}" readonly>
-            <span class="input-group-addon"><button class="btn btn-info btn-xs btn_modify_{{$predefinido->id}}" id="button_modify_{{$predefinido->id}}" type="button" style=""><span class="glyphicon glyphicon-edit"></span></button></span>         
+            <span class="input-group-addon"><button data-predefinido_id="{{$predefinido->id}}" class="btn btn-info btn-xs btn_modify_predefinido" id="button_modify_{{$predefinido->id}}" type="button" style=""><span class="glyphicon glyphicon-edit"></span></button></span>         
             </div>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
@@ -121,10 +121,23 @@
 
 
     <div id="dialogPredefinido" title="">
-        <form autofocus autocomplete="off" class="form-vertical" id="form_predefinido" role="form" method="post" action="{{route('predefinidos.update',$predefinido->id)}}">
+        <form autofocus autocomplete="off" class="form-vertical" id="form_predefinido" role="form" method="post" action="{{route('predefinidos.update',[':PREDEFINIDO_ID'])}}">
         {{ csrf_field() }}
         {{ method_field('PUT') }}
-
+        <div class="col-md-10 form-group" style="margin-top: 1em">
+            <label for="nombre" class="control-label">Nombre</label>
+            <input type="" name="nombre" id="dialog_nombre" class="form-control predefinido_nombre" value="" style="max-width: 100%">
+        </div>
+        <div class="form-inline">
+            <div class="col-md-6 form-group">
+            <label for="entrada1" class="control-label">Entrada</label>
+            <input type="" name="entrada1" id="dialog_entrada1" class="form-control predefinido_entrada1" value="" style="max-width: 100%">
+            </div>
+            <div class="col-md-6 form-group">
+            <label for="salida1" class="control-label">Salida</label>
+            <input type="" name="salida1" id="dialog_salida1" class="form-control predefinido_salida1" value="" style="max-width: 100%">
+            </div>
+        </div>
         </form>
     </div> 
 
@@ -136,10 +149,6 @@
 
         </form>
     </div> 
-
-
-
-
 
 
 
