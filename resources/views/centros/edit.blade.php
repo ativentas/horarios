@@ -138,6 +138,16 @@
             <input type="" name="salida1" id="dialog_salida1" class="form-control predefinido_salida1" value="" style="max-width: 100%">
             </div>
         </div>
+        <div class="form-inline">
+            <div class="col-md-6 form-group">
+            <label for="entrada2" class="control-label">Entrada</label>
+            <input type="" name="entrada2" id="dialog_entrada2" class="form-control predefinido_entrada2" value="" style="max-width: 100%">
+            </div>
+            <div class="col-md-6 form-group">
+            <label for="salida2" class="control-label">Salida</label>
+            <input type="" name="salida2" id="dialog_salida2" class="form-control predefinido_salida2" value="" style="max-width: 100%">
+            </div>
+        </div>
         </form>
     </div> 
 
@@ -145,11 +155,34 @@
     <div id="dialog_newPredefinido" title="">
         <form autofocus autocomplete="off" class="form-vertical" id="form_newPredefinido" role="form" method="post" action="{{route('predefinidos.store')}}">
         {{ csrf_field() }}
-         <input type="hidden" name="centro_id" value={{$centro->id}}>
+        <input type="hidden" name="centro_id" value={{$centro->id}}>
 
+        <div class="col-md-10 form-group" style="margin-top: 1em">
+            <label for="nombre" class="control-label">Nombre</label>
+            <input type="" name="nombre" id="dialognew_nombre" class="form-control predefinido_nombre" value="" style="max-width: 100%">
+        </div>
+        <div class="form-inline">
+            <div class="col-md-6 form-group">
+            <label for="entrada1" class="control-label">Entrada</label>
+            <input type="" name="entrada1" id="dialognew_entrada1" class="form-control predefinido_entrada1" value="" style="max-width: 100%">
+            </div>
+            <div class="col-md-6 form-group">
+            <label for="salida1" class="control-label">Salida</label>
+            <input type="" name="salida1" id="dialognew_salida1" class="form-control predefinido_salida1" value="" style="max-width: 100%">
+            </div>
+        </div>
+        <div class="form-inline">
+            <div class="col-md-6 form-group">
+            <label for="entrada2" class="control-label">Entrada</label>
+            <input type="" name="entrada2" id="dialognew_entrada2" class="form-control predefinido_entrada2" value="" style="max-width: 100%">
+            </div>
+            <div class="col-md-6 form-group">
+            <label for="salida2" class="control-label">Salida</label>
+            <input type="" name="salida2" id="dialognew_salida2" class="form-control predefinido_salida2" value="" style="max-width: 100%">
+            </div>
+        </div>
         </form>
     </div> 
-
 
 
 

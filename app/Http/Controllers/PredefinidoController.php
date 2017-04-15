@@ -24,20 +24,7 @@ class PredefinidoController extends Controller
      */
     public function create()
     {
-        $this->validate($request, [
-            'nombre' => 'required|min:3|max:25',
-            'entrada1' => 'required'
-            'salida1' => 'required'
-        ]);
-        $predefinido = new Predefinido;
-        $predefinido->nombre = $request->nombre;
-        $predefinido->entrada1 = $request->entrada1;
-        $predefinido->salida1 = $request->salida1;
-        $predefinido->entrada2 = $request->entrada2;
-        $predefinido->salida2 = $request->salida2;
 
-        $predefinido->save();
-        return 'Predefinido creado ';
     }
 
     /**
@@ -48,7 +35,22 @@ class PredefinidoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'nombre' => 'required|min:3|max:25',
+            'entrada1' => 'required',
+            'salida1' => 'required',
+            'centro_id' => 'required',
+        ]);
+        $predefinido = new Predefinido;
+        $predefinido->centro_id = $request->centro_id;
+        $predefinido->nombre = $request->nombre;
+        $predefinido->entrada1 = $request->entrada1;
+        $predefinido->salida1 = $request->salida1;
+        $predefinido->entrada2 = $request->entrada2;
+        $predefinido->salida2 = $request->salida2;
+
+        $predefinido->save();
+        return 'Predefinido creado ';
     }
 
     /**

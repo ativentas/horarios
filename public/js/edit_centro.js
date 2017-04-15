@@ -16,8 +16,8 @@ $('#button_new_predefinido').on("click", function(e){
     dialog_new = $("#dialog_newPredefinido").dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
       autoOpen: false,
-      height: 300,
-      width: 300,
+      height: 380,
+      width: 350,
       modal: true,
       buttons: {
         "Crear": crear_predefinido,
@@ -29,11 +29,38 @@ $('#button_new_predefinido').on("click", function(e){
       } 
     });
 
+    form = dialog_new.find( "form" ).on( "submit", function( event ) {
+    event.preventDefault();
+    crear_predefinido();
+    });
+    dialog_new
+    .dialog('open');
+
+
 });
 
-// function crear_predefinido(){
 
-// }
+
+
+function crear_predefinido(){
+    var form = $('#form_newPredefinido');
+    var url = form.attr('action');
+    var data = form.serialize();
+    $.post(url, data).done(function(data){
+            alert(data);
+            location.reload();
+    }).fail(function(data){
+        alert(data);
+    }); 
+
+
+    dialog_new.dialog("close");
+}
+
+
+
+
+
 
 $('.btn_modify_predefinido').on("click", function(e){
     e.preventDefault();
@@ -42,7 +69,7 @@ $('.btn_modify_predefinido').on("click", function(e){
     dialog_predefinido = $( "#dialogPredefinido" ).dialog({
       position: { my: "left center", at: "right top", of: elemento }, 
       autoOpen: false,
-      height: 300,
+      height: 380,
       width: 350,
       modal: true,
       buttons: {
@@ -66,6 +93,8 @@ $('.btn_modify_predefinido').on("click", function(e){
     $('#dialogPredefinido input[name=nombre]').val($("#predefinido_nombre_"+predefinido_id).val());
     $('#dialogPredefinido input[name=entrada1]').val($("#entrada1_"+predefinido_id).val()); 
     $('#dialogPredefinido input[name=salida1]').val($("#salida1_"+predefinido_id).val()); 
+    $('#dialogPredefinido input[name=entrada2]').val($("#entrada2"+predefinido_id).val()); 
+    $('#dialogPredefinido input[name=salida2]').val($("#salida2_"+predefinido_id).val()); 
 
 
     dialog_predefinido
@@ -92,51 +121,6 @@ function modificar_predefinido(){
 
 
 }
-
-// $('#button_new_contrato').on("click", function(e){
-//     e.preventDefault();
-//     var elemento = $(this);
-
-//     dialog_nuevo = $( "#dialog_newContrato" ).dialog({
-//       position: { my: "left center", at: "right top", of: elemento }, 
-//       autoOpen: false,
-//       height: 300,
-//       width: 350,
-//       modal: true,
-//       buttons: {
-//         "Crear": nuevo_contrato,
-//         Cancelar: function() {
-//           dialog_vigente.dialog( "close" );
-//         }
-//       },
-//       close: function() {
-//       }  
-//     });
-//     form = dialog_nuevo.find( "form" ).on( "submit", function( event ) {
-//     event.preventDefault();
-//     nuevo_contrato();
-//     });
-//     dialog_nuevo
-//     .dialog('open');
-
-// });
-
-
-
-// function nuevo_contrato(){
-//     var form = $('#form_newContrato');
-//     var url = form.attr('action');
-//     var data = form.serialize();
-//     $.post(url, data).done(function(data){
-//             alert(data);
-//             location.reload();
-//     }).fail(function(data){
-//         alert(data);
-//     }); 
-
-
-//     dialog_nuevo.dialog("close");
-// }
 
 
 
