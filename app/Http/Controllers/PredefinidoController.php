@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Predefinido;
 
 class PredefinidoController extends Controller
 {
@@ -23,7 +24,20 @@ class PredefinidoController extends Controller
      */
     public function create()
     {
-        //
+        $this->validate($request, [
+            'nombre' => 'required|min:3|max:25',
+            'entrada1' => 'required'
+            'salida1' => 'required'
+        ]);
+        $predefinido = new Predefinido;
+        $predefinido->nombre = $request->nombre;
+        $predefinido->entrada1 = $request->entrada1;
+        $predefinido->salida1 = $request->salida1;
+        $predefinido->entrada2 = $request->entrada2;
+        $predefinido->salida2 = $request->salida2;
+
+        $predefinido->save();
+        return 'Predefinido creado ';
     }
 
     /**
@@ -68,7 +82,22 @@ class PredefinidoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $predefinido = Predefinido::find($id);
+  
+        $this->validate($request, [
+        'nombre' => 'required|min:3|max:25', 
+        'entrada1' => 'required', 
+        'salida1' => 'required', 
+        ]);
+        $predefinido->nombre = $request->nombre;
+        $predefinido->entrada1 = $request->entrada1;
+        $predefinido->salida1 = $request->salida1;
+        $predefinido->entrada2 = $request->entrada2;
+        $predefinido->salida2 = $request->salida2;
+
+        $predefinido->save();
+        
+        return 'Predefinido modificado';
     }
 
     /**

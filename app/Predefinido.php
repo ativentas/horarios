@@ -16,8 +16,20 @@ class Predefinido extends Model
     }
     
 //solo funciona cuando se hace con Eloquent no con raw query
-    public function getEntrada1Attribute($value)
-    {
-    	return substr($value,0,3);
+    public function getEntrada1Attribute($value){
+        return substr($value,0,5);
+
+    }
+    public function getSalida1Attribute($value){
+        return substr($value,0,5);
+
+    }
+    public function getEntrada2Attribute($value){
+        return substr($value,0,5);
+
+    }
+    public function getSalida2Attribute($value){
+        return substr($value,0,5);
+
     }
 }

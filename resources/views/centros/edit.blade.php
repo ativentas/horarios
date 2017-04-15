@@ -95,19 +95,19 @@
             </div>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
-            <label for="actual_alta" class="control-label">Entrada</label>
+            <label for="entrada1" class="control-label">Entrada</label>
             <input type="" autocomplete="off" name="entrada1" class="form-control" id="entrada1_{{$predefinido->id}}" value="{{$predefinido->entrada1}}" style="max-width: 100%;" readonly>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
-            <label for="actual_baja" class="control-label">Salida</label>
+            <label for="salida1" class="control-label">Salida</label>
             <input type="" autocomplete="off" name="salida1" class="form-control" id="salida1_{{$predefinido->id}}" value="{{$predefinido->salida1}}" style="max-width: 100%;" readonly>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
-            <label for="actual_alta" class="control-label">Entrada</label>
+            <label for="entrada2" class="control-label">Entrada</label>
             <input type="" autocomplete="off" name="entrada2" class="form-control" id="entrada2_{{$predefinido->id}}" value="{{$predefinido->entrada2}}" style="max-width: 100%;" readonly>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
-            <label for="actual_baja" class="control-label">Salida</label>
+            <label for="salida2" class="control-label">Salida</label>
             <input type="" autocomplete="off" name="salida2" class="form-control" id="salida2_{{$predefinido->id}}" value="{{$predefinido->salida2}}" style="max-width: 100%;" readonly>
         </div>
 
@@ -165,6 +165,7 @@
 <script type="text/javascript" src="{{asset('js/edit_centro.js')}}"></script>
 
 <script>
+
 $(document).ready(function(){
 
 
