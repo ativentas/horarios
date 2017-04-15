@@ -90,25 +90,25 @@
         <div class="col-md-4 form-group" style="padding:0px;">
             <label for="nombre" class="control-label">Nombre</label>
             <div class="input-group">
-            <input type="text" autocomplete="off" name="" class="form-control" id="predefinido_nombre" value="{{$predefinido->nombre}}" readonly>
+            <input type="text" autocomplete="off" name="" class="form-control" id="predefinido_nombre_{{$predefinido->id}}" value="{{$predefinido->nombre}}" readonly>
             <span class="input-group-addon"><button data-predefinido_id="{{$predefinido->id}}" class="btn btn-info btn-xs btn_modify_predefinido" id="button_modify_{{$predefinido->id}}" type="button" style=""><span class="glyphicon glyphicon-edit"></span></button></span>         
             </div>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
             <label for="actual_alta" class="control-label">Entrada</label>
-            <input type="" autocomplete="off" name="entrada1" class="form-control" id="" value="{{$predefinido->entrada1}}" style="max-width: 100%;" readonly>
+            <input type="" autocomplete="off" name="entrada1" class="form-control" id="entrada1_{{$predefinido->id}}" value="{{$predefinido->entrada1}}" style="max-width: 100%;" readonly>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
             <label for="actual_baja" class="control-label">Salida</label>
-            <input type="" autocomplete="off" name="salida1" class="form-control" id="" value="{{$predefinido->salida1}}" style="max-width: 100%;" readonly>
+            <input type="" autocomplete="off" name="salida1" class="form-control" id="salida1_{{$predefinido->id}}" value="{{$predefinido->salida1}}" style="max-width: 100%;" readonly>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
             <label for="actual_alta" class="control-label">Entrada</label>
-            <input type="" autocomplete="off" name="entrada1" class="form-control" id="" value="{{$predefinido->entrada2}}" style="max-width: 100%;" readonly>
+            <input type="" autocomplete="off" name="entrada2" class="form-control" id="entrada2_{{$predefinido->id}}" value="{{$predefinido->entrada2}}" style="max-width: 100%;" readonly>
         </div>
         <div class="col-md-2 form-group" style="padding:0px;">
             <label for="actual_baja" class="control-label">Salida</label>
-            <input type="" autocomplete="off" name="salida1" class="form-control" id="" value="{{$predefinido->salida2}}" style="max-width: 100%;" readonly>
+            <input type="" autocomplete="off" name="salida2" class="form-control" id="salida2_{{$predefinido->id}}" value="{{$predefinido->salida2}}" style="max-width: 100%;" readonly>
         </div>
 
     </div>

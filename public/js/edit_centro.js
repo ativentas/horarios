@@ -63,11 +63,9 @@ $('.btn_modify_predefinido').on("click", function(e){
 
     // /*coger el predefinido y ponerlo en el diálogo para poder modificarlo*/
     form[0].reset();
-    $('#dialogPredefinido input.nombre').val($("#alta_"+predefinido_id).val());
-    $('#dialogPredefinido input.entrada1').val($("#alta_"+predefinido_id).val()); 
-    $('#dialogPredefinido input.salida1').val($("#alta_"+predefinido_id).val()); 
-
-
+    $('#dialogPredefinido input[name=nombre]').val($("#predefinido_nombre_"+predefinido_id).val());
+    $('#dialogPredefinido input[name=entrada1]').val($("#entrada1_"+predefinido_id).val()); 
+    $('#dialogPredefinido input[name=salida1]').val($("#salida1_"+predefinido_id).val()); 
 
 
     dialog_predefinido
