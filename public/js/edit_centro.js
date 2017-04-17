@@ -60,8 +60,6 @@ function crear_predefinido(){
 
 
 
-
-
 $('.btn_modify_predefinido').on("click", function(e){
     e.preventDefault();
     var elemento = $(this);

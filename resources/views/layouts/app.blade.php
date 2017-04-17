@@ -96,8 +96,11 @@
                                             {{ csrf_field() }}
                                         </form>
                                     </li>
+                                    @if (Auth::user()->isAdmin())
+                                    <li><a href="{{ url('/users/'.Auth::user()->id.'/edit') }}">Mis Datos</a></li>
                                     <li><a href="{{ url('/users') }}">Admin. Users</a></li>
                                     <li><a href="{{ url('/centros') }}">Admin. Dptos.</a></li>
+                                    @endif
                                 </ul>
                             </li>
                         @endif
