@@ -59,6 +59,7 @@ class CommentController extends Controller
       'resuelto_por'=> Auth::user()->id,
       'nota_respuesta'=> $request->respuesta,
     ]);
+    return 'Ok.';
   }
 
 }

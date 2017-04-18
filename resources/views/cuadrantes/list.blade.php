@@ -61,16 +61,22 @@
                     <th>Periodo</th>
                     <th>Centro Trabajo</th>
                     <th>Estado</th>
+                    <th>Desarch.</th>
                     <th>Ver</th>
                 </tr>
             </thead>
             <tbody>
             @foreach($completados as $completado)
-                <tr>
+                <tr data-id={{$completado->id}}>
                     <th>{{$completado->semana}}</th>
                     <td>{{$completado->abarca}}</td>
                     <td>{{$completado->centro->nombre}}</td>
                     <td>{{$completado->estado}}</td>
+                    <td>
+                    @if($completado->estado == 'Archivado')
+                    <button type="button" class="btn_desarchivar btn btn-warning btn-xs" id="btn_desarch_{{$completado->id}}"style=""><span class="glyphicon glyphicon glyphicon-open"></span></button>
+                    @endif
+                    </td>
                     <td><a href="{{ url('/cuadrante/' . $completado->id) }}">Ver</a></td>
 
                 </tr>
@@ -82,7 +88,9 @@
         @endif
     </div>
 
-                
+        <form id="form_desarchivar" action="{{route('desarchivarCuadrante',[':CUADRANTE_ID'])}}" method="POST">
+        {{csrf_field()}}
+        </form>                
 
 
     </div>
@@ -91,4 +99,31 @@
 </div>
 </div>
 </div>
+<script>
+$(document).ready(function() {
+
+    $('.btn_desarchivar').click(function(e){
+        e.preventDefault();
+        var elem = $(this);
+        var fila = $(this).parents('tr');
+        var id = fila.data('id');
+        var form = $('#form_desarchivar');
+        var url = form.attr('action').replace(':CUADRANTE_ID', id);
+
+        var data = form.serialize();
+        $.post(url, data).done(function(data){
+            alert(data);
+            elem.hide();
+            elem.parent().prev().html('Aceptado');
+
+        });
+
+    });
+
+
+});    
+
+</script>
+
+
 @endsection

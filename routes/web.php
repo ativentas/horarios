@@ -81,6 +81,11 @@ Route::post('/archivar/{id}', [
 	'as' => 'archivarCuadrante',
 	'middleware' => ['auth','isAdmin']
 	]);
+Route::post('/desarchivar/{id}', [
+	'uses' => 'CuadranteController@desarchivarHorario',
+	'as' => 'desarchivarCuadrante',
+	'middleware' => ['auth','isAdmin']
+	]);
 
 
  Route::post('comment/add','CommentController@store')->middleware('auth');

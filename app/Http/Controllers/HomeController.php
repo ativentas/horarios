@@ -37,6 +37,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if(!Auth::user()->isActivo()){
+            Auth::logout();
+            return redirect('login')->with('info', 'Debes pedir al administrador que te active la cuenta');
+        }
         $isadmin = Auth::user()->isAdmin();
         switch ($isadmin) {
             case true:

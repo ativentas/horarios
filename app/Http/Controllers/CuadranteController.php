@@ -42,8 +42,8 @@ public function index()
     $isadmin = Auth::user()->isAdmin();
     switch ($isadmin) {
         case true:
-            $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios'))->get();                
-            $completados = Cuadrante::whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','asc')->get();
+            $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios','Aceptado'))->orderBy('yearsemana','asc')->get();                
+            $completados = Cuadrante::whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','desc')->get();
             break;
         
         default:
@@ -199,6 +199,14 @@ public function archivarHorarios ($cuadrante_id){
 
     return redirect ('home');
 
+}
+
+public function desarchivarHorario ($cuadrante_id){
+
+    $cuadrante = Cuadrante::findOrFail($cuadrante_id);
+    $cuadrante->estado = 'Aceptado';
+    $cuadrante->save();
+    return 'Horario desarchivado';
 }
 
 
