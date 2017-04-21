@@ -42,8 +42,18 @@ public function index()
     $isadmin = Auth::user()->isAdmin();
     switch ($isadmin) {
         case true:
-            $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios','Aceptado'))->orderBy('yearsemana','asc')->get();                
-            $completados = Cuadrante::whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','desc')->get();
+            $cuadrantes = Cuadrante::whereIn('estado',array('Pendiente','AceptadoCambios','Aceptado'))->orderBy('yearsemana','asc');                
+            
+            $cuadrantes = \Request::has('centro') ? $cuadrantes->where('centro_id',\Request::input('centro')) : $cuadrantes;  
+            $cuadrantes = $cuadrantes->get();
+
+
+            $completados = Cuadrante::whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','desc');
+            
+            $completados = \Request::has('centro') ? $completados->where('centro_id',\Request::input('centro')) : $completados;  
+            $completados = $completados->get();
+
+
             break;
         
         default:
@@ -53,7 +63,8 @@ public function index()
             
             break;
     }
-    return view('cuadrantes.list',compact('cuadrantes','completados'));
+    $centros = Centro::all();
+    return view('cuadrantes.list',compact('cuadrantes','completados','centros'));
 }
 
 public function guardarHorarios(Request $request, $cuadrante_id){

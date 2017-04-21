@@ -18,6 +18,25 @@
                     
                 </ol>
         </div>
+        @if(Auth::user()->isAdmin())
+        <form method="get" action="{{url('cuadrantes')}}" class="form-inline">
+                {{ csrf_field() }}
+        
+        <div class="form-group">
+            <select class="form-control" id="centro" name="centro">
+                <option value="">Todas los centros</option>
+                @foreach ($centros as $centro)
+                <option class="" value="{{$centro->id}}" {{ (Request::input('centro') == $centro->id ? "selected":"") }}>{{$centro->nombre}}</option>
+                @endforeach                
+            </select>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Filtrar</button>
+        </div>
+        </form>
+        @endif
+
     </div>
 
     <div class="panel-body">
