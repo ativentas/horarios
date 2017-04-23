@@ -80,7 +80,9 @@
                     <th>Periodo</th>
                     <th>Centro Trabajo</th>
                     <th>Estado</th>
+                    @if(Auth::user()->isAdmin())
                     <th>Desarch.</th>
+                    @endif
                     <th>Ver</th>
                 </tr>
             </thead>
@@ -91,11 +93,13 @@
                     <td>{{$completado->abarca}}</td>
                     <td>{{$completado->centro->nombre}}</td>
                     <td>{{$completado->estado}}</td>
+                    @if(Auth::user()->isAdmin())
                     <td>
                     @if($completado->estado == 'Archivado')
                     <button type="button" class="btn_desarchivar btn btn-warning btn-xs" id="btn_desarch_{{$completado->id}}"style=""><span class="glyphicon glyphicon glyphicon-open"></span></button>
                     @endif
                     </td>
+                    @endif
                     <td><a href="{{ url('/cuadrante/' . $completado->id) }}">Ver</a></td>
 
                 </tr>

@@ -58,8 +58,10 @@ public function index()
         
         default:
             $yearsemana = $this->yearsemana(date('Y-m-d'));
-            $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana)->get();
-            $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','<',$yearsemana)->orderBy('yearsemana','desc')->get();
+            // $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana)->get();            
+            $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->whereIn('estado',array('Pendiente','AceptadoCambios','Aceptado'))->orderBy('yearsemana','asc')->get();
+            // $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','<',$yearsemana)->orderBy('yearsemana','desc')->get();
+            $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','desc')->get();
             
             break;
     }
