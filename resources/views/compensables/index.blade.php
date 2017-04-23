@@ -19,8 +19,7 @@
         </div>
         @if(Auth::user()->isAdmin())     
         <form method="get" action="{{url('compensaciones')}}" class="form-inline">
-                {{ csrf_field() }}
-        
+                {{ csrf_field() }}     
         <div class="form-group">
             <select class="form-control" id="centro" name="centro">
                 <option value="">Todas los centros</option>
@@ -29,17 +28,13 @@
                 @endforeach                
             </select>
         </div>
-
-
         <div class="form-group">
             <button type="submit" class="btn btn-default">Filtrar</button>
         </div>
         </form>
         @endif
     </div>
-
     <div class="panel-body">
-
     <div class="col-md-10 col-md-offset-1">
         @if($empleados->count() > 0)
         <table class="table">
@@ -51,8 +46,7 @@
                     <th></th>
                     <th></th>
                 </tr>
-            </thead>
-           
+            </thead>           
             @foreach($empleados as $empleado)
             <tbody>
                 <tr data-id="{{$empleado->id}}">
