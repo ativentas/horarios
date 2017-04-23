@@ -34,25 +34,25 @@ class DisponibilidadValidator extends ServiceProvider
 			// $scene1 = DB::table('ausencias')
 			$scene1 = $ausenciasempleado
 							->where('fecha_inicio', '<=', $start)
-							->where('fecha_fin', '>=', $end)
+							->where('finalDay', '>=', $end)
 							->count();
 			
 			// $scene2 = DB::table('ausencias')
 			$scene2 = $ausenciasempleado
 							->where('fecha_inicio', '<', $start)
-							->where('fecha_fin', '>', $end)
+							->where('finalDay', '>', $end)
 							->count();
 							
 			// $scene3 = DB::table('ausencias')
 			$scene3 = $ausenciasempleado
 							->where('fecha_inicio', '>=', $start)
-							->where('fecha_fin', '<=', $end)
+							->where('finalDay', '<=', $end)
 							->count();
 							
 			// $scene4 = DB::table('ausencias')
 			$scene4 = $ausenciasempleado
-							->where('fecha_fin', '>', $start)
-							->where('fecha_fin', '<', $end)
+							->where('finalDay', '>', $start)
+							->where('finalDay', '<', $end)
 							->count();
 			
 			// $scene5 = DB::table('ausencias')

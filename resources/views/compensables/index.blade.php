@@ -46,12 +46,17 @@
                     <th></th>
                     <th></th>
                 </tr>
-            </thead>           
+            </thead>
+           
             @foreach($empleados as $empleado)
             <tbody>
                 <tr data-id="{{$empleado->id}}">
                     <td><a href="{{ url('/empleados_c/' . $empleado->id) }}">{{ $empleado->alias }}</a></td>
+                    @if(count($empleado->centro))
                     <td>{{$empleado->centro[0]->nombre}}</td>
+                    @else
+                    <td></td>
+                    @endif
                     <td>{{$empleado->compensables_count}}</td>
                     <td></td>
                 </tr>

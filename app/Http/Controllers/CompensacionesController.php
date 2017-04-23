@@ -50,6 +50,7 @@ class CompensacionesController extends Controller
                 // dd($empleados[0]->centro[0]->nombre);
                 // dd($empleados);
         $centros = Centro::all();
+        
         return view('compensables.index',compact('empleados','centros'));
    }
 

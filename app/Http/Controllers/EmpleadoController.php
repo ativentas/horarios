@@ -33,7 +33,6 @@ class EmpleadoController extends Controller
     {
         $hoy = new Datetime();
         $hoy = $hoy->format('Y-m-d');
-
         // $query = Empleado::orderBy('centro_id')->orderBy('alias');
         // $query = \Request::has('centro') ? $query->where('centro_id',\Request::input('centro')) : $query;
 
@@ -45,20 +44,20 @@ class EmpleadoController extends Controller
                 $join->on('empleados.id','=','contratos.empleado_id')
                     ->where([
                         ['fecha_baja',NULL],
-                        ['fecha_alta','<=',$hoy],])
-                    ->orWhere('fecha_baja','>=',$hoy);
-            })->leftjoin('centros','contratos.centro_id','=','centros.id')
+                        ['fecha_alta','<=',$hoy],]);
+                    //TO DO: LA LINEA SIGUIENTE NO FUNCIONA BIEN EN EL SERVIDOR DE HEROKU, PARECE QUE LA VERSION DE SQL DE CLEARDB ES ANTERIOR A LA QUE USO EN LOCAL
+                    // ->orWhere('fecha_baja','>=',$hoy);
+            })
+            ->leftjoin('centros','contratos.centro_id','=','centros.id')
             ->select('empleados.*','centros.id AS centro_id','centros.nombre AS centro_nombre',
                 DB::RAW("DATE_FORMAT(contratos.fecha_alta,'%d-%m-%Y') AS 'fecha_alta'"),
                 DB::RAW("DATE_FORMAT(contratos.fecha_baja,'%d-%m-%Y') AS 'fecha_baja'")
                 )->orderBy('centros.nombre','desc')->orderBy('alias','asc');
             
-        $query = \Request::has('centro') ? $query->where('centro_id',\Request::input('centro')) : $query;  
+        $query = \Request::has('centro') ? $query->where('centro_id',\Request::input('centro')) : $query;
+
         $empleados = $query->get();
 
-
-
-            // dd($empleados);
         return view('empleados.index',compact('empleados','centros'));
 
 
