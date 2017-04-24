@@ -104,9 +104,7 @@ class EmpleadoController extends Controller
     
         return redirect()->back()->with('info', 'Nuevo empleado registrado');
     }
-    /**
-     * TO DO: ESTA FUNCION SUSTITUIRA A LA ORIGINAL DE SHOW, VOY A IMPLEMENTAR QUE EN LA FICHA DEL EMPLEADO MUESTRE LAS LINEAS POR SEMANAS, EMPEZANDO POR LA SEMANA ACTUAL, Y PUDIENDO IR PARA ATRAS O DELANTE, COMO SI FUERA UN CALENDARIO (INCLUSO ESTUDIAR SI CONVIENE UN CALENDARIO PARA MOSTRAR ESTO)
-     */
+
     public function show ($id)
     {
         $empleado = Empleado::findOrFail($id);
@@ -118,17 +116,18 @@ class EmpleadoController extends Controller
             $centro_id = $empleado->ultimo_centro[0]->id;
         }else
             return redirect()->back()->with('info','Este empleado no ha tenido ningún contrato hasta la fecha');
-        // if(count($empleado->centro)){
             
-
-            // $centro_id = $empleado->centro[0]->id;
             $empleado_anterior = Empleado::whereHas('centro',function($query) use($centro_id) {
-                $query->where('centros.id',$centro_id);
-                })->orderBy('alias','desc')->where('alias','<',$empleado->alias)->first();
+                 $query->where('centros.id',$centro_id);
+                })
+                ->orderBy('alias','desc')
+                ->where('alias','<',$empleado->alias)
+                ->get();
             $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
                 $query->where('centros.id',$centro_id);
-                })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
-        // }
+                })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->get();
+        
+        // dd($centro_id,$empleado_anterior, $empleado_posterior);
         if($empleado_anterior){
             $empleado_anterior = $empleado_anterior->id;
         }
@@ -159,7 +158,7 @@ class EmpleadoController extends Controller
 
     }
 
-    /** TO DO: VOY A REHACER DE NUEVO ESTA FUNCION, LE LLAMARE SHOW2 Y CUANDO FUNCIONE, BORRAR ESTA.
+    /** TO DO: HE CAMBIADO LA FUNCION DE SHOW, CUANDO VEA QUE FUNCIONA, SE PODRÁ BORRAR ESTO. LA NOVEDAD ES QUE USO EL CALENDARIO Y HABRÁ QUE VER SI LA INFORMACION QUE DA ES SUFICIENTE. CREO QUE SÍ.
      * Display the specified resource.
      * Aqui se muestra 
      * @param  int  $id
