@@ -38,7 +38,9 @@
                 <ol class="breadcrumb">
                     <li><a href="{{ url('home') }}">Salir</a></li>
                     <li><a href="{{ url('/empleados') }}">Listado</a></li>
+                    @if(Auth::user()->isAdmin())
                     <li><a href="{{ url('/empleados/create') }}">Nuevo</a></li>
+                    @endif
                 </ol>
         </div>   
 

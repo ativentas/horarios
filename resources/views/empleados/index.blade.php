@@ -11,10 +11,12 @@
             <ol class="breadcrumb">
                 <li><a href="{{ url('home') }}">Salir</a></li>
                 <li class="active">Listado</li>
+                @if(Auth::user()->isAdmin())
                 <li><a href="{{ url('/empleados/create') }}">Nuevo</a></li>
+                @endif
             </ol>
         </div>
-    
+        @if(Auth::user()->isAdmin())
         <form method="get" action="{{url('empleados')}}" class="form-inline">
                 {{ csrf_field() }}
         
@@ -31,7 +33,7 @@
             <button type="submit" class="btn btn-default">Filtrar</button>
         </div>
         </form>
-
+        @endif
     </div>
 
     <div class="panel-body">
@@ -47,9 +49,10 @@
                     <th>Centro Trabajo</th>
                     <th>Fecha alta</th>
                     <th>Fecha baja</th>                    
+                    @if(Auth::user()->isAdmin())
                     <th></th>
                     <th></th>
-                    <th></th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +65,7 @@
                     <td>{{$empleado->centro_nombre}}</td>
                     <td>{{$empleado->fecha_alta}}</td>
                     <td>{{$empleado->fecha_baja}}</td>
+                    @if(Auth::user()->isAdmin())
                     <td> 
                     <button data-activa="1" class="btn btn-success btn-xs btn-activar" type="button" value={{$empleado->id}} name="botonActivarMaquina" id="activar{{$empleado->id}}" @if($empleado->activo==1) style="display:none;" @endif></span>Reactivar
                     </button>
@@ -71,6 +75,7 @@
                     <td>
                     <a class="btn btn-info btn-xs btn-modificar" href="{{ route('empleados.edit',$empleado->id) }}">Modificar</a>
                     </td>
+                    @endif
                 </tr>
             @endforeach
             </tbody>

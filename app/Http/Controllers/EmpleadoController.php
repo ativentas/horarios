@@ -55,7 +55,10 @@ class EmpleadoController extends Controller
                 )->orderBy('centros.nombre','desc')->orderBy('alias','asc');
             
         $query = \Request::has('centro') ? $query->where('centro_id',\Request::input('centro')) : $query;
-
+        if(!Auth::user()->isAdmin()){
+            $centro_id = Auth::user()->centro_id;
+            $query = $query->where('centro_id',$centro_id);
+        }
         $empleados = $query->get();
 
         return view('empleados.index',compact('empleados','centros'));
