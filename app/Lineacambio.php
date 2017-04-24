@@ -55,7 +55,7 @@ class Lineacambio extends Model
         $value = Carbon::createFromFormat('Y-m-d',$value);
         return $value->format('d-m-Y');
     }
-    public function setFechaAttribute ($value){
-        $this->attributes['fecha'] = Carbon::createFromFormat('d-m-Y',$value);
-    }
+    // public function setFechaAttribute ($value){
+    //     $this->attributes['fecha'] = Carbon::createFromFormat('d-m-Y',$value);
+    // }
 }
