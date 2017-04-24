@@ -122,10 +122,10 @@ class EmpleadoController extends Controller
                 })
                 ->orderBy('alias','desc')
                 ->where('alias','<',$empleado->alias)
-                ->get();
+                ->first();
             $empleado_posterior = Empleado::whereHas('centro',function($query) use($centro_id) {
                 $query->where('centros.id',$centro_id);
-                })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->get();
+                })->orderBy('alias','asc')->where('alias','>',$empleado->alias)->first();
         
         // dd($centro_id,$empleado_anterior, $empleado_posterior);
         if($empleado_anterior){
