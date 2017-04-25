@@ -407,10 +407,24 @@ $('.wrapper').on("click", function() {
         form[ 0 ].reset();
       }  
   });
+  
+
+  dialog_horariodia.keydown(function (event) {
+      if (event.keyCode == 13) {
+          $(this).siblings('.ui-dialog-buttonpane').find("button:eq(0)").click();
+          dialog_horariodia.off("keydown");
+          return false;
+      }
+  });
+
+
+
   form = dialog_horariodia.find( "form" ).on( "submit", function( event ) {
     event.preventDefault();
     modificar_horariodia();
   });
+
+
 
   var empleado_id = $(this).parent().parent().data('empleado_id');
   // var empleado_nombre = empleados[empleado_id];
@@ -462,6 +476,15 @@ $('.btn_modify').on('click', function() {
     aplicar_horarios();
     });
 
+    dialog_horarios.keydown(function (event) {
+        if (event.keyCode == 13) {
+            $(this).siblings('.ui-dialog-buttonpane').find("button:eq(0)").click();
+            dialog_horarios.off("keydown");
+            return false;
+        }
+    });
+
+
     var empleado_id = $(this).parent().data('empleado_id');
 
     $( "#dialogEmpleado-form" ).dialog({ title: 'Horario habitual '+empleados[empleado_id] });  
@@ -471,6 +494,10 @@ $('.btn_modify').on('click', function() {
     .dialog('open');
     form[0].reset();
 });
+
+
+
+
 
 $('.diasemana').on('click', function() {
     var elemento = $(this);

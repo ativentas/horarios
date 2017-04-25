@@ -120,7 +120,7 @@ public function guardarHorarios(Request $request, $cuadrante_id){
                 $arraynuevo = [$situacion,$entrada1,$entrada2,$salida1,$salida2];
                 // $arrayaprobado = [$linea->situacion,substr($linea->entrada1,0,5),substr($linea->entrada2,0,5),substr($linea->salida1,0,5),substr($linea->salida2,0,5)];   
                 $arrayaprobado = [$linea->situacion,$linea->entrada1?:null,$linea->entrada2?:null,$linea->salida1?:null,$linea->salida2?:null];
-                if($arraynuevo == $arrayaprobado && count($linea->lineacambio)){
+                if($arraynuevo == $arrayaprobado && count($linea->lineacambio) && $cuadrante->estaod == 'Aceptado'){
                     $linea->lineacambio()->delete();
                 }
 

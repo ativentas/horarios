@@ -328,12 +328,13 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 
 
 <div id="dialogEmpleado-form" title="">
-  <form id = "Empleado-form" autofocus>
+  <!-- <form id = "Empleado-form" autofocus> -->
+  <form id = "Empleado-form">
     <fieldset>
         <div class="form-group">
         <label for="predefinidos">Elegir horario base</label>
 <!--         <input type="text" name="predefinidos" id="" value="" class="predefinidos text ui-widget-content ui-corner-all"> -->        
-        <select class="predefinidos form-control" name="predefinidos" id="">
+        <select autofocus class="predefinidos form-control" name="predefinidos" id="">
             <option value=""></option>
             @foreach ($predefinidos as $key => $predefinido)
             <option data-key="{{$key}}" class="" value="">{{$predefinido->label}}</option>
