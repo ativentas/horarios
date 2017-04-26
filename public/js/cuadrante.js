@@ -677,7 +677,11 @@ function modificar_horariodia(){
   var elemento = $(this).data('elemento');
   var caso = '';
   if($("#check_libre").is(":checked")){
-    caso = 'L';
+    if($("#check_compensar").is(":checked")){
+      caso = 'LC';
+    }else{
+      caso = 'L';
+    }
   }
   if($("#check_vacaciones").is(":checked")){
     caso = 'V';
@@ -699,6 +703,7 @@ function modificar_horariodia(){
       break;
     case 'F':
     case 'L':
+    case 'LC':
     case 'V':
       $("#entrada1_"+dia+"_"+empleado_id).val('');
       $("#salida1_"+dia+"_"+empleado_id).val('');

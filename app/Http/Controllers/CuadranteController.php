@@ -48,7 +48,7 @@ public function index()
             $cuadrantes = $cuadrantes->get();
 
 
-            $completados = Cuadrante::whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','desc');
+            $completados = Cuadrante::whereIn('estado',array('Archivado'))->orderBy('yearsemana','desc');
             
             $completados = \Request::has('centro') ? $completados->where('centro_id',\Request::input('centro')) : $completados;  
             $completados = $completados->get();
@@ -58,10 +58,14 @@ public function index()
         
         default:
             $yearsemana = $this->yearsemana(date('Y-m-d'));
-            // $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','>=',$yearsemana)->get();            
-            $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->whereIn('estado',array('Pendiente','AceptadoCambios','Aceptado'))->orderBy('yearsemana','asc')->get();
-            // $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->where('yearsemana','<',$yearsemana)->orderBy('yearsemana','desc')->get();
-            $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->whereIn('estado',array('Aceptado','Archivado'))->orderBy('yearsemana','desc')->get();
+            // $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)->whereNotIn('estado',array('Archivado'))->orderBy('yearsemana','asc')->get();
+            $cuadrantes = Cuadrante::where('centro_id', Auth::user()->centro_id)
+                ->whereNotIn('estado',array('Archivado'))
+                ->orWhere(function($query){
+                    $query->where('centro_id', Auth::user()->centro_id)
+                        ->whereNull('estado');
+                })->get();
+            $completados = Cuadrante::where('centro_id', Auth::user()->centro_id)->whereIn('estado',array('Archivado'))->orderBy('yearsemana','desc')->get();
             
             break;
     }
@@ -757,10 +761,25 @@ public function generateDateRangeWeek($yearsemana)
     return $dates;
 
 }
+/**
+ * Funcion que devuelve los dias pendientes de compensar de los empleados de un cuadrante
+ */
+public function compensablesdisponibles($cuadrante){
+    $empleados = $cuadrante->empleados;
+    #ver si los empleados tienes compensables pendientes.
+
+    //TO DO: el objetivo sera llegar a un array con key el código de empleado y value el primer día compensable (mas adelante habrá que hacer que salgan todos los días compensables y que se pueda elegir)
+    $compensablesdisponibles = [];
+
+    // $compensablesdisponibles = DB::table('compensables')
+    //     ->join()
+
+}
+
+
+
 public function empleadosdisponibles ($cuadrante)
 {
-    //TO DO: EN VEZ DE ACTIVOS, COGER LOS QUE TIENEN CONTRATO VIGENTE EN ESA SEMANA
-
     $yearsemana = $cuadrante->yearsemana;
     $year = substr($yearsemana,0,4);
     $semana = substr($yearsemana,-2,2);
