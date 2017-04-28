@@ -21,14 +21,21 @@ class Empleado extends Model
     {
         return  $this->hasMany('App\Ausencia','empleado_id');
     }
+    public function compensables()
+    {
+        return $this->hasMany('App\Compensable','empleado_id');
+    }
     public function saldos()
     {
         return  $this->hasMany('App\Saldo','empleado_id');
     }
-    public function compensables()
-    {
-    	return 	$this->hasManyThrough('App\Compensable','App\Linea');
-    }
+    
+    //Como ahora he añadido el campo empleado_id a la tabla compensables, entonces ahora la funcion compensables() es mas sencilla   
+    // public function compensables()
+    // {
+    // 	return 	$this->hasManyThrough('App\Compensable','App\Linea');
+    // }
+
     //TO DO: ESTA RELACION CREO QUE HABRÁ QUE ELIMINARLA, ESTOY CAMBIANDO PARA QUE LOS EMPLEADOS TENGAN UN CONTRATO VIGENTE
     // public function centro()
     // {

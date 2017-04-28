@@ -47,8 +47,8 @@
             @endif                  
         </div>
         <div class="form-group{{$errors->has('telefono') ? ' has-error' : ''}}">
-            <label for="apellidos" class="control-label">Telefono</label>
-            <input type="text" name="apellidos" class="form-control" id="telefono" value="{{Request::old('telefono') ?: ''}}">
+            <label for="telefono" class="control-label">Telefono</label>
+            <input type="text" name="telefono" class="form-control" id="telefono" value="{{Request::old('telefono') ?: ''}}">
             @if ($errors->has('telefono'))
                 <span class="help-block">{{$errors->first('telefono')}}</span>
             @endif                  

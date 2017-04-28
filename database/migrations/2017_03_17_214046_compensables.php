@@ -18,6 +18,7 @@ class Compensables extends Migration
             //TO DO: VER BIEN LOS CAMPOS QUE HAY QUE PONER
             $table->increments('id');
             $table->integer('linea_id')->unsigned()->unique();
+            $table->integer('empleado_id')->unsigned();
             $table->text('nota')->nullable();
             $table->date('diacompensado')->nullable()->unique();
             $table->integer('cuadrante_id')->unsigned()->nullable();

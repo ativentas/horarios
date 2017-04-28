@@ -32,5 +32,9 @@ class Compensable extends Model
 		return false;
 	}
 
+	public function empleado(){
+		return $this->belongsTo('App\Empleado','empleado_id');
+	}
+
 
 }

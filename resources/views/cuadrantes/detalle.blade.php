@@ -459,9 +459,9 @@ TO DO: se me ha ocurrido combinar tanto el color naranja como una pequeñita ima
 <script>
 $(document).ready(function(){
 
-  var empleados_compensar = <?php echo $empleados_compensar; ?>;
+  //var empleados_compensar = <?php //echo $empleados_compensar; ?>;
 
-  console.log(empleados_compensar);
+  //console.log(empleados_compensar);
 
 
   var predefinidos = <?php echo $predefinidos; ?>;

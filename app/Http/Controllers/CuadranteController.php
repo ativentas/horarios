@@ -487,7 +487,14 @@ public function mostrarCuadrante($cuadrante_id = NULL)
             ->with('compensables')
             ->withCount(['compensables'])
             ->get();
+    $empleados_compensar = $cuadrante->empleados()
+            ->whereHas('compensables',function($query){
+                $query->where('diacompensado', null)->where('pagar',false);      
+            })->with('compensables')
+            ->withCount(['compensables'])->get()->unique();
+    $empleados_compensar = $cuadrante->empleados();
 
+    // dd($empleados_compensar);
     $lineasconcambios = $cuadrante->lineacambios()->get();
 
     $lineasconausencias = DB::table('lineas')
